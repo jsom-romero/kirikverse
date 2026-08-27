@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Traductor Karloskikos v3</title>
+<title>Traductor Charlie Kirk v3</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -100,7 +100,7 @@ td.g{font-family:var(--mono);font-size:12.5px;color:var(--tenue);white-space:now
 <body>
 
 <header class="top">
-  <h1>Traductor <span>Karloskikos</span></h1>
+  <h1>Traductor <span>Charlie Kirk</span></h1>
   <button class="btn" id="btnTema">Noche</button>
 </header>
 
@@ -134,7 +134,7 @@ td.g{font-family:var(--mono);font-size:12.5px;color:var(--tenue);white-space:now
       <div class="medio"><button id="btnGirar" title="Cambiar el sentido" aria-label="Cambiar el sentido">⇄</button></div>
 
       <div class="panel">
-        <p class="panel__et" id="etDer">Calendario karloskikos</p>
+        <p class="panel__et" id="etDer">Calendario Charlie Kirk</p>
         <p class="salida" id="salidaF">—</p>
         <div class="pieP"><button class="btn" id="btnCopiaF">Copiar</button></div>
       </div>
@@ -151,7 +151,7 @@ td.g{font-family:var(--mono);font-size:12.5px;color:var(--tenue);white-space:now
   <!-- TEXTO -->
   <section>
     <h2>Texto</h2>
-    <p class="sub">Escribe cualquier cosa y se pasa al alfabeto karloskikos. Gira el sentido y aparece un teclado de glifos para hacerlo al revés.</p>
+    <p class="sub">Escribe cualquier cosa y se pasa al alfabeto Charlie Kirk. Gira el sentido y aparece un teclado de glifos para hacerlo al revés.</p>
 
     <div class="trad">
       <div class="panel">
@@ -165,7 +165,7 @@ td.g{font-family:var(--mono);font-size:12.5px;color:var(--tenue);white-space:now
       <div class="medio"><button id="btnGirarT" title="Cambiar el sentido" aria-label="Cambiar el sentido">⇄</button></div>
 
       <div class="panel">
-        <p class="panel__et" id="etTxtDer">Alfabeto karloskikos</p>
+        <p class="panel__et" id="etTxtDer">Alfabeto Charlie Kirk</p>
         <div class="lienzo" id="lienzo"><span class="vacio">La traducción aparece aquí.</span></div>
         <p class="salida" id="salidaT" hidden></p>
         <div class="pieP"><button class="btn" id="btnCopiaT" hidden>Copiar</button></div>
@@ -193,11 +193,11 @@ td.g{font-family:var(--mono);font-size:12.5px;color:var(--tenue);white-space:now
 
   /* ================= calendario ================= */
   var MESES=[
-    {n:"Kikero",d:31},{n:"Karlero",d:28},{n:"Kikarzo",d:31},{n:"Karlil",d:30},
-    {n:"Kikayo",d:31},{n:"Karlunio",d:30},{n:"Kikulio",d:31},{n:"Karlosto",d:31},
-    {n:"Kiktiembre",d:30},{n:"Karlubre",d:31},{n:"Kikiembre",d:30},{n:"Karlembre",d:31}
+    {n:"Kirknero",d:31},{n:"Kirklero",d:28},{n:"Kirkarzo",d:31},{n:"Kirkbril",d:30},
+    {n:"Kirkayo",d:31},{n:"Kirkunio",d:30},{n:"Kirkulio",d:31},{n:"Kirkgosto",d:31},
+    {n:"Kirktiembre",d:30},{n:"Kirktubre",d:31},{n:"Kirkviembre",d:30},{n:"Kirkciembre",d:31}
   ];
-  var MG=["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+  var MG=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
   var MGC=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
   var SEM=["lunes","martes","miércoles","jueves","viernes","sábado","domingo"];
   var MS=86400000, EPOCA=2025, dir="g2k";
@@ -248,8 +248,8 @@ td.g{font-family:var(--mono);font-size:12.5px;color:var(--tenue);white-space:now
     dir=dir==="g2k"?"k2g":"g2k";
     var g=dir==="g2k";
     $("entradaG").hidden=!g; $("entradaK").hidden=g;
-    $("etIzq").textContent=g?"Calendario de siempre":"Calendario karloskikos";
-    $("etDer").textContent=g?"Calendario karloskikos":"Calendario de siempre";
+    $("etIzq").textContent=g?"Calendario de siempre":"Calendario Charlie Kirk";
+    $("etDer").textContent=g?"Calendario Charlie Kirk":"Calendario de siempre";
     traducirFecha();
   }
   function ponHoy(){
@@ -356,8 +356,8 @@ td.g{font-family:var(--mono);font-size:12.5px;color:var(--tenue);white-space:now
     $("lienzo").hidden=!es;
     $("salidaT").hidden=es;
     $("btnCopiaT").hidden=es;
-    $("etTxtIzq").textContent=es?"Español":"Alfabeto karloskikos";
-    $("etTxtDer").textContent=es?"Alfabeto karloskikos":"Español";
+    $("etTxtIzq").textContent=es?"Español":"Alfabeto Charlie Kirk";
+    $("etTxtDer").textContent=es?"Alfabeto Charlie Kirk":"Español";
     pintarTexto();
   }
   function pintarTeclado(){
