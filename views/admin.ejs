@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Administrar eventos - Kirkversario</title>
+</head>
+
+<body>
+
+    <h1>Administrar eventos</h1>
+
+    <h2>Usuarios registrados</h2>
+    <div id="usersList">
+
+        <% if (!users || users.length === 0) { %>
+
+            <p>No hay usuarios registrados.</p>
+
+        <% } else { %>
+
+            <ul>
+
+                <% users.forEach(user => { %>
+
+                    <li>
+                        <strong><%= user.username %></strong>
+
+                        <button
+                            type="button"
+                            onclick="changePassword('<%= user.id %>', '<%= user.username %>')"
+                        >
+                            Cambiar contraseña
+                        </button>
+
+                        <% if (user.id === sessionUserId) { %>
+
+                            <button
+                                type="button"
+                                onclick="deleteMyAccount()"
+                            >
+                                Borrar mi cuenta
+                            </button>
+
+                        <% } %>
+                    </li>
+
+                <% }) %>
+
+            </ul>
+
+        <% } %>
+    </div>
+    <form id="eventForm">
+
+        <div>
+            <label for="title">Título</label>
+            <input
+                type="text"
+                id="title"
+                name="title"
+                required
+            >
+        </div>
+
+        <div>
+            <label for="description">Descripción</label>
+            <textarea
+                id="description"
+                name="description"
+            ></textarea>
+        </div>
+
+        <div>
+            <label for="date">Fecha</label>
+            <input
+                type="date"
+                id="date"
+                name="date"
+                required
+            >
+        </div>
+
+        <div>
+            <label for="time">Hora</label>
+            <input
+                type="time"
+                id="time"
+                name="time"
+            >
+        </div>
+
+        <div>
+            <label for="category">Categoría</label>
+            <input
+                type="text"
+                id="category"
+                name="category"
+            >
+        </div>
+
+        <button type="submit">
+            Crear evento
+        </button>
+
+    </form>
+
+    <p id="message"></p>
+
+    <hr>
+    <h2>Eventos existentes</h2>
+    <div id="eventsList"></div>
+
+    <script>
+    async function deleteMyAccount() {
+
+        const confirmed = confirm(
+            "¿Seguro que quieres borrar tu cuenta?"
+        );
+
+        if (!confirmed) {
+            return;
+        }
+
+        try {
+
+            const response = await fetch("/api/users/me", {
+                method: "DELETE"
+            });
+
+            console.log("Status:", response.status);
+
+            const texto = await response.text();
+
+            console.log("Respuesta:", texto);
+
+            if (!response.ok) {
+                alert("Error del servidor: " + texto);
+                return;
+            }
+
+            alert("Cuenta eliminada correctamente.");
+
+            window.location.href = "/login";
+
+        } catch (error) {
+
+            console.error("ERROR FETCH:", error);
+
+            alert("Error de conexión con el servidor. Mira la consola (F12).");
+        }
+    }
+    const eventForm = document.getElementById("eventForm");
+    const message = document.getElementById("message");
+    const eventsList = document.getElementById("eventsList");
+
+    let editingId = null;
+
+
+    // ============================
+    // CARGAR EVENTOS
+    // ============================
+
+    async function loadEvents() {
+
+    try {
+
+        const response = await fetch("/api/events");
+
+        if (!response.ok) {
+            throw new Error("No se pudieron cargar los eventos");
+        }
+
+        const events = await response.json();
+
+        eventsList.innerHTML = "";
+
+        if (events.length === 0) {
+
+            const emptyMessage = document.createElement("p");
+            emptyMessage.textContent = "No hay eventos todavía.";
+
+            eventsList.appendChild(emptyMessage);
+
+            return;
+        }
+
+        events.forEach(event => {
+
+            const article = document.createElement("article");
+
+            const title = document.createElement("h3");
+            title.textContent = event.title;
+
+            const description = document.createElement("p");
+            description.textContent =
+                event.description || "";
+
+            const date = document.createElement("p");
+            date.textContent =
+                "📅 " +
+                event.date +
+                (event.time ? " — " + event.time : "");
+
+            const category = document.createElement("p");
+            category.textContent =
+                "Categoría: " +
+                (event.category || "general");
+
+            const editButton = document.createElement("button");
+            editButton.textContent = "Editar";
+
+            editButton.addEventListener("click", function() {
+                editEvent(event.id);
+            });
+
+            const deleteButton = document.createElement("button");
+            deleteButton.textContent = "Eliminar";
+
+            deleteButton.addEventListener("click", function() {
+                deleteEvent(event.id);
+            });
+
+            const separator = document.createElement("hr");
+
+            article.appendChild(title);
+            article.appendChild(description);
+            article.appendChild(date);
+            article.appendChild(category);
+            article.appendChild(editButton);
+            article.appendChild(deleteButton);
+            article.appendChild(separator);
+
+            eventsList.appendChild(article);
+
+        });
+
+    } catch (error) {
+
+        console.error(error);
+
+        eventsList.innerHTML =
+            "<p>Error al cargar los eventos.</p>";
+
+    }
+}
+    // ============================
+    // CREAR / EDITAR
+    // ============================
+
+    eventForm.addEventListener("submit", async (event) => {
+
+        event.preventDefault();
+
+        const eventData = {
+
+            title: document.getElementById("title").value,
+
+            description:
+                document.getElementById("description").value,
+
+            date:
+                document.getElementById("date").value,
+
+            time:
+                document.getElementById("time").value,
+
+            category:
+                document.getElementById("category").value
+
+        };
+
+
+        let response;
+
+
+        if (editingId === null) {
+
+            // CREAR
+
+            response = await fetch("/api/events", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(eventData)
+
+            });
+
+        } else {
+
+            // EDITAR
+
+            response = await fetch(`/api/events/${editingId}`, {
+
+                method: "PUT",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(eventData)
+
+            });
+
+        }
+
+
+        const data = await response.json();
+
+
+        if (response.ok) {
+
+            if (editingId === null) {
+
+                message.textContent =
+                    "Evento creado correctamente.";
+
+            } else {
+
+                message.textContent =
+                    "Evento actualizado correctamente.";
+
+            }
+
+            editingId = null;
+
+            eventForm.reset();
+
+            document.querySelector(
+                '#eventForm button[type="submit"]'
+            ).textContent = "Crear evento";
+
+            loadEvents();
+
+        } else {
+
+            message.textContent =
+                data.error || "Ha ocurrido un error.";
+
+        }
+
+    });
+
+
+    // ============================
+    // EDITAR EVENTO
+    // ============================
+
+    async function editEvent(id) {
+
+        const response = await fetch("/api/events");
+
+        const events = await response.json();
+
+        const event = events.find(event => event.id === id);
+
+        if (!event) {
+            return;
+        }
+
+
+        document.getElementById("title").value =
+            event.title;
+
+        document.getElementById("description").value =
+            event.description || "";
+
+        document.getElementById("date").value =
+            event.date;
+
+        document.getElementById("time").value =
+            event.time || "";
+
+        document.getElementById("category").value =
+            event.category || "";
+
+
+        editingId = id;
+
+
+        document.querySelector(
+            '#eventForm button[type="submit"]'
+        ).textContent = "Guardar cambios";
+
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+    }
+
+
+    // ============================
+    // ELIMINAR EVENTO
+    // ============================
+
+    async function deleteEvent(id) {
+
+        const confirmar = confirm(
+            "¿Seguro que quieres eliminar este evento?"
+        );
+
+        if (!confirmar) {
+            return;
+        }
+
+
+        const response = await fetch(
+            `/api/events/${id}`,
+            {
+                method: "DELETE"
+            }
+        );
+
+
+        const data = await response.json();
+
+
+        if (response.ok) {
+
+            message.textContent =
+                "Evento eliminado correctamente.";
+
+            loadEvents();
+
+        } else {
+
+            message.textContent =
+                data.error || "No se ha podido eliminar.";
+
+        }
+
+    }
+
+
+    // ============================
+    // ARRANQUE
+    // ============================
+
+    loadEvents();
+    
+    async function changePassword(userId, username) {
+
+    const newPassword = prompt(
+        "Nueva contraseña para " + username + ":"
+    );
+
+    if (!newPassword) {
+        return;
+    }
+
+    if (newPassword.length < 6) {
+        alert("La contraseña debe tener al menos 6 caracteres.");
+        return;
+    }
+
+    const response = await fetch(
+        "/api/users/" + userId + "/password",
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                password: newPassword
+            })
+        }
+    );
+
+    const data = await response.json();
+
+    if (response.ok) {
+        alert("Contraseña cambiada correctamente.");
+    } else {
+        alert(data.error || "No se pudo cambiar la contraseña.");
+    }
+}
+    </script>
+
+</body>
+
+</html>
