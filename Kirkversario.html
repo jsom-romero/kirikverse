@@ -38,6 +38,14 @@ h2{font-family:var(--display);font-weight:800;font-size:clamp(22px,3.6vw,30px);l
 .sub{color:var(--tenue);margin:0 0 22px;max-width:60ch;font-size:15px}
 
 /* Translator paragraph */
+@font-face {
+  font-family: "KarlosKikos";
+  src: url("./fonts/karloskikos.ttf") format("truetype");
+}
+
+.kikos-icon {
+  font-family: "KarlosKikos";
+}
 .trad{display:grid;grid-template-columns:1fr 52px 1fr;border:2px solid var(--texto);border-radius:14px;overflow:hidden;background:var(--tarjeta)}
 .panel{padding:16px;min-height:170px;display:flex;flex-direction:column}
 .panel__et{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--tenue);margin:0 0 12px}
@@ -191,7 +199,7 @@ td.g{font-family:var(--mono);font-size:12.5px;color:var(--tenue);white-space:now
 (function(){
   "use strict";
 
-  /* ================= calendario ================= */
+  /* Calendar */
   var MESES=[
     {n:"Kirknero",d:31},{n:"Kirklero",d:28},{n:"Kirkarzo",d:31},{n:"Kirkbril",d:30},
     {n:"Kirkayo",d:31},{n:"Kirkunio",d:30},{n:"Kirkulio",d:31},{n:"Kirkgosto",d:31},
@@ -339,7 +347,9 @@ td.g{font-family:var(--mono);font-size:12.5px;color:var(--tenue);white-space:now
         h+='<span class="pal">';
         p.split("").forEach(function(c){
           var s=svg(c);
-          h+= s ? s : '<span class="raw">'+c.replace(/&/g,"&amp;").replace(/</g,"&lt;")+'</span>';
+          h+= s
+          ? '<span class="kikos-icon">'+c+'</span>'
+          : '<span class="raw">'+c.replace(/&/g,"&amp;").replace(/</g,"&lt;")+'</span>';
         });
         h+='</span>';
       });
