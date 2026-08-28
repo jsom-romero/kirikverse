@@ -7,7 +7,7 @@ export default function calendarioTemplate() {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Calendario Â· Kirkversario</title>
+    <title>Calendario · Kirkversario</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -636,7 +636,7 @@ export default function calendarioTemplate() {
                     type="button"
                     aria-label="Mes anterior"
                 >
-                    â€¹
+                    &lsaquo;
                 </button>
 
                 <button
@@ -646,7 +646,7 @@ export default function calendarioTemplate() {
                     aria-label="Pantalla completa"
                     title="Pantalla completa"
                 >
-                    â¤¡
+                    &#x26F6;
                 </button>
 
                 <h3 class="cal__mes" id="calTitulo">
@@ -669,7 +669,7 @@ export default function calendarioTemplate() {
                     type="button"
                     aria-label="Mes siguiente"
                 >
-                    â€º
+                    &rsaquo;
                 </button>
 
             </div>
@@ -1286,7 +1286,7 @@ export default function calendarioTemplate() {
 
         var b = $("btnPantalla");
 
-        b.textContent = on ? "\u2715" : "\u2921";
+        b.textContent = on ? "X" : "[ ]";
 
         b.title = on
             ? "Salir de pantalla completa"
