@@ -453,20 +453,21 @@ app.post("/register", async (req, res) => {
 
     const { username, password } = req.body;
 
-    if (!username || !password) {
+    console.log("REGISTER:", {
+        username,
+        passwordLength: password ? password.length : 0
+    });
 
+    if (!username || !password) {
         return res
             .status(400)
             .send("Usuario y contraseña son obligatorios.");
     }
 
     if (password.length < 6) {
-
         return res
             .status(400)
-            .send(
-                "La contraseña debe tener al menos 6 caracteres."
-            );
+            .send("La contraseña debe tener al menos 6 caracteres.");
     }
 
     try {
@@ -479,8 +480,9 @@ app.post("/register", async (req, res) => {
             .bind(username)
             .all();
 
-        if (existing.results.length > 0) {
+        console.log("USUARIO EXISTENTE:", existing.results);
 
+        if (existing.results && existing.results.length > 0) {
             return res
                 .status(400)
                 .send("Ese nombre de usuario ya existe.");
@@ -489,7 +491,9 @@ app.post("/register", async (req, res) => {
         const hashedPassword =
             await bcrypt.hash(password, 12);
 
-        await env.DB.prepare(`
+        console.log("PASSWORD HASH GENERADO");
+
+        const result = await env.DB.prepare(`
             INSERT INTO users
             (username, password)
             VALUES (?, ?)
@@ -500,15 +504,23 @@ app.post("/register", async (req, res) => {
             )
             .run();
 
-        res.redirect("/login");
+        console.log("USUARIO CREADO:", result);
+
+        return res.redirect("/login");
 
     } catch (error) {
 
-        console.error(error);
+        console.error(
+            "ERROR REGISTER:",
+            error
+        );
 
-        res
+        return res
             .status(500)
-            .send("No se pudo crear la cuenta.");
+            .send(
+                "Error al registrar usuario: " +
+                (error?.message || "error desconocido")
+            );
     }
 });
 
