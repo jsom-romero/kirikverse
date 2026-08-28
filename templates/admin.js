@@ -597,7 +597,7 @@ export default function adminTemplate(users = [], sessionUserId = null) {
         <h1>
             <a href="/">
                 Kirkversario
-                <span>Hail Hittler</span>
+                <span>ADMIN</span>
             </a>
         </h1>
 
