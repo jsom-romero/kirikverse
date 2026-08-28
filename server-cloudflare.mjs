@@ -598,6 +598,33 @@ app.post("/login", async (req, res) => {
 // ============================================================
 // REGISTRO
 // ============================================================
+app.get("/register", async (req, res) => {
+
+    const assetResponse =
+        await env.ASSETS.fetch(
+            new Request(
+                "https://assets.local/register.html"
+            )
+        );
+
+    if (!assetResponse.ok) {
+        return res
+            .status(404)
+            .send("No se pudo cargar la página de registro.");
+    }
+
+    const html =
+        await assetResponse.text();
+
+    return res
+        .status(200)
+        .set(
+            "Content-Type",
+            "text/html; charset=utf-8"
+        )
+        .send(html);
+});
+
 
 app.post("/register", async (req, res) => {
 
@@ -716,21 +743,6 @@ app.get("/calendar", async (req, res) => {
         return res.status(500).send(
             "Error al cargar el calendario: " +
             String(error?.message || error)
-        );
-    }
-});
-
-// ============================================================
-// CALENDAR
-// ============================================================
-
-app.get("/calendario", async (req, res) => {
-    try {
-        res.status(200).send(calendarioTemplate());
-    } catch (error) {
-        console.error("ERROR CALENDARIO:", error);
-        res.status(500).send(
-            "Error al cargar el calendario: " + error.message
         );
     }
 });
