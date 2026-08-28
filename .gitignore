@@ -1,0 +1,7 @@
+node_modules/
+kirkversario.db
+kirkversario - copia.db
+d1-data.sql
+.env
+.wrangler/
+.dev.vars
