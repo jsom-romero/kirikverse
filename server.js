@@ -7,7 +7,7 @@ const app = express();
 const PORT = 3000;
 
 // ============================
-// CONFIGURATION
+// CONFIGURACIÓN
 // ============================
 
 app.set("view engine", "ejs");
@@ -15,14 +15,20 @@ app.set("view engine", "ejs");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
-app.use(session({
-    secret: "kirkversario-secret",
-    resave: false,
-    saveUninitialized: false
-}));
+
+app.use(
+    session({
+        secret: "kirkversario-secret",
+        resave: false,
+        saveUninitialized: false
+    })
+);
+
+// ============================
+// LOGIN
+// ============================
 
 function requireLogin(req, res, next) {
-
     if (!req.session.userId) {
         return res.redirect("/login");
     }
@@ -31,11 +37,21 @@ function requireLogin(req, res, next) {
 }
 
 // ============================
-// DATABASE
+// BASE DE DATOS
 // ============================
 
 const db = new Database("kirkversario.db");
 
+// Tabla de usuarios
+db.prepare(`
+    CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL UNIQUE,
+        password TEXT NOT NULL
+    )
+`).run();
+
+// Tabla de eventos
 db.prepare(`
     CREATE TABLE IF NOT EXISTS events (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -47,6 +63,7 @@ db.prepare(`
     )
 `).run();
 
+// Añadir user_id si la base de datos antigua no lo tiene
 try {
     db.prepare(`
         ALTER TABLE events
@@ -56,88 +73,11 @@ try {
     // La columna ya existe
 }
 
-db.prepare(`
-    CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT NOT NULL UNIQUE,
-        password TEXT NOT NULL
-    )
-`).run();
-
-
 // ============================
-// ROUTES
+// HOME
 // ============================
 
-
-// Admin page
-app.get("/admin", requireLogin, (req, res) => {
-
-    const users = db.prepare(`
-        SELECT id, username
-        FROM users
-        ORDER BY username ASC
-    `).all();
-
-    res.render("admin", {
-        users: users,
-        sessionUserId: req.session.userId
-    });
-});
-
-
-//Delete self Page
-app.delete("/api/users/me", requireLogin, (req, res) => {
-
-    const userId = req.session.userId;
-
-    const result = db.prepare(`
-        DELETE FROM users
-        WHERE id = ?
-    `).run(userId);
-
-    if (result.changes === 0) {
-        return res.status(404).json({
-            error: "Usuario no encontrado."
-        });
-    }
-
-    req.session.destroy((error) => {
-
-        if (error) {
-            console.error(error);
-
-            return res.status(500).json({
-                error: "No se pudo cerrar la sesión."
-            });
-        }
-
-        res.json({
-            message: "Cuenta eliminada correctamente."
-        });
-    });
-});
-
-
-//Delete Users Page
-app.get("/admin", requireLogin, (req, res) => {
-
-    const users = db.prepare(`
-        SELECT id, username
-        FROM users
-        ORDER BY username ASC
-    `).all();
-
-    res.render("admin", {
-        users: users,
-        sessionUserId: req.session.userId
-    });
-});
-
-
-// Home page
 app.get("/", (req, res) => {
-
     const events = db.prepare(`
         SELECT *
         FROM events
@@ -149,7 +89,35 @@ app.get("/", (req, res) => {
     });
 });
 
-//Register Page
+// ============================
+// ADMIN
+// ============================
+
+app.get("/admin", requireLogin, (req, res) => {
+
+    const users = db.prepare(`
+        SELECT id, username
+        FROM users
+        ORDER BY username ASC
+    `).all();
+
+    const events = db.prepare(`
+        SELECT *
+        FROM events
+        ORDER BY date ASC, time ASC
+    `).all();
+
+    res.render("admin", {
+        users: users,
+        events: events,
+        sessionUserId: req.session.userId
+    });
+});
+
+// ============================
+// REGISTRO
+// ============================
+
 app.get("/register", (req, res) => {
     res.render("register");
 });
@@ -159,11 +127,15 @@ app.post("/register", async (req, res) => {
     const { username, password } = req.body;
 
     if (!username || !password) {
-        return res.status(400).send("Usuario y contraseña son obligatorios.");
+        return res
+            .status(400)
+            .send("Usuario y contraseña son obligatorios.");
     }
 
     if (password.length < 6) {
-        return res.status(400).send("La contraseña debe tener al menos 6 caracteres.");
+        return res
+            .status(400)
+            .send("La contraseña debe tener al menos 6 caracteres.");
     }
 
     const existingUser = db.prepare(`
@@ -173,7 +145,9 @@ app.post("/register", async (req, res) => {
     `).get(username);
 
     if (existingUser) {
-        return res.status(400).send("Ese nombre de usuario ya existe.");
+        return res
+            .status(400)
+            .send("Ese nombre de usuario ya existe.");
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
@@ -186,8 +160,10 @@ app.post("/register", async (req, res) => {
     res.redirect("/login");
 });
 
+// ============================
+// LOGIN
+// ============================
 
-// Login Page
 app.get("/login", (req, res) => {
     res.render("login");
 });
@@ -196,6 +172,12 @@ app.post("/login", async (req, res) => {
 
     const { username, password } = req.body;
 
+    if (!username || !password) {
+        return res
+            .status(400)
+            .send("Usuario y contraseña son obligatorios.");
+    }
+
     const user = db.prepare(`
         SELECT *
         FROM users
@@ -203,7 +185,9 @@ app.post("/login", async (req, res) => {
     `).get(username);
 
     if (!user) {
-        return res.status(401).send("Usuario o contraseña incorrectos.");
+        return res
+            .status(401)
+            .send("Usuario o contraseña incorrectos.");
     }
 
     const passwordCorrecta = await bcrypt.compare(
@@ -212,7 +196,9 @@ app.post("/login", async (req, res) => {
     );
 
     if (!passwordCorrecta) {
-        return res.status(401).send("Usuario o contraseña incorrectos.");
+        return res
+            .status(401)
+            .send("Usuario o contraseña incorrectos.");
     }
 
     req.session.userId = user.id;
@@ -221,48 +207,102 @@ app.post("/login", async (req, res) => {
     res.redirect("/admin");
 });
 
-//Users
-app.put("/api/users/:id/password", requireLogin, async (req, res) => {
+// ============================
+// CAMBIAR CONTRASEÑA
+// ============================
 
-    const userId = req.params.id;
-    const { password } = req.body;
+app.put(
+    "/api/users/:id/password",
+    requireLogin,
+    async (req, res) => {
 
-    if (!password) {
-        return res.status(400).json({
-            error: "La contraseña es obligatoria."
+        const userId = Number(req.params.id);
+        const { password } = req.body;
+
+        if (!password) {
+            return res.status(400).json({
+                error: "La contraseña es obligatoria."
+            });
+        }
+
+        if (password.length < 6) {
+            return res.status(400).json({
+                error: "La contraseña debe tener al menos 6 caracteres."
+            });
+        }
+
+        const user = db.prepare(`
+            SELECT id
+            FROM users
+            WHERE id = ?
+        `).get(userId);
+
+        if (!user) {
+            return res.status(404).json({
+                error: "Usuario no encontrado."
+            });
+        }
+
+        const hashedPassword = await bcrypt.hash(password, 12);
+
+        db.prepare(`
+            UPDATE users
+            SET password = ?
+            WHERE id = ?
+        `).run(
+            hashedPassword,
+            userId
+        );
+
+        res.json({
+            message: "Contraseña cambiada correctamente."
         });
     }
+);
 
-    if (password.length < 6) {
-        return res.status(400).json({
-            error: "La contraseña debe tener al menos 6 caracteres."
+// ============================
+// BORRAR MI CUENTA
+// ============================
+
+app.delete(
+    "/api/users/me",
+    requireLogin,
+    (req, res) => {
+
+        const userId = req.session.userId;
+
+        const result = db.prepare(`
+            DELETE FROM users
+            WHERE id = ?
+        `).run(userId);
+
+        if (result.changes === 0) {
+            return res.status(404).json({
+                error: "Usuario no encontrado."
+            });
+        }
+
+        req.session.destroy((error) => {
+
+            if (error) {
+                console.error(error);
+
+                return res.status(500).json({
+                    error: "No se pudo cerrar la sesión."
+                });
+            }
+
+            res.json({
+                message: "Cuenta eliminada correctamente."
+            });
         });
     }
+);
 
-    const hashedPassword = await bcrypt.hash(password, 12);
+// ============================
+// EVENTOS - OBTENER
+// ============================
 
-    const result = db.prepare(`
-        UPDATE users
-        SET password = ?
-        WHERE id = ?
-    `).run(
-        hashedPassword,
-        userId
-    );
-
-    if (result.changes === 0) {
-        return res.status(404).json({
-            error: "Usuario no encontrado."
-        });
-    }
-
-    res.json({
-        message: "Contraseña cambiada correctamente."
-    });
-});
-
-
-// Get all events
 app.get("/api/events", (req, res) => {
 
     const events = db.prepare(`
@@ -274,9 +314,11 @@ app.get("/api/events", (req, res) => {
     res.json(events);
 });
 
+// ============================
+// EVENTOS - CREAR
+// ============================
 
-// Create an event
-app.post("/api/events", (req, res) => {
+app.post("/api/events", requireLogin, (req, res) => {
 
     const {
         title,
@@ -288,13 +330,20 @@ app.post("/api/events", (req, res) => {
 
     if (!title || !date) {
         return res.status(400).json({
-            error: "Title and date are required"
+            error: "El título y la fecha son obligatorios."
         });
     }
 
     const result = db.prepare(`
         INSERT INTO events
-        (title, description, date, time, category, user_id)
+        (
+            title,
+            description,
+            date,
+            time,
+            category,
+            user_id
+        )
         VALUES (?, ?, ?, ?, ?, ?)
     `).run(
         title,
@@ -306,86 +355,106 @@ app.post("/api/events", (req, res) => {
     );
 
     res.json({
-        message: "Event created",
+        message: "Evento creado correctamente.",
         id: result.lastInsertRowid
     });
 });
 
+// ============================
+// EVENTOS - EDITAR
+// ============================
 
-// Update an event
-app.put("/api/events/:id", (req, res) => {
+app.put(
+    "/api/events/:id",
+    requireLogin,
+    (req, res) => {
 
-    const eventId = req.params.id;
+        const eventId = Number(req.params.id);
 
-    const {
-        title,
-        description,
-        date,
-        time,
-        category
-    } = req.body;
+        const {
+            title,
+            description,
+            date,
+            time,
+            category
+        } = req.body;
 
-    if (!title || !date) {
-        return res.status(400).json({
-            error: "Title and date are required"
+        if (!title || !date) {
+            return res.status(400).json({
+                error: "El título y la fecha son obligatorios."
+            });
+        }
+
+        const event = db.prepare(`
+            SELECT id
+            FROM events
+            WHERE id = ?
+        `).get(eventId);
+
+        if (!event) {
+            return res.status(404).json({
+                error: "Evento no encontrado."
+            });
+        }
+
+        db.prepare(`
+            UPDATE events
+            SET
+                title = ?,
+                description = ?,
+                date = ?,
+                time = ?,
+                category = ?
+            WHERE id = ?
+        `).run(
+            title,
+            description || "",
+            date,
+            time || "",
+            category || "general",
+            eventId
+        );
+
+        res.json({
+            message: "Evento actualizado correctamente."
         });
     }
-
-    const result = db.prepare(`
-        UPDATE events
-        SET title = ?,
-            description = ?,
-            date = ?,
-            time = ?,
-            category = ?
-        WHERE id = ?
-    `).run(
-        title,
-        description || "",
-        date,
-        time || "",
-        category || "general",
-        eventId
-    );
-
-    if (result.changes === 0) {
-        return res.status(404).json({
-            error: "Event not found"
-        });
-    }
-
-    res.json({
-        message: "Event updated"
-    });
-});
-
-
-// Delete an event
-app.delete("/api/events/:id", (req, res) => {
-
-    const eventId = req.params.id;
-
-    const result = db.prepare(`
-        DELETE FROM events
-        WHERE id = ?
-    `).run(eventId);
-
-    if (result.changes === 0) {
-        return res.status(404).json({
-            error: "Event not found"
-        });
-    }
-
-    res.json({
-        message: "Event deleted"
-    });
-});
-
+);
 
 // ============================
-// START SERVER
+// EVENTOS - BORRAR
+// ============================
+
+app.delete(
+    "/api/events/:id",
+    requireLogin,
+    (req, res) => {
+
+        const eventId = Number(req.params.id);
+
+        const result = db.prepare(`
+            DELETE FROM events
+            WHERE id = ?
+        `).run(eventId);
+
+        if (result.changes === 0) {
+            return res.status(404).json({
+                error: "Evento no encontrado."
+            });
+        }
+
+        res.json({
+            message: "Evento eliminado correctamente."
+        });
+    }
+);
+
+// ============================
+// ARRANCAR SERVIDOR
 // ============================
 
 app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
+    console.log(
+        `Servidor funcionando en http://localhost:${PORT}`
+    );
 });
