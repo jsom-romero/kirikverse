@@ -85,7 +85,7 @@ app.get("/", (req, res) => {
     `).all();
 
     res.render("home", {
-        events: events
+        events
     });
 });
 
