@@ -143,15 +143,14 @@ app.get("/admin", requireLogin, (req, res) => {
 
 // Home page
 app.get("/", (req, res) => {
-
     const events = db.prepare(`
         SELECT *
         FROM events
         ORDER BY date ASC, time ASC
     `).all();
 
-    res.render("home", {
-        events: events
+    res.render("kirkversario", {
+        events
     });
 });
 
