@@ -1,1 +1,492 @@
-export default "<!DOCTYPE html>\r\n<html lang=\"es\" data-tema=\"papel\">\r\n<head>\r\n<meta charset=\"utf-8\">\r\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n<title>Crear cuenta - Kirkversario</title>\r\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\r\n<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\r\n<link href=\"https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap\" rel=\"stylesheet\">\r\n<style>\r\n:root{\r\n  --fondo:#F3EDDF; --texto:#191552; --tarjeta:#FBF7EC; --rosa:#FF4A6E; --amarillo:#FFC233;\r\n  --borde:rgba(25,21,82,.2); --fuerte:rgba(25,21,82,.5); --tenue:rgba(25,21,82,.55);\r\n  --display:'Bricolage Grotesque','Arial Black',sans-serif;\r\n  --cuerpo:'Instrument Sans',system-ui,-apple-system,sans-serif;\r\n  --mono:'DM Mono',ui-monospace,Menlo,monospace;\r\n}\r\n[data-tema=\"noche\"]{\r\n  --fondo:#12103F; --texto:#F3EDDF; --tarjeta:#1B1857;\r\n  --borde:rgba(243,237,223,.2); --fuerte:rgba(243,237,223,.45); --tenue:rgba(243,237,223,.58);\r\n}\r\n*{box-sizing:border-box}\r\nbody{margin:0;background:var(--fondo);color:var(--texto);font-family:var(--cuerpo);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;min-height:100vh;display:flex;flex-direction:column}\r\na{color:inherit}\r\n\r\n.top{display:flex;align-items:center;gap:12px;padding:16px 18px;max-width:900px;width:100%;margin:0 auto;border-bottom:2px solid var(--texto)}\r\n.top h1{font-family:var(--display);font-weight:800;font-size:17px;text-transform:uppercase;letter-spacing:-.02em;margin:0 auto 0 0}\r\n.top h1 a{text-decoration:none}\r\n.top h1 span{color:var(--rosa)}\r\n\r\n.btn{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.07em;background:transparent;color:var(--texto);border:1.5px solid var(--texto);border-radius:999px;padding:7px 14px;cursor:pointer;text-decoration:none;display:inline-block}\r\n.btn:hover{background:var(--texto);color:var(--fondo)}\r\n:focus-visible{outline:3px solid var(--rosa);outline-offset:2px}\r\n\r\n.env{max-width:900px;width:100%;margin:0 auto;padding:0 18px;flex:1;display:flex;align-items:center;justify-content:center}\r\n\r\n.acceso{width:100%;max-width:420px;background:var(--tarjeta);border:2px solid var(--texto);border-radius:14px;overflow:hidden;margin:40px 0}\r\n.acceso__cinta{background:var(--amarillo);border-bottom:2px solid var(--texto);padding:8px 18px;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:#191552}\r\n.acceso__cuerpo{padding:26px 22px 24px}\r\n\r\nh2{font-family:var(--display);font-weight:800;font-size:clamp(24px,4.4vw,32px);letter-spacing:-.03em;margin:0 0 6px}\r\n.sub{color:var(--tenue);margin:0 0 22px;font-size:15px}\r\n\r\n.campo{margin-bottom:16px}\r\n.et{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--tenue);display:block;margin-bottom:4px}\r\ninput[type=\"text\"],input[type=\"password\"]{background:var(--fondo);border:1.5px solid var(--fuerte);border-radius:8px;padding:10px;font-family:var(--mono);font-size:15px;width:100%;color:inherit;min-height:44px}\r\ninput[type=\"text\"]:focus,input[type=\"password\"]:focus{border-color:var(--texto)}\r\n\r\n.enviar{width:100%;min-height:46px;margin-top:6px;font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.09em;background:var(--rosa);color:#FBF7EC;border:2px solid var(--texto);border-radius:999px;cursor:pointer}\r\n.enviar:hover{background:var(--texto);color:var(--fondo)}\r\n\r\n.pista{font-family:var(--mono);font-size:11px;color:var(--tenue);margin:6px 0 0}\r\n.alterna{margin:20px 0 0;padding-top:16px;border-top:1px solid var(--borde);font-size:14.5px;color:var(--tenue)}\r\n.alterna a{font-family:var(--display);font-weight:700;color:var(--texto);text-decoration:none;border-bottom:2px solid var(--rosa)}\r\n\r\n.pie{border-top:2px solid var(--texto);padding:22px 18px 36px;max-width:900px;width:100%;margin:0 auto;font-family:var(--mono);font-size:11px;color:var(--tenue);text-transform:uppercase;letter-spacing:.07em}\r\n@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}\r\n</style>\r\n</head>\r\n<body>\r\n\r\n<header class=\"top\">\r\n  <h1><a href=\"/\">Kirkversario <span>Hail Hittler</span></a></h1>\r\n  <button class=\"btn\" id=\"btnTema\" type=\"button\">Noche</button>\r\n</header>\r\n\r\n<main class=\"env\">\r\n\r\n  <section class=\"acceso\">\r\n    <p class=\"acceso__cinta\">Nueva cuenta</p>\r\n\r\n    <div class=\"acceso__cuerpo\">\r\n      <h2>Crear cuenta</h2>\r\n      <p class=\"sub\">Regístrate para poder crear y administrar eventos del Kirkversario.</p>\r\n\r\n      <form method=\"POST\" action=\"/register\">\r\n\r\n        <div class=\"campo\">\r\n          <label class=\"et\" for=\"username\">Nombre de usuario</label>\r\n          <input type=\"text\" id=\"username\" name=\"username\" autocomplete=\"username\" required>\r\n        </div>\r\n\r\n        <div class=\"campo\">\r\n          <label class=\"et\" for=\"password\">Contraseña</label>\r\n          <input type=\"password\" id=\"password\" name=\"password\" autocomplete=\"new-password\" minlength=\"6\" required>\r\n          <p class=\"pista\">Mínimo 6 caracteres.</p>\r\n        </div>\r\n\r\n        <button class=\"enviar\" type=\"submit\">Crear cuenta</button>\r\n\r\n      </form>\r\n\r\n      <p class=\"alterna\">\r\n        ¿Ya tienes cuenta?\r\n        <a href=\"/login\">Iniciar sesión</a>\r\n      </p>\r\n    </div>\r\n  </section>\r\n\r\n</main>\r\n\r\n<div class=\"pie\">Kirkversario · Calendario Charlie Kirk</div>\r\n\r\n<script>\r\n(function(){\r\n  \"use strict\";\r\n  document.getElementById(\"btnTema\").addEventListener(\"click\",function(){\r\n    var n=document.documentElement.getAttribute(\"data-tema\")===\"noche\";\r\n    document.documentElement.setAttribute(\"data-tema\",n?\"papel\":\"noche\");\r\n    this.textContent=n?\"Noche\":\"Papel\";\r\n  });\r\n})();\r\n</script>\r\n</body>\r\n</html>";
+export default function registerTemplate() {
+    return `<!DOCTYPE html>
+<html lang="es" data-tema="papel">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>Crear cuenta - Kirkversario</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+        :root {
+            --fondo: #F3EDDF;
+            --texto: #191552;
+            --tarjeta: #FBF7EC;
+            --rosa: #FF4A6E;
+            --amarillo: #FFC233;
+
+            --borde: rgba(25,21,82,.2);
+            --fuerte: rgba(25,21,82,.5);
+            --tenue: rgba(25,21,82,.55);
+
+            --display: 'Bricolage Grotesque',
+                'Arial Black',
+                sans-serif;
+
+            --cuerpo: 'Instrument Sans',
+                system-ui,
+                -apple-system,
+                sans-serif;
+
+            --mono: 'DM Mono',
+                ui-monospace,
+                Menlo,
+                monospace;
+        }
+
+        [data-tema="noche"] {
+            --fondo: #12103F;
+            --texto: #F3EDDF;
+            --tarjeta: #1B1857;
+
+            --borde: rgba(243,237,223,.2);
+            --fuerte: rgba(243,237,223,.45);
+            --tenue: rgba(243,237,223,.58);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--fondo);
+            color: var(--texto);
+            font-family: var(--cuerpo);
+            font-size: 16px;
+            line-height: 1.5;
+            -webkit-font-smoothing: antialiased;
+
+            min-height: 100vh;
+
+            display: flex;
+            flex-direction: column;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            padding: 16px 18px;
+
+            max-width: 900px;
+            width: 100%;
+
+            margin: 0 auto;
+
+            border-bottom: 2px solid var(--texto);
+        }
+
+        .top h1 {
+            font-family: var(--display);
+            font-weight: 800;
+            font-size: 17px;
+            text-transform: uppercase;
+            letter-spacing: -.02em;
+
+            margin: 0 auto 0 0;
+        }
+
+        .top h1 a {
+            text-decoration: none;
+        }
+
+        .top h1 span {
+            color: var(--rosa);
+        }
+
+        .btn {
+            font-family: var(--mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+
+            background: transparent;
+            color: var(--texto);
+
+            border: 1.5px solid var(--texto);
+            border-radius: 999px;
+
+            padding: 7px 14px;
+
+            cursor: pointer;
+            text-decoration: none;
+
+            display: inline-block;
+        }
+
+        .btn:hover {
+            background: var(--texto);
+            color: var(--fondo);
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--rosa);
+            outline-offset: 2px;
+        }
+
+        .env {
+            max-width: 900px;
+            width: 100%;
+
+            margin: 0 auto;
+            padding: 0 18px;
+
+            flex: 1;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .acceso {
+            width: 100%;
+            max-width: 420px;
+
+            background: var(--tarjeta);
+
+            border: 2px solid var(--texto);
+            border-radius: 14px;
+
+            overflow: hidden;
+
+            margin: 40px 0;
+        }
+
+        .acceso__cinta {
+            background: var(--amarillo);
+
+            border-bottom: 2px solid var(--texto);
+
+            padding: 8px 18px;
+
+            font-family: var(--mono);
+            font-size: 10px;
+
+            text-transform: uppercase;
+            letter-spacing: .12em;
+
+            color: #191552;
+        }
+
+        .acceso__cuerpo {
+            padding: 26px 22px 24px;
+        }
+
+        h2 {
+            font-family: var(--display);
+            font-weight: 800;
+
+            font-size: clamp(24px, 4.4vw, 32px);
+
+            letter-spacing: -.03em;
+
+            margin: 0 0 6px;
+        }
+
+        .sub {
+            color: var(--tenue);
+
+            margin: 0 0 22px;
+
+            font-size: 15px;
+        }
+
+        .campo {
+            margin-bottom: 16px;
+        }
+
+        .et {
+            font-family: var(--mono);
+            font-size: 10px;
+
+            text-transform: uppercase;
+            letter-spacing: .1em;
+
+            color: var(--tenue);
+
+            display: block;
+
+            margin-bottom: 4px;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            background: var(--fondo);
+
+            border: 1.5px solid var(--fuerte);
+            border-radius: 8px;
+
+            padding: 10px;
+
+            font-family: var(--mono);
+            font-size: 15px;
+
+            width: 100%;
+
+            color: inherit;
+
+            min-height: 44px;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: var(--texto);
+        }
+
+        .enviar {
+            width: 100%;
+
+            min-height: 46px;
+
+            margin-top: 6px;
+
+            font-family: var(--mono);
+            font-size: 12px;
+
+            text-transform: uppercase;
+            letter-spacing: .09em;
+
+            background: var(--rosa);
+            color: #FBF7EC;
+
+            border: 2px solid var(--texto);
+            border-radius: 999px;
+
+            cursor: pointer;
+        }
+
+        .enviar:hover {
+            background: var(--texto);
+            color: var(--fondo);
+        }
+
+        .pista {
+            font-family: var(--mono);
+            font-size: 11px;
+
+            color: var(--tenue);
+
+            margin: 6px 0 0;
+        }
+
+        .alterna {
+            margin: 20px 0 0;
+            padding-top: 16px;
+
+            border-top: 1px solid var(--borde);
+
+            font-size: 14.5px;
+
+            color: var(--tenue);
+        }
+
+        .alterna a {
+            font-family: var(--display);
+            font-weight: 700;
+
+            color: var(--texto);
+
+            text-decoration: none;
+
+            border-bottom: 2px solid var(--rosa);
+        }
+
+        .pie {
+            border-top: 2px solid var(--texto);
+
+            padding: 22px 18px 36px;
+
+            max-width: 900px;
+            width: 100%;
+
+            margin: 0 auto;
+
+            font-family: var(--mono);
+            font-size: 11px;
+
+            color: var(--tenue);
+
+            text-transform: uppercase;
+            letter-spacing: .07em;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                transition: none !important;
+                animation: none !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="top">
+
+        <h1>
+            <a href="/">
+                Kirkversario
+                <span>Hail Hittler</span>
+            </a>
+        </h1>
+
+        <button
+            class="btn"
+            id="btnTema"
+            type="button"
+        >
+            Noche
+        </button>
+
+    </header>
+
+
+    <main class="env">
+
+        <section class="acceso">
+
+            <p class="acceso__cinta">
+                Nueva cuenta
+            </p>
+
+            <div class="acceso__cuerpo">
+
+                <h2>
+                    Crear cuenta
+                </h2>
+
+                <p class="sub">
+                    Regístrate para poder crear y administrar
+                    eventos del Kirkversario.
+                </p>
+
+
+                <form
+                    method="POST"
+                    action="/register"
+                >
+
+                    <div class="campo">
+
+                        <label
+                            class="et"
+                            for="username"
+                        >
+                            Nombre de usuario
+                        </label>
+
+                        <input
+                            type="text"
+                            id="username"
+                            name="username"
+                            autocomplete="username"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="campo">
+
+                        <label
+                            class="et"
+                            for="password"
+                        >
+                            Contraseña
+                        </label>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            autocomplete="new-password"
+                            minlength="6"
+                            required
+                        >
+
+                        <p class="pista">
+                            Mínimo 6 caracteres.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        class="enviar"
+                        type="submit"
+                    >
+                        Crear cuenta
+                    </button>
+
+                </form>
+
+
+                <p class="alterna">
+
+                    ¿Ya tienes cuenta?
+
+                    <a href="/login">
+                        Iniciar sesión
+                    </a>
+
+                </p>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <div class="pie">
+        Kirkversario · Calendario Charlie Kirk
+    </div>
+
+
+    <script>
+        (function () {
+
+            "use strict";
+
+            const btnTema =
+                document.getElementById("btnTema");
+
+            btnTema.addEventListener(
+                "click",
+                function () {
+
+                    const esNoche =
+                        document.documentElement
+                            .getAttribute("data-tema") === "noche";
+
+                    document.documentElement
+                        .setAttribute(
+                            "data-tema",
+                            esNoche ? "papel" : "noche"
+                        );
+
+                    this.textContent =
+                        esNoche ? "Noche" : "Papel";
+                }
+            );
+
+        })();
+    </script>
+
+</body>
+</html>`;
+}

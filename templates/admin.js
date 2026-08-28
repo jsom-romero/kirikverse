@@ -1,8 +1,89 @@
-export default `
+function escapeHtml(value) {
+    return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+}
+
+export default function adminTemplate(users = [], sessionUserId = null) {
+
+    const usersHtml = users.length === 0
+        ? `
+            <p class="vacio">
+                No hay usuarios registrados.
+            </p>
+        `
+        : `
+            <ul class="usuarios">
+
+                ${users.map(user => {
+
+                    const username = escapeHtml(user.username);
+
+                    const esUsuarioActual =
+                        Number(user.id) === Number(sessionUserId);
+
+                    return `
+                        <li class="usuario">
+
+                            <span class="usuario__nombre">
+                                ${username}
+                            </span>
+
+                            ${
+                                esUsuarioActual
+                                    ? `
+                                        <span class="usuario__yo">
+                                            Tú
+                                        </span>
+                                    `
+                                    : ""
+                            }
+
+                            <button
+                                class="btn"
+                                type="button"
+                                data-user-id="${escapeHtml(user.id)}"
+                                data-username="${username}"
+                                onclick="changePassword(
+                                    this.dataset.userId,
+                                    this.dataset.username
+                                )"
+                            >
+                                Cambiar contraseña
+                            </button>
+
+                            ${
+                                esUsuarioActual
+                                    ? `
+                                        <button
+                                            class="btn btn--peligro"
+                                            type="button"
+                                            onclick="deleteMyAccount()"
+                                        >
+                                            Borrar mi cuenta
+                                        </button>
+                                    `
+                                    : ""
+                            }
+
+                        </li>
+                    `;
+
+                }).join("")}
+
+            </ul>
+        `;
+
+    return `
 <!DOCTYPE html>
+
 <html lang="es" data-tema="papel">
 
 <head>
+
     <meta charset="utf-8">
 
     <meta
@@ -10,7 +91,9 @@ export default `
         content="width=device-width, initial-scale=1"
     >
 
-    <title>Administrar eventos - Kirkversario</title>
+    <title>
+        Administrar eventos - Kirkversario
+    </title>
 
     <link
         rel="preconnect"
@@ -37,9 +120,9 @@ export default `
             --rosa: #FF4A6E;
             --amarillo: #FFC233;
 
-            --borde: rgba(25, 21, 82, .2);
-            --fuerte: rgba(25, 21, 82, .5);
-            --tenue: rgba(25, 21, 82, .55);
+            --borde: rgba(25,21,82,.2);
+            --fuerte: rgba(25,21,82,.5);
+            --tenue: rgba(25,21,82,.55);
 
             --display:
                 'Bricolage Grotesque',
@@ -49,6 +132,7 @@ export default `
             --cuerpo:
                 'Instrument Sans',
                 system-ui,
+                -apple-system,
                 sans-serif;
 
             --mono:
@@ -63,9 +147,9 @@ export default `
             --texto: #F3EDDF;
             --tarjeta: #1B1857;
 
-            --borde: rgba(243, 237, 223, .2);
-            --fuerte: rgba(243, 237, 223, .45);
-            --tenue: rgba(243, 237, 223, .58);
+            --borde: rgba(243,237,223,.2);
+            --fuerte: rgba(243,237,223,.45);
+            --tenue: rgba(243,237,223,.58);
         }
 
         * {
@@ -78,6 +162,7 @@ export default `
 
         body {
             margin: 0;
+
             background: var(--fondo);
             color: var(--texto);
 
@@ -89,22 +174,24 @@ export default `
         }
 
         .env {
-            width: 100%;
             max-width: 900px;
 
             margin: 0 auto;
+
             padding: 0 18px;
         }
 
         .top {
             display: flex;
             align-items: center;
+
             gap: 10px;
 
-            max-width: 900px;
-            margin: 0 auto;
-
             padding: 16px 18px;
+
+            max-width: 900px;
+
+            margin: 0 auto;
 
             border-bottom: 2px solid var(--texto);
 
@@ -112,18 +199,22 @@ export default `
         }
 
         .top h1 {
-            margin: 0 auto 0 0;
-
             font-family: var(--display);
-            font-size: 17px;
+
             font-weight: 800;
 
+            font-size: 17px;
+
             text-transform: uppercase;
+
             letter-spacing: -.02em;
+
+            margin: 0 auto 0 0;
         }
 
         .top h1 a {
             color: inherit;
+
             text-decoration: none;
         }
 
@@ -132,69 +223,54 @@ export default `
         }
 
         .btn {
-            display: inline-block;
-
-            padding: 7px 14px;
-
-            border: 1.5px solid var(--texto);
-            border-radius: 999px;
-
-            background: transparent;
-            color: var(--texto);
-
             font-family: var(--mono);
+
             font-size: 11px;
 
             text-transform: uppercase;
+
             letter-spacing: .07em;
 
+            background: transparent;
+
+            color: var(--texto);
+
+            border: 1.5px solid var(--texto);
+
+            border-radius: 999px;
+
+            padding: 7px 14px;
+
             cursor: pointer;
+
             text-decoration: none;
+
+            display: inline-block;
+
+            line-height: 1.3;
         }
 
         .btn:hover {
             background: var(--texto);
+
             color: var(--fondo);
         }
 
         .btn--peligro {
             border-color: var(--rosa);
+
             color: var(--rosa);
         }
 
         .btn--peligro:hover {
             background: var(--rosa);
+
             color: #FBF7EC;
-        }
-
-        .enviar {
-            min-height: 46px;
-
-            padding: 0 26px;
-            margin-top: 4px;
-
-            border: 2px solid var(--texto);
-            border-radius: 999px;
-
-            background: var(--rosa);
-            color: #FBF7EC;
-
-            font-family: var(--mono);
-            font-size: 12px;
-
-            text-transform: uppercase;
-            letter-spacing: .09em;
-
-            cursor: pointer;
-        }
-
-        .enviar:hover {
-            background: var(--texto);
-            color: var(--fondo);
         }
 
         :focus-visible {
             outline: 3px solid var(--rosa);
+
             outline-offset: 2px;
         }
 
@@ -207,98 +283,110 @@ export default `
         }
 
         h2 {
-            margin: 0 0 6px;
-
             font-family: var(--display);
-            font-size: clamp(22px, 3.6vw, 30px);
+
             font-weight: 800;
 
+            font-size: clamp(22px, 3.6vw, 30px);
+
             letter-spacing: -.03em;
+
+            margin: 0 0 6px;
         }
 
         .sub {
-            max-width: 60ch;
+            color: var(--tenue);
 
             margin: 0 0 22px;
 
-            color: var(--tenue);
+            max-width: 60ch;
 
             font-size: 15px;
         }
 
         .vacio {
             color: var(--tenue);
+
             font-size: 15px;
         }
 
-        /* =========================
-           USUARIOS
-        ========================= */
+        /* USERS */
 
         .usuarios {
             display: grid;
+
             gap: 10px;
 
-            margin: 0;
-            padding: 0;
-
             list-style: none;
+
+            margin: 0;
+
+            padding: 0;
         }
 
         .usuario {
             display: flex;
+
             align-items: center;
+
             gap: 10px;
 
-            padding: 12px 14px;
-
-            border: 1.5px solid var(--borde);
-            border-radius: 12px;
+            flex-wrap: wrap;
 
             background: var(--tarjeta);
 
-            flex-wrap: wrap;
+            border: 1.5px solid var(--borde);
+
+            border-radius: 12px;
+
+            padding: 12px 14px;
         }
 
         .usuario__nombre {
-            margin-right: auto;
-
             font-family: var(--display);
-            font-size: 17px;
+
             font-weight: 700;
+
+            font-size: 17px;
+
+            margin-right: auto;
         }
 
         .usuario__yo {
-            padding: 4px 8px;
-
-            border-radius: 999px;
-
-            background: var(--amarillo);
-            color: #191552;
-
             font-family: var(--mono);
+
             font-size: 9px;
 
             text-transform: uppercase;
+
             letter-spacing: .1em;
+
+            background: var(--amarillo);
+
+            color: #191552;
+
+            border-radius: 999px;
+
+            padding: 4px 8px;
         }
 
-        /* =========================
-           FORMULARIO
-        ========================= */
+        /* FORM */
 
         .formulario {
-            padding: 20px;
+            background: var(--tarjeta);
 
             border: 2px solid var(--texto);
+
             border-radius: 14px;
 
-            background: var(--tarjeta);
+            padding: 20px;
         }
 
         .rejilla {
             display: grid;
+
             grid-template-columns: 1fr 1fr;
+
             gap: 14px;
         }
 
@@ -307,36 +395,42 @@ export default `
         }
 
         .et {
-            display: block;
-
-            margin-bottom: 4px;
-
-            color: var(--tenue);
-
             font-family: var(--mono);
+
             font-size: 10px;
 
             text-transform: uppercase;
+
             letter-spacing: .1em;
+
+            color: var(--tenue);
+
+            display: block;
+
+            margin-bottom: 4px;
         }
 
         input[type="text"],
         input[type="date"],
         input[type="time"],
         textarea {
-            width: 100%;
-            min-height: 44px;
+            background: var(--fondo);
+
+            border: 1.5px solid var(--fuerte);
+
+            border-radius: 8px;
 
             padding: 10px;
 
-            border: 1.5px solid var(--fuerte);
-            border-radius: 8px;
+            font-family: var(--mono);
 
-            background: var(--fondo);
+            font-size: 15px;
+
+            width: 100%;
+
             color: inherit;
 
-            font-family: var(--mono);
-            font-size: 15px;
+            min-height: 44px;
         }
 
         input:focus,
@@ -345,55 +439,93 @@ export default `
         }
 
         textarea {
-            min-height: 90px;
-
             font-family: var(--cuerpo);
+
             font-size: 16px;
 
-            line-height: 1.4;
             resize: vertical;
+
+            min-height: 90px;
+
+            line-height: 1.4;
+        }
+
+        .enviar {
+            min-height: 46px;
+
+            padding: 0 26px;
+
+            margin-top: 4px;
+
+            font-family: var(--mono);
+
+            font-size: 12px;
+
+            text-transform: uppercase;
+
+            letter-spacing: .09em;
+
+            background: var(--rosa);
+
+            color: #FBF7EC;
+
+            border: 2px solid var(--texto);
+
+            border-radius: 999px;
+
+            cursor: pointer;
+        }
+
+        .enviar:hover {
+            background: var(--texto);
+
+            color: var(--fondo);
         }
 
         #message {
             margin: 16px 0 0;
 
-            padding: 8px 0 8px 12px;
+            font-family: var(--mono);
+
+            font-size: 12px;
+
+            letter-spacing: .03em;
 
             border-left: 4px solid var(--amarillo);
 
-            font-family: var(--mono);
-            font-size: 12px;
-            letter-spacing: .03em;
+            padding: 8px 0 8px 12px;
         }
 
         #message:empty {
             display: none;
         }
 
-        /* =========================
-           EVENTOS
-        ========================= */
+        /* EVENTS */
 
         .eventos {
             display: grid;
+
             gap: 12px;
         }
 
         .evento {
-            padding: 18px;
+            background: var(--tarjeta);
 
             border: 2px solid var(--texto);
+
             border-radius: 14px;
 
-            background: var(--tarjeta);
+            padding: 18px;
         }
 
         .evento h3 {
-            margin: 0 0 8px;
-
             font-family: var(--display);
-            font-size: 24px;
+
             font-weight: 800;
+
+            font-size: 24px;
+
+            margin: 0 0 8px;
         }
 
         .evento p {
@@ -401,52 +533,58 @@ export default `
         }
 
         .evento__fecha {
-            color: var(--tenue);
-
             font-family: var(--mono);
+
             font-size: 12px;
+
+            color: var(--tenue);
         }
 
         .evento__categoria {
             display: inline-block;
 
-            padding: 5px 9px;
-
-            border: 1px solid var(--borde);
-            border-radius: 999px;
-
-            color: var(--tenue);
-
             font-family: var(--mono);
+
             font-size: 10px;
 
             text-transform: uppercase;
+
             letter-spacing: .08em;
+
+            border: 1px solid var(--borde);
+
+            border-radius: 999px;
+
+            padding: 5px 9px;
+
+            color: var(--tenue);
         }
 
         .evento__acciones {
             display: flex;
+
             gap: 8px;
 
             margin-top: 14px;
+
             padding-top: 14px;
 
             border-top: 1px solid var(--borde);
-
-            flex-wrap: wrap;
         }
 
         .pie {
+            border-top: 2px solid var(--texto);
+
             padding: 22px 0 36px;
 
-            border-top: 2px solid var(--texto);
+            font-family: var(--mono);
+
+            font-size: 11px;
 
             color: var(--tenue);
 
-            font-family: var(--mono);
-            font-size: 11px;
-
             text-transform: uppercase;
+
             letter-spacing: .07em;
         }
 
@@ -459,613 +597,706 @@ export default `
             section {
                 padding: 32px 0;
             }
+        }
 
-            .usuario {
-                align-items: flex-start;
-                flex-direction: column;
+        @media (prefers-reduced-motion: reduce) {
+
+            * {
+                transition: none !important;
+                animation: none !important;
             }
-
-            .usuario__nombre {
-                margin-right: 0;
-            }
-
         }
 
     </style>
+
 </head>
 
 <body>
 
-<header class="top">
+    <header class="top">
 
-    <h1>
-        <a href="/">
-            Kirkversario
-            <span>Hail Hittler</span>
-        </a>
-    </h1>
+        <h1>
+            <a href="/">
+                Kirkversario
+                <span>Hail Hittler</span>
+            </a>
+        </h1>
 
-    <a
-        class="btn"
-        href="/"
-    >
-        Ver la web
-    </a>
-
-    <button
-        class="btn"
-        id="btnTema"
-        type="button"
-    >
-        Noche
-    </button>
-
-</header>
-
-<main class="env">
-
-    <!-- =========================
-         USUARIOS
-    ========================== -->
-
-    <section>
-
-        <h2>Usuarios registrados</h2>
-
-        <p class="sub">
-            Todas las cuentas que pueden administrar el Kirkversario.
-        </p>
-
-        <div id="usersList">
-
-            <% if (!users || users.length === 0) { %>
-
-                <p class="vacio">
-                    No hay usuarios registrados.
-                </p>
-
-            <% } else { %>
-
-                <ul class="usuarios">
-
-                    <% users.forEach(function(user) { %>
-
-                        <li class="usuario">
-
-                            <span class="usuario__nombre">
-                                <%= user.username %>
-                            </span>
-
-                            <% if (user.id === sessionUserId) { %>
-
-                                <span class="usuario__yo">
-                                    Tú
-                                </span>
-
-                            <% } %>
-
-                            <button
-                                class="btn"
-                                type="button"
-                                onclick="changePassword('<%= user.id %>', '<%= user.username %>')"
-                            >
-                                Cambiar contraseña
-                            </button>
-
-                            <% if (user.id === sessionUserId) { %>
-
-                                <button
-                                    class="btn btn--peligro"
-                                    type="button"
-                                    onclick="deleteMyAccount()"
-                                >
-                                    Borrar mi cuenta
-                                </button>
-
-                            <% } %>
-
-                        </li>
-
-                    <% }); %>
-
-                </ul>
-
-            <% } %>
-
-        </div>
-
-    </section>
-
-
-    <!-- =========================
-         CREAR EVENTO
-    ========================== -->
-
-    <section>
-
-        <h2>Nuevo evento</h2>
-
-        <p class="sub">
-            Rellena los datos y aparecerá en la portada.
-        </p>
-
-        <form
-            class="formulario"
-            id="eventForm"
+        <a
+            class="btn"
+            href="/"
         >
+            Ver la web
+        </a>
 
-            <div class="campo">
+        <button
+            class="btn"
+            id="btnTema"
+            type="button"
+        >
+            Noche
+        </button>
 
-                <label
-                    class="et"
-                    for="title"
-                >
-                    Título
-                </label>
+    </header>
 
-                <input
-                    type="text"
-                    id="title"
-                    name="title"
-                    required
-                >
+    <main class="env">
 
-            </div>
+        <!-- USUARIOS -->
 
+        <section>
 
-            <div class="campo">
+            <h2>
+                Usuarios registrados
+            </h2>
 
-                <label
-                    class="et"
-                    for="description"
-                >
-                    Descripción
-                </label>
+            <p class="sub">
+                Todas las cuentas que pueden administrar
+                el Kirkversario.
+            </p>
 
-                <textarea
-                    id="description"
-                    name="description"
-                ></textarea>
+            <div id="usersList">
+
+                ${usersHtml}
 
             </div>
 
+        </section>
 
-            <div class="rejilla">
+
+        <!-- NUEVO EVENTO -->
+
+        <section>
+
+            <h2>
+                Nuevo evento
+            </h2>
+
+            <p class="sub">
+                Rellena los datos y aparecerá en la portada.
+                Al editar uno existente, el formulario se
+                rellena solo.
+            </p>
+
+            <form
+                class="formulario"
+                id="eventForm"
+            >
 
                 <div class="campo">
 
                     <label
                         class="et"
-                        for="date"
+                        for="title"
                     >
-                        Fecha
+                        Título
                     </label>
 
                     <input
-                        type="date"
-                        id="date"
-                        name="date"
+                        type="text"
+                        id="title"
+                        name="title"
                         required
                     >
 
                 </div>
 
+                <div class="campo">
+
+                    <label
+                        class="et"
+                        for="description"
+                    >
+                        Descripción
+                    </label>
+
+                    <textarea
+                        id="description"
+                        name="description"
+                    ></textarea>
+
+                </div>
+
+                <div class="rejilla">
+
+                    <div class="campo">
+
+                        <label
+                            class="et"
+                            for="date"
+                        >
+                            Fecha
+                        </label>
+
+                        <input
+                            type="date"
+                            id="date"
+                            name="date"
+                            required
+                        >
+
+                    </div>
+
+                    <div class="campo">
+
+                        <label
+                            class="et"
+                            for="time"
+                        >
+                            Hora
+                        </label>
+
+                        <input
+                            type="time"
+                            id="time"
+                            name="time"
+                        >
+
+                    </div>
+
+                </div>
 
                 <div class="campo">
 
                     <label
                         class="et"
-                        for="time"
+                        for="category"
                     >
-                        Hora
+                        Categoría
                     </label>
 
                     <input
-                        type="time"
-                        id="time"
-                        name="time"
+                        type="text"
+                        id="category"
+                        name="category"
+                        placeholder="general"
                     >
 
                 </div>
 
-            </div>
-
-
-            <div class="campo">
-
-                <label
-                    class="et"
-                    for="category"
+                <button
+                    class="enviar"
+                    type="submit"
                 >
-                    Categoría
-                </label>
+                    Crear evento
+                </button>
 
-                <input
-                    type="text"
-                    id="category"
-                    name="category"
-                    placeholder="general"
-                >
+            </form>
 
-            </div>
+            <p id="message"></p>
+
+        </section>
 
 
-            <button
-                class="enviar"
-                type="submit"
-            >
-                Crear evento
-            </button>
+        <!-- EVENTOS EXISTENTES -->
 
-        </form>
+        <section>
 
+            <h2>
+                Eventos existentes
+            </h2>
 
-        <p id="message"></p>
+            <p class="sub">
+                Todo lo que hay ahora mismo en el calendario.
+            </p>
 
-    </section>
+            <div id="eventsList"></div>
 
-
-    <!-- =========================
-         EVENTOS EXISTENTES
-    ========================== -->
-
-    <section>
-
-        <h2>Eventos existentes</h2>
-
-        <p class="sub">
-            Todo lo que hay ahora mismo en el calendario.
-        </p>
-
-        <div id="eventsList"></div>
-
-    </section>
+        </section>
 
 
-    <div class="pie">
-        Kirkversario · Panel de administración
-    </div>
+        <div class="pie">
+            Kirkversario · Panel de administración
+        </div>
 
-</main>
-
-
-<script>
-
-"use strict";
+    </main>
 
 
-/* ============================================================
-   ELEMENTOS
-============================================================ */
+    <script>
 
-const eventForm =
-    document.getElementById("eventForm");
+        async function deleteMyAccount() {
 
-const message =
-    document.getElementById("message");
-
-const eventsList =
-    document.getElementById("eventsList");
-
-let editingId = null;
-
-
-/* ============================================================
-   TEMA
-============================================================ */
-
-document
-    .getElementById("btnTema")
-    .addEventListener("click", function () {
-
-        const noche =
-            document.documentElement
-                .getAttribute("data-tema") === "noche";
-
-        document.documentElement
-            .setAttribute(
-                "data-tema",
-                noche ? "papel" : "noche"
+            const confirmed = confirm(
+                "¿Seguro que quieres borrar tu cuenta?"
             );
 
-        this.textContent =
-            noche ? "Noche" : "Papel";
-    });
-
-
-/* ============================================================
-   CARGAR EVENTOS
-============================================================ */
-
-async function loadEvents() {
-
-    try {
-
-        const response =
-            await fetch("/api/events");
-
-        if (!response.ok) {
-            throw new Error(
-                "No se pudieron cargar los eventos."
-            );
-        }
-
-        const events =
-            await response.json();
-
-        eventsList.innerHTML = "";
-
-
-        if (!events || events.length === 0) {
-
-            const empty =
-                document.createElement("p");
-
-            empty.className = "vacio";
-
-            empty.textContent =
-                "No hay eventos todavía.";
-
-            eventsList.appendChild(empty);
-
-            return;
-        }
-
-
-        const container =
-            document.createElement("div");
-
-        container.className = "eventos";
-
-
-        events.forEach(function (event) {
-
-            const article =
-                document.createElement("article");
-
-            article.className = "evento";
-
-
-            const title =
-                document.createElement("h3");
-
-            title.textContent =
-                event.title || "";
-
-            article.appendChild(title);
-
-
-            if (event.description) {
-
-                const description =
-                    document.createElement("p");
-
-                description.textContent =
-                    event.description;
-
-                article.appendChild(description);
+            if (!confirmed) {
+                return;
             }
 
+            try {
 
-            const date =
-                document.createElement("p");
-
-            date.className =
-                "evento__fecha";
-
-            date.textContent =
-                "📅 " +
-                event.date +
-                (
-                    event.time
-                        ? " — " + event.time
-                        : ""
+                const response = await fetch(
+                    "/api/users/me",
+                    {
+                        method: "DELETE"
+                    }
                 );
 
-            article.appendChild(date);
+                console.log(
+                    "Status:",
+                    response.status
+                );
 
+                const texto =
+                    await response.text();
 
-            const category =
-                document.createElement("p");
+                console.log(
+                    "Respuesta:",
+                    texto
+                );
 
-            category.className =
-                "evento__categoria";
+                if (!response.ok) {
 
-            category.textContent =
-                event.category || "general";
-
-            article.appendChild(category);
-
-
-            const actions =
-                document.createElement("div");
-
-            actions.className =
-                "evento__acciones";
-
-
-            const editButton =
-                document.createElement("button");
-
-            editButton.className =
-                "btn";
-
-            editButton.type =
-                "button";
-
-            editButton.textContent =
-                "Editar";
-
-
-            editButton.addEventListener(
-                "click",
-                function () {
-                    editEvent(event.id);
-                }
-            );
-
-
-            const deleteButton =
-                document.createElement("button");
-
-            deleteButton.className =
-                "btn btn--peligro";
-
-            deleteButton.type =
-                "button";
-
-            deleteButton.textContent =
-                "Eliminar";
-
-
-            deleteButton.addEventListener(
-                "click",
-                function () {
-                    deleteEvent(event.id);
-                }
-            );
-
-
-            actions.appendChild(editButton);
-            actions.appendChild(deleteButton);
-
-            article.appendChild(actions);
-
-            container.appendChild(article);
-
-        });
-
-
-        eventsList.appendChild(container);
-
-    } catch (error) {
-
-        console.error(error);
-
-        eventsList.innerHTML =
-            '<p class="vacio">' +
-            'Error al cargar los eventos.' +
-            '</p>';
-    }
-}
-
-
-/* ============================================================
-   CREAR / EDITAR EVENTO
-============================================================ */
-
-eventForm.addEventListener(
-    "submit",
-    async function (event) {
-
-        event.preventDefault();
-
-
-        const eventData = {
-
-            title:
-                document
-                    .getElementById("title")
-                    .value
-                    .trim(),
-
-            description:
-                document
-                    .getElementById("description")
-                    .value
-                    .trim(),
-
-            date:
-                document
-                    .getElementById("date")
-                    .value,
-
-            time:
-                document
-                    .getElementById("time")
-                    .value,
-
-            category:
-                document
-                    .getElementById("category")
-                    .value
-                    .trim()
-
-        };
-
-
-        let response;
-
-
-        try {
-
-            if (editingId === null) {
-
-                response =
-                    await fetch(
-                        "/api/events",
-                        {
-                            method: "POST",
-
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
-
-                            body:
-                                JSON.stringify(eventData)
-                        }
+                    alert(
+                        "Error del servidor: " +
+                        texto
                     );
 
-            } else {
+                    return;
+                }
 
-                response =
-                    await fetch(
-                        "/api/events/" + editingId,
-                        {
-                            method: "PUT",
+                alert(
+                    "Cuenta eliminada correctamente."
+                );
 
-                            headers: {
-                                "Content-Type":
-                                    "application/json"
-                            },
+                window.location.href = "/login";
 
-                            body:
-                                JSON.stringify(eventData)
-                        }
-                    );
+            } catch (error) {
+
+                console.error(
+                    "ERROR FETCH:",
+                    error
+                );
+
+                alert(
+                    "Error de conexión con el servidor. " +
+                    "Mira la consola (F12)."
+                );
             }
+        }
 
 
-            const data =
+        const eventForm =
+            document.getElementById("eventForm");
+
+        const message =
+            document.getElementById("message");
+
+        const eventsList =
+            document.getElementById("eventsList");
+
+        let editingId = null;
+
+
+        // ============================
+        // TEMA
+        // ============================
+
+        document
+            .getElementById("btnTema")
+            .addEventListener("click", function () {
+
+                const esNoche =
+                    document.documentElement
+                        .getAttribute("data-tema") === "noche";
+
+                document.documentElement
+                    .setAttribute(
+                        "data-tema",
+                        esNoche
+                            ? "papel"
+                            : "noche"
+                    );
+
+                this.textContent =
+                    esNoche
+                        ? "Noche"
+                        : "Papel";
+            });
+
+
+        // ============================
+        // CARGAR EVENTOS
+        // ============================
+
+        async function loadEvents() {
+
+            try {
+
+                const response =
+                    await fetch("/api/events");
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "No se pudieron cargar los eventos"
+                    );
+                }
+
+                const events =
+                    await response.json();
+
+                eventsList.innerHTML = "";
+
+
+                if (events.length === 0) {
+
+                    const emptyMessage =
+                        document.createElement("p");
+
+                    emptyMessage.className =
+                        "vacio";
+
+                    emptyMessage.textContent =
+                        "No hay eventos todavía.";
+
+                    eventsList.appendChild(
+                        emptyMessage
+                    );
+
+                    return;
+                }
+
+
+                const contenedor =
+                    document.createElement("div");
+
+                contenedor.className =
+                    "eventos";
+
+
+                events.forEach(event => {
+
+                    const article =
+                        document.createElement(
+                            "article"
+                        );
+
+                    article.className =
+                        "evento";
+
+
+                    const title =
+                        document.createElement("h3");
+
+                    title.textContent =
+                        event.title;
+
+                    article.appendChild(title);
+
+
+                    if (event.description) {
+
+                        const description =
+                            document.createElement("p");
+
+                        description.textContent =
+                            event.description;
+
+                        article.appendChild(
+                            description
+                        );
+                    }
+
+
+                    const date =
+                        document.createElement("p");
+
+                    date.className =
+                        "evento__fecha";
+
+                    date.textContent =
+                        "📅 " +
+                        event.date +
+                        (
+                            event.time
+                                ? " — " + event.time
+                                : ""
+                        );
+
+
+                    const category =
+                        document.createElement("p");
+
+                    category.className =
+                        "evento__categoria";
+
+                    category.textContent =
+                        event.category ||
+                        "general";
+
+
+                    const acciones =
+                        document.createElement("div");
+
+                    acciones.className =
+                        "evento__acciones";
+
+
+                    const editButton =
+                        document.createElement("button");
+
+                    editButton.className =
+                        "btn";
+
+                    editButton.type =
+                        "button";
+
+                    editButton.textContent =
+                        "Editar";
+
+                    editButton.addEventListener(
+                        "click",
+                        function () {
+                            editEvent(event.id);
+                        }
+                    );
+
+
+                    const deleteButton =
+                        document.createElement("button");
+
+                    deleteButton.className =
+                        "btn btn--peligro";
+
+                    deleteButton.type =
+                        "button";
+
+                    deleteButton.textContent =
+                        "Eliminar";
+
+                    deleteButton.addEventListener(
+                        "click",
+                        function () {
+                            deleteEvent(event.id);
+                        }
+                    );
+
+
+                    acciones.appendChild(
+                        editButton
+                    );
+
+                    acciones.appendChild(
+                        deleteButton
+                    );
+
+
+                    article.appendChild(date);
+
+                    article.appendChild(category);
+
+                    article.appendChild(
+                        acciones
+                    );
+
+                    contenedor.appendChild(
+                        article
+                    );
+
+                });
+
+
+                eventsList.appendChild(
+                    contenedor
+                );
+
+            } catch (error) {
+
+                console.error(error);
+
+                eventsList.innerHTML =
+                    '<p class="vacio">' +
+                    'Error al cargar los eventos.' +
+                    '</p>';
+            }
+        }
+
+
+        // ============================
+        // CREAR / EDITAR
+        // ============================
+
+        eventForm.addEventListener(
+            "submit",
+            async (event) => {
+
+                event.preventDefault();
+
+
+                const eventData = {
+
+                    title:
+                        document
+                            .getElementById("title")
+                            .value,
+
+                    description:
+                        document
+                            .getElementById("description")
+                            .value,
+
+                    date:
+                        document
+                            .getElementById("date")
+                            .value,
+
+                    time:
+                        document
+                            .getElementById("time")
+                            .value,
+
+                    category:
+                        document
+                            .getElementById("category")
+                            .value
+                };
+
+
+                let response;
+
+
+                if (editingId === null) {
+
+                    response =
+                        await fetch(
+                            "/api/events",
+                            {
+                                method: "POST",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify(
+                                        eventData
+                                    )
+                            }
+                        );
+
+                } else {
+
+                    response =
+                        await fetch(
+                            "/api/events/" +
+                            editingId,
+                            {
+                                method: "PUT",
+
+                                headers: {
+                                    "Content-Type":
+                                        "application/json"
+                                },
+
+                                body:
+                                    JSON.stringify(
+                                        eventData
+                                    )
+                            }
+                        );
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                if (response.ok) {
+
+                    if (editingId === null) {
+
+                        message.textContent =
+                            "Evento creado correctamente.";
+
+                    } else {
+
+                        message.textContent =
+                            "Evento actualizado correctamente.";
+                    }
+
+
+                    editingId = null;
+
+                    eventForm.reset();
+
+
+                    document
+                        .querySelector(
+                            '#eventForm button[type="submit"]'
+                        )
+                        .textContent =
+                            "Crear evento";
+
+
+                    loadEvents();
+
+                } else {
+
+                    message.textContent =
+                        data.error ||
+                        "Ha ocurrido un error.";
+                }
+
+            }
+        );
+
+
+        // ============================
+        // EDITAR EVENTO
+        // ============================
+
+        async function editEvent(id) {
+
+            const response =
+                await fetch("/api/events");
+
+            const events =
                 await response.json();
 
+            const event =
+                events.find(
+                    event => event.id === id
+                );
 
-            if (!response.ok) {
 
-                message.textContent =
-                    data.error ||
-                    "Ha ocurrido un error.";
-
+            if (!event) {
                 return;
             }
 
 
-            if (editingId === null) {
-
-                message.textContent =
-                    "Evento creado correctamente.";
-
-            } else {
-
-                message.textContent =
-                    "Evento actualizado correctamente.";
-            }
+            document
+                .getElementById("title")
+                .value =
+                    event.title;
 
 
-            editingId = null;
+            document
+                .getElementById("description")
+                .value =
+                    event.description || "";
 
-            eventForm.reset();
+
+            document
+                .getElementById("date")
+                .value =
+                    event.date;
+
+
+            document
+                .getElementById("time")
+                .value =
+                    event.time || "";
+
+
+            document
+                .getElementById("category")
+                .value =
+                    event.category || "";
+
+
+            editingId = id;
 
 
             document
@@ -1073,329 +1304,145 @@ eventForm.addEventListener(
                     '#eventForm button[type="submit"]'
                 )
                 .textContent =
-                "Crear evento";
+                    "Guardar cambios";
 
 
-            await loadEvents();
-
-        } catch (error) {
-
-            console.error(error);
-
-            message.textContent =
-                "Error de conexión con el servidor.";
-        }
-
-    }
-);
-
-
-/* ============================================================
-   EDITAR EVENTO
-============================================================ */
-
-async function editEvent(id) {
-
-    try {
-
-        const response =
-            await fetch("/api/events");
-
-        if (!response.ok) {
-            throw new Error(
-                "No se pudieron cargar los eventos."
-            );
-        }
-
-        const events =
-            await response.json();
-
-
-        const event =
-            events.find(function (item) {
-                return item.id === id;
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
             });
-
-
-        if (!event) {
-            return;
         }
 
 
-        document
-            .getElementById("title")
-            .value =
-            event.title || "";
+        // ============================
+        // ELIMINAR EVENTO
+        // ============================
+
+        async function deleteEvent(id) {
+
+            const confirmar =
+                confirm(
+                    "¿Seguro que quieres eliminar este evento?"
+                );
+
+            if (!confirmar) {
+                return;
+            }
 
 
-        document
-            .getElementById("description")
-            .value =
-            event.description || "";
+            const response =
+                await fetch(
+                    "/api/events/" + id,
+                    {
+                        method: "DELETE"
+                    }
+                );
 
 
-        document
-            .getElementById("date")
-            .value =
-            event.date || "";
+            const data =
+                await response.json();
 
 
-        document
-            .getElementById("time")
-            .value =
-            event.time || "";
+            if (response.ok) {
 
+                message.textContent =
+                    "Evento eliminado correctamente.";
 
-        document
-            .getElementById("category")
-            .value =
-            event.category || "";
+                loadEvents();
 
+            } else {
 
-        editingId = id;
-
-
-        document
-            .querySelector(
-                '#eventForm button[type="submit"]'
-            )
-            .textContent =
-            "Guardar cambios";
-
-
-        window.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-
-
-    } catch (error) {
-
-        console.error(error);
-
-        message.textContent =
-            "No se pudo cargar el evento.";
-    }
-}
-
-
-/* ============================================================
-   ELIMINAR EVENTO
-============================================================ */
-
-async function deleteEvent(id) {
-
-    const confirmar =
-        confirm(
-            "¿Seguro que quieres eliminar este evento?"
-        );
-
-
-    if (!confirmar) {
-        return;
-    }
-
-
-    try {
-
-        const response =
-            await fetch(
-                "/api/events/" + id,
-                {
-                    method: "DELETE"
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (!response.ok) {
-
-            message.textContent =
-                data.error ||
-                "No se ha podido eliminar.";
-
-            return;
+                message.textContent =
+                    data.error ||
+                    "No se ha podido eliminar.";
+            }
         }
 
 
-        message.textContent =
-            "Evento eliminado correctamente.";
+        // ============================
+        // CONTRASEÑAS
+        // ============================
+
+        async function changePassword(
+            userId,
+            username
+        ) {
+
+            const newPassword =
+                prompt(
+                    "Nueva contraseña para " +
+                    username +
+                    ":"
+                );
 
 
-        await loadEvents();
+            if (!newPassword) {
+                return;
+            }
 
 
-    } catch (error) {
+            if (newPassword.length < 6) {
 
-        console.error(error);
+                alert(
+                    "La contraseña debe tener al menos 6 caracteres."
+                );
 
-        message.textContent =
-            "Error de conexión con el servidor.";
-    }
-}
-
-
-/* ============================================================
-   CAMBIAR CONTRASEÑA
-============================================================ */
-
-async function changePassword(
-    userId,
-    username
-) {
-
-    const newPassword =
-        prompt(
-            "Nueva contraseña para " +
-            username +
-            ":"
-        );
+                return;
+            }
 
 
-    if (!newPassword) {
-        return;
-    }
+            const response =
+                await fetch(
+                    "/api/users/" +
+                    userId +
+                    "/password",
+                    {
+                        method: "PUT",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+                                password:
+                                    newPassword
+                            })
+                    }
+                );
 
 
-    if (newPassword.length < 6) {
-
-        alert(
-            "La contraseña debe tener al menos 6 caracteres."
-        );
-
-        return;
-    }
+            const data =
+                await response.json();
 
 
-    try {
+            if (response.ok) {
 
-        const response =
-            await fetch(
-                "/api/users/" +
-                userId +
-                "/password",
-                {
-                    method: "PUT",
+                alert(
+                    "Contraseña cambiada correctamente."
+                );
 
-                    headers: {
-                        "Content-Type":
-                            "application/json"
-                    },
+            } else {
 
-                    body:
-                        JSON.stringify({
-                            password: newPassword
-                        })
-                }
-            );
-
-
-        const data =
-            await response.json();
-
-
-        if (!response.ok) {
-
-            alert(
-                data.error ||
-                "No se pudo cambiar la contraseña."
-            );
-
-            return;
+                alert(
+                    data.error ||
+                    "No se pudo cambiar la contraseña."
+                );
+            }
         }
 
 
-        alert(
-            "Contraseña cambiada correctamente."
-        );
+        // ============================
+        // ARRANQUE
+        // ============================
 
+        loadEvents();
 
-    } catch (error) {
-
-        console.error(error);
-
-        alert(
-            "Error de conexión con el servidor."
-        );
-    }
-}
-
-
-/* ============================================================
-   BORRAR MI CUENTA
-============================================================ */
-
-async function deleteMyAccount() {
-
-    const confirmed =
-        confirm(
-            "¿Seguro que quieres borrar tu cuenta? " +
-            "Esta acción no se puede deshacer."
-        );
-
-
-    if (!confirmed) {
-        return;
-    }
-
-
-    try {
-
-        const response =
-            await fetch(
-                "/api/users/me",
-                {
-                    method: "DELETE"
-                }
-            );
-
-
-        const text =
-            await response.text();
-
-
-        if (!response.ok) {
-
-            alert(
-                "Error del servidor: " +
-                text
-            );
-
-            return;
-        }
-
-
-        alert(
-            "Cuenta eliminada correctamente."
-        );
-
-
-        window.location.href =
-            "/login";
-
-
-    } catch (error) {
-
-        console.error(error);
-
-        alert(
-            "Error de conexión con el servidor."
-        );
-    }
-}
-
-
-/* ============================================================
-   ARRANQUE
-============================================================ */
-
-loadEvents();
-
-</script>
+    </script>
 
 </body>
+
 </html>
 `;
+}
