@@ -693,7 +693,7 @@ export default function calendarioTemplate() {
             </div>
 
             <div>
-                <span class="et">día del AÑO</span>
+                <span class="et">día del año</span>
                 <b id="pieDia">â€”</b>
             </div>
 
@@ -704,7 +704,7 @@ export default function calendarioTemplate() {
 </main>
 
 <footer class="pie env">
-    Calendario Kirk Â· rejilla mensual
+    Calendario Kirk · rejilla mensual
 </footer>
 
 <script>
@@ -713,9 +713,9 @@ export default function calendarioTemplate() {
     "use strict";
 
     /*
-     * CONFIGURACIÃ“N
+     * CONFIGURACION
      *
-     * Define dÃ³nde cae el día 1 del mes 1
+     * Define donde cae el día 1 del mes 1
      * del AÑO 1 del calendario Kirk.
      */
     var EPOCA_ANIO = 2025;
@@ -733,7 +733,7 @@ export default function calendarioTemplate() {
         { n: "Kirkwashington", d: 31 },
         { n: "Kirkmessi", d: 30 },
         { n: "Kirkronaldo", d: 31 },
-        { n: "KirkcabrÃ³n", d: 30 },
+        { n: "Kirkcabron", d: 30 },
         { n: "Kirkeroro", d: 31 }
     ];
 
@@ -1103,7 +1103,7 @@ export default function calendarioTemplate() {
             var eventosHtml = eventosDia.map(function(evento) {
 
                 var hora = evento.time
-                    ? " Â· " + evento.time
+                    ? " · " + evento.time
                     : "";
 
                 return (
