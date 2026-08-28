@@ -421,9 +421,9 @@ export default function calendarioTemplate() {
         <span>CALENDARIO</span>
     </h1>
 
-    <button class="btn" id="btnHoy" type="button">
-        Hoy
-    </button>
+    <a class="btn" href="/">
+        Home
+    </a>
 
     <button class="btn" id="btnTema" type="button">
         Noche
@@ -1042,8 +1042,6 @@ export default function calendarioTemplate() {
     $("navSig").onclick = function () {
         mover(1);
     };
-
-    $("btnHoy").onclick = irHoy;
 
     $("calHoy").onclick = irHoy;
 

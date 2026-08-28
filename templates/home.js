@@ -579,6 +579,10 @@ export default `
       <span>HOME</span>
     </h1>
 
+    <a class="btn" href="/calendar">
+      Calendario
+    </a>
+
     <button class="btn" id="btnTema">
       Noche
     </button>
