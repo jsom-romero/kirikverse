@@ -549,11 +549,8 @@ app.post("/register", async (req, res) => {
 
         const emailResult = await resend.emails.send({
             from: "Kirkversario <onboarding@resend.dev>",
-
             to: email,
-
             subject: "Verifica tu cuenta de Kirkversario",
-
             html: `
                 <h2>Bienvenido a Kirkversario</h2>
 
@@ -581,10 +578,19 @@ app.post("/register", async (req, res) => {
             `
         });
 
-        console.log(
-            "EMAIL RESEND:",
-            emailResult
-        );
+        console.log("EMAIL RESEND:", emailResult);
+
+        if (emailResult?.error) {
+
+            console.error(
+                "ERROR ENVIANDO EMAIL:",
+                emailResult.error
+            );
+
+            return res.status(500).send(
+                "La cuenta se creó, pero no se pudo enviar el correo de verificación."
+            );
+        }
 
         // ========================================================
         // RESPUESTA
