@@ -400,24 +400,63 @@ app.get("/register", async (req, res) => {
 
 
 app.post("/register", async (req, res) => {
-
-    console.log("========== REGISTER TEST ==========");
+    console.log("========== REGISTER ==========");
 
     try {
+        const { username, password } = req.body;
 
-        console.log("BODY:", req.body);
+        console.log("USERNAME:", username);
 
-        return res.status(200).send(`
-            <h1>REGISTER FUNCIONA</h1>
-            <pre>${JSON.stringify(req.body, null, 2)}</pre>
-        `);
+        // Comprobar que llegan los datos
+        if (!username || !password) {
+            return res.status(400).send(
+                "Faltan el nombre de usuario o la contraseña."
+            );
+        }
+
+        // Comprobar longitud de contraseña
+        if (password.length < 6) {
+            return res.status(400).send(
+                "La contraseña debe tener al menos 6 caracteres."
+            );
+        }
+
+        // Comprobar si el usuario ya existe
+        const existingUser = await env.DB
+            .prepare(`
+                SELECT id
+                FROM users
+                WHERE username = ?
+            `)
+            .bind(username)
+            .first();
+
+        if (existingUser) {
+            return res.status(400).send(
+                "Ese nombre de usuario ya está registrado."
+            );
+        }
+
+        // Crear usuario
+        await env.DB
+            .prepare(`
+                INSERT INTO users (username, password)
+                VALUES (?, ?)
+            `)
+            .bind(username, password)
+            .run();
+
+        console.log("Usuario registrado correctamente:", username);
+
+        // Ir a iniciar sesión
+        return res.redirect("/login");
 
     } catch (error) {
 
         console.error("REGISTER ERROR:", error);
 
         return res.status(500).send(
-            "REGISTER ERROR: " +
+            "Error al registrar el usuario: " +
             String(error?.message || error)
         );
     }

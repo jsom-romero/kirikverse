@@ -18,61 +18,43 @@ export default function adminTemplate(users = [], sessionUserId = null) {
         : `
             <ul class="usuarios">
 
-                ${users.map(user => {
+                ${users.map(user => `
+                    <li class="usuario">
 
-                    const username = escapeHtml(user.username);
+                        <span class="usuario__nombre">
+                            ${escapeHtml(user.username)}
+                        </span>
 
-                    const esUsuarioActual =
-                        Number(user.id) === Number(sessionUserId);
+                        ${
+                            user.id === sessionUserId
+                                ? `<span class="usuario__yo">Tú</span>`
+                                : ""
+                        }
 
-                    return `
-                        <li class="usuario">
+                        <button
+                            class="btn"
+                            type="button"
+                            onclick="changePassword('${user.id}', '${escapeHtml(user.username)}')"
+                        >
+                            Cambiar contraseña
+                        </button>
 
-                            <span class="usuario__nombre">
-                                ${username}
-                            </span>
+                        ${
+                            user.id === sessionUserId
+                                ? `
+                                    <button
+                                        class="btn btn--peligro"
+                                        type="button"
+                                        onclick="deleteMyAccount()"
+                                    >
+                                        Borrar mi cuenta
+                                    </button>
+                                `
+                                : ""
+                        }
 
-                            ${
-                                esUsuarioActual
-                                    ? `
-                                        <span class="usuario__yo">
-                                            Tú
-                                        </span>
-                                    `
-                                    : ""
-                            }
-
-                            <button
-                                class="btn"
-                                type="button"
-                                data-user-id="${escapeHtml(user.id)}"
-                                data-username="${username}"
-                                onclick="changePassword(
-                                    this.dataset.userId,
-                                    this.dataset.username
-                                )"
-                            >
-                                Cambiar contraseña
-                            </button>
-
-                            ${
-                                esUsuarioActual
-                                    ? `
-                                        <button
-                                            class="btn btn--peligro"
-                                            type="button"
-                                            onclick="deleteMyAccount()"
-                                        >
-                                            Borrar mi cuenta
-                                        </button>
-                                    `
-                                    : ""
-                            }
-
-                        </li>
-                    `;
-
-                }).join("")}
+                    </li>
+                `).join("")}
 
             </ul>
         `;
