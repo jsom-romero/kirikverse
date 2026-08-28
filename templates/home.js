@@ -576,7 +576,7 @@ export default `
 
     <h1>
       Kirkversario
-      <span>Hail Hittler</span>
+      <span>HOME</span>
     </h1>
 
     <button class="btn" id="btnTema">
