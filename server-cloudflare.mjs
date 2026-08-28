@@ -365,43 +365,532 @@ app.get("/admin", requireLogin, async (req, res) => {
 
         const users = result.results || [];
 
+        const usuarioActual = escapeHtml(
+            req.session.username
+        );
+
+        const listaUsuarios = users.map(user => `
+            <article class="usuario">
+                <div class="usuario-info">
+                    <strong>${escapeHtml(user.username)}</strong>
+                    <span>ID ${escapeHtml(user.id)}</span>
+                </div>
+            </article>
+        `).join("");
+
         res.status(200).send(`
-            <!DOCTYPE html>
-            <html lang="es">
-            <head>
-                <meta charset="UTF-8">
-                <title>Admin</title>
-            </head>
+<!DOCTYPE html>
+<html lang="es">
 
-            <body>
+<head>
 
-                <h1>Panel de administración</h1>
+<meta charset="UTF-8">
 
-                <p>
-                    Has iniciado sesión como:
-                    <strong>${escapeHtml(req.session.username)}</strong>
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+>
+
+<title>Kirkversario · Admin</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+>
+
+<style>
+
+:root {
+
+    --fondo: #F3EDDF;
+    --texto: #191552;
+    --tarjeta: #FBF7EC;
+
+    --rosa: #FF4A6E;
+    --amarillo: #FFC233;
+
+    --borde: rgba(25,21,82,.20);
+    --tenue: rgba(25,21,82,.55);
+
+    --display:
+        'Bricolage Grotesque',
+        'Arial Black',
+        sans-serif;
+
+    --cuerpo:
+        'Instrument Sans',
+        system-ui,
+        sans-serif;
+
+    --mono:
+        'DM Mono',
+        monospace;
+}
+
+
+[data-tema="noche"] {
+
+    --fondo: #12103F;
+    --texto: #F3EDDF;
+    --tarjeta: #1B1857;
+
+    --borde: rgba(243,237,223,.20);
+    --tenue: rgba(243,237,223,.58);
+}
+
+
+* {
+    box-sizing: border-box;
+}
+
+
+body {
+
+    margin: 0;
+
+    background: var(--fondo);
+    color: var(--texto);
+
+    font-family: var(--cuerpo);
+
+    line-height: 1.5;
+
+    -webkit-font-smoothing: antialiased;
+}
+
+
+.env {
+
+    max-width: 900px;
+
+    margin: 0 auto;
+
+    padding: 0 18px;
+}
+
+
+/* =========================
+   CABECERA
+========================= */
+
+.top {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 16px 18px;
+
+    max-width: 900px;
+
+    margin: 0 auto;
+
+    border-bottom: 2px solid var(--texto);
+}
+
+
+.top h1 {
+
+    margin: 0 auto 0 0;
+
+    font-family: var(--display);
+
+    font-weight: 800;
+
+    font-size: 17px;
+
+    text-transform: uppercase;
+
+    letter-spacing: -.02em;
+}
+
+
+.top h1 span {
+
+    color: var(--rosa);
+}
+
+
+.btn {
+
+    font-family: var(--mono);
+
+    font-size: 11px;
+
+    text-transform: uppercase;
+
+    letter-spacing: .07em;
+
+    background: transparent;
+
+    color: var(--texto);
+
+    border: 1.5px solid var(--texto);
+
+    border-radius: 999px;
+
+    padding: 8px 14px;
+
+    cursor: pointer;
+}
+
+
+.btn:hover {
+
+    background: var(--texto);
+
+    color: var(--fondo);
+}
+
+
+/* =========================
+   HERO
+========================= */
+
+.hero {
+
+    padding: 48px 0 36px;
+}
+
+
+.hero h2 {
+
+    margin: 0 0 10px;
+
+    font-family: var(--display);
+
+    font-weight: 800;
+
+    font-size: clamp(32px, 6vw, 50px);
+
+    line-height: 1;
+
+    letter-spacing: -.04em;
+}
+
+
+.hero p {
+
+    margin: 0;
+
+    color: var(--tenue);
+}
+
+
+.usuario-actual {
+
+    display: inline-block;
+
+    margin-top: 18px;
+
+    padding: 7px 12px;
+
+    background: var(--tarjeta);
+
+    border: 1.5px solid var(--borde);
+
+    border-radius: 999px;
+
+    font-family: var(--mono);
+
+    font-size: 12px;
+}
+
+
+/* =========================
+   SECCIONES
+========================= */
+
+section {
+
+    padding: 36px 0;
+}
+
+
+section + section {
+
+    border-top: 2px solid var(--texto);
+}
+
+
+h3 {
+
+    margin: 0 0 6px;
+
+    font-family: var(--display);
+
+    font-size: 30px;
+
+    font-weight: 800;
+
+    letter-spacing: -.03em;
+}
+
+
+.sub {
+
+    margin: 0 0 22px;
+
+    color: var(--tenue);
+
+    font-size: 15px;
+}
+
+
+/* =========================
+   USUARIOS
+========================= */
+
+.usuarios {
+
+    display: grid;
+
+    gap: 12px;
+}
+
+
+.usuario {
+
+    background: var(--tarjeta);
+
+    border: 2px solid var(--texto);
+
+    border-radius: 14px;
+
+    padding: 18px;
+}
+
+
+.usuario-info {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 15px;
+}
+
+
+.usuario-info strong {
+
+    font-family: var(--display);
+
+    font-size: 21px;
+
+    font-weight: 800;
+}
+
+
+.usuario-info span {
+
+    font-family: var(--mono);
+
+    font-size: 10px;
+
+    color: var(--tenue);
+
+    border: 1px solid var(--borde);
+
+    border-radius: 999px;
+
+    padding: 5px 8px;
+}
+
+
+/* =========================
+   PIE
+========================= */
+
+.pie {
+
+    border-top: 2px solid var(--texto);
+
+    padding: 22px 0 36px;
+
+    font-family: var(--mono);
+
+    font-size: 11px;
+
+    color: var(--tenue);
+
+    text-transform: uppercase;
+
+    letter-spacing: .07em;
+}
+
+
+@media (max-width: 600px) {
+
+    .hero {
+
+        padding: 36px 0 28px;
+    }
+
+
+    .usuario-info {
+
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<header class="top">
+
+    <h1>
+        Kirkversario
+        <span>Admin</span>
+    </h1>
+
+    <button
+        class="btn"
+        id="btnTema"
+        type="button"
+    >
+        Noche
+    </button>
+
+</header>
+
+
+<main class="env">
+
+
+    <div class="hero">
+
+        <h2>
+            Panel de administración
+        </h2>
+
+        <p>
+            Gestiona los usuarios de Kirkversario.
+        </p>
+
+        <div class="usuario-actual">
+
+            Sesión iniciada como:
+
+            <strong>
+                ${usuarioActual}
+            </strong>
+
+        </div>
+
+    </div>
+
+
+    <section>
+
+        <h3>
+            Usuarios
+        </h3>
+
+        <p class="sub">
+            Usuarios registrados actualmente.
+        </p>
+
+
+        ${
+            users.length === 0
+
+            ? `
+                <p class="sub">
+                    No hay usuarios registrados.
                 </p>
+            `
 
-                <h2>Usuarios</h2>
+            : `
+                <div class="usuarios">
 
-                <ul>
-                    ${users.map(user => `
-                        <li>
-                            ${escapeHtml(user.username)}
-                        </li>
-                    `).join("")}
-                </ul>
+                    ${listaUsuarios}
 
-            </body>
-            </html>
+                </div>
+            `
+        }
+
+    </section>
+
+
+    <div class="pie">
+
+        Kirkversario · Panel de administración
+
+    </div>
+
+
+</main>
+
+
+<script>
+
+(function () {
+
+    "use strict";
+
+
+    var botonTema =
+        document.getElementById("btnTema");
+
+
+    botonTema.addEventListener(
+        "click",
+        function () {
+
+            var noche =
+                document.documentElement
+                    .getAttribute("data-tema")
+                    === "noche";
+
+
+            document.documentElement
+                .setAttribute(
+                    "data-tema",
+                    noche ? "papel" : "noche"
+                );
+
+
+            this.textContent =
+                noche ? "Noche" : "Papel";
+
+        }
+    );
+
+})();
+
+</script>
+
+
+</body>
+
+</html>
         `);
 
     } catch (error) {
 
-        console.error("ERROR ADMIN:", error);
+        console.error(
+            "ERROR ADMIN:",
+            error
+        );
 
         res.status(500).send(
-            "Error al cargar el panel: " + error.message
+            "Error al cargar el panel: " +
+            error.message
         );
     }
 });
