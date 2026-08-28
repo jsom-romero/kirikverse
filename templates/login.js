@@ -325,7 +325,7 @@ export default function loginTemplate() {
         <h1>
             <a href="/">
                 Kirkversario
-                <span>Hail Hittler</span>
+                <span>LOGIN</span>
             </a>
         </h1>
 
