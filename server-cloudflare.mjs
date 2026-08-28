@@ -8,7 +8,7 @@ import homeTemplate from "./templates/home.js";
 import adminTemplate from "./templates/admin.js";
 import loginTemplate from "./templates/login.js";
 import registerTemplate from "./templates/register.js";
-import calendarioTemplate from "./templates/calendario.js";
+import calendarioTemplate from "./templates/calendar.js";
 
 const app = express();
 
@@ -515,6 +515,20 @@ app.get("/calendario", async (req, res) => {
     }
 });
 
+// ============================================================
+// ADMIN
+// ============================================================
+
+app.get("/calendario", async (req, res) => {
+    try {
+        res.status(200).send(calendarioTemplate());
+    } catch (error) {
+        console.error("ERROR CALENDARIO:", error);
+        res.status(500).send(
+            "Error al cargar el calendario: " + error.message
+        );
+    }
+});
 
 
 // ============================================================
