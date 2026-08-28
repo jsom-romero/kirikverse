@@ -3,8 +3,6 @@ import bcrypt from "bcryptjs";
 import crypto from "node:crypto";
 import { env } from "cloudflare:workers";
 import { httpServerHandler } from "cloudflare:node";
-import { Resend } from "resend";
-
 
 
 import homeTemplate from "./templates/home.js";
