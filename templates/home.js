@@ -576,7 +576,7 @@ export default `
 
     <h1>
       Kirkversario
-      <span>Hail Hittler</span>
+      <span>HOME</span>
     </h1>
 
     <button class="btn" id="btnTema">
@@ -597,7 +597,7 @@ export default `
       <h2>Fechas</h2>
 
       <p class="sub">
-        El 10 de septiembre es el 1 de Kirknero del Año 1.
+        El 10 de septiembre es el 1 de Kirktrump del Año 1.
         Escribe una fecha y sale la otra.
         El botón del medio cambia el sentido.
       </p>
@@ -1014,7 +1014,7 @@ export default `
         },
 
         {
-          n: "Kirkgandhi",
+          n: "Kirkronaldo",
           d: 31
         },
 
@@ -1024,12 +1024,12 @@ export default `
         },
 
         {
-          n: "Kirkmessi",
+          n: "Kirkghandi",
           d: 30
         },
 
         {
-          n: "Kirkronaldo",
+          n: "Kirkmessi",
           d: 31
         },
 
