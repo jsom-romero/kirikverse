@@ -252,6 +252,32 @@ function requireLogin(req, res, next) {
 }
 
 
+async function requireAdmin(req, res, next) {
+
+    if (!req.session.userId) {
+        return res.status(401).json({
+            error: "Debes iniciar sesión."
+        });
+    }
+
+    const user = await env.DB.prepare(`
+        SELECT is_admin
+        FROM users
+        WHERE id = ?
+    `)
+        .bind(req.session.userId)
+        .first();
+
+    if (!user || user.is_admin !== 1) {
+        return res.status(403).json({
+            error: "Solo los administradores pueden hacer esto."
+        });
+    }
+
+    next();
+}
+
+
 async function createSession(userId, username, res) {
 
     const sessionId = crypto.randomUUID();
@@ -369,7 +395,7 @@ app.get("/admin", requireLogin, async (req, res) => {
         return res.status(200).send(
             adminTemplate(
                 users,
-                req.session.user_id
+                req.session.userId
             )
         );
 
@@ -668,7 +694,7 @@ app.get("/api/events", async (req, res) => {
 // EVENTOS — CREAR
 // ============================================================
 
-app.post("/api/events", async (req, res) => {
+app.post("/api/events",requireAdmin, async (req, res) => {
 
     const {
         title,

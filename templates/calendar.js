@@ -7,7 +7,7 @@ export default function calendarioTemplate() {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Calendario · Kirkversario</title>
+    <title>Calendario Â· Kirkversario</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -409,6 +409,164 @@ export default function calendarioTemplate() {
                 animation: none !important;
             }
         }
+
+        /* ---- PANTALLA COMPLETA ---- */
+        body.pantalla { overflow: hidden; }
+        body.pantalla .top,
+        body.pantalla h2,
+        body.pantalla .sub,
+        body.pantalla .calMandos,
+        body.pantalla .calPie,
+        body.pantalla .pie { display: none; }
+        body.pantalla main.env { max-width: none; padding: 0; }
+        body.pantalla section { padding: 0; border-top: 0; }
+        body.pantalla .cal {
+            border: 0;
+            border-radius: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        body.pantalla .cal { overflow: hidden; }
+        body.pantalla .dias {
+            flex: 1 1 auto;
+            min-height: 0;
+            grid-template-rows: repeat(6, minmax(0, 1fr));
+        }
+        body.pantalla .dia { min-height: 0; }
+        body.pantalla .dia b { font-size: 26px; }
+
+        /* ---- CELDA PULSABLE ---- */
+        .dia { cursor: pointer; overflow: hidden; transition: background .18s ease; }
+        .dia .dia__evento {
+            flex: 0 0 auto;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .dia:hover { background: rgba(255, 194, 51, .22); }
+        .dia--abierta { visibility: hidden; }
+
+        /* ---- FICHA DEL DIA ---- */
+        .velo {
+            position: fixed;
+            inset: 0;
+            background: rgba(9, 7, 40, .5);
+            backdrop-filter: blur(3px);
+            opacity: 0;
+            transition: opacity .3s ease;
+            z-index: 40;
+        }
+        .velo.on { opacity: 1; }
+
+        .ficha {
+            position: fixed;
+            z-index: 50;
+            background: var(--tarjeta);
+            border: 2px solid var(--texto);
+            border-radius: 14px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transform-origin: top left;
+            will-change: transform;
+            box-shadow: 0 18px 50px rgba(9, 7, 40, .28);
+        }
+        .ficha__top {
+            background: var(--amarillo);
+            color: #191552;
+            padding: 16px 18px;
+            border-bottom: 2px solid var(--texto);
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            flex: 0 0 auto;
+        }
+        .ficha__dia {
+            font-family: var(--display);
+            font-weight: 800;
+            font-size: 30px;
+            line-height: 1;
+            letter-spacing: -.03em;
+            margin: 0 auto 0 0;
+        }
+        .ficha__dia small {
+            display: block;
+            font-family: var(--mono);
+            font-weight: 400;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .07em;
+            opacity: .72;
+            margin-top: 7px;
+        }
+        .ficha__x {
+            background: transparent;
+            border: 1.5px solid #191552;
+            color: #191552;
+            border-radius: 999px;
+            width: 34px;
+            height: 34px;
+            font-size: 17px;
+            line-height: 1;
+            cursor: pointer;
+            flex: 0 0 auto;
+        }
+        .ficha__x:hover { background: #191552; color: var(--amarillo); }
+
+        .ficha__cuerpo {
+            padding: 16px 18px 20px;
+            overflow-y: auto;
+            display: grid;
+            gap: 10px;
+            align-content: start;
+            flex: 1 1 auto;
+        }
+        .ficha__ev {
+            border: 1.5px solid var(--borde);
+            border-left: 4px solid var(--rosa);
+            border-radius: 10px;
+            padding: 13px 15px;
+            background: var(--fondo);
+        }
+        .ficha__ev h4 {
+            font-family: var(--display);
+            font-weight: 800;
+            font-size: 19px;
+            letter-spacing: -.02em;
+            margin: 0 0 5px;
+        }
+        .ficha__ev p { margin: 5px 0 0; font-size: 14.5px; color: var(--tenue); }
+        .ficha__meta {
+            font-family: var(--mono);
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--tenue);
+            display: flex;
+            gap: 9px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .ficha__cat {
+            border: 1px solid var(--borde);
+            border-radius: 999px;
+            padding: 4px 9px;
+        }
+        .ficha__vacio {
+            color: var(--tenue);
+            font-size: 15px;
+            text-align: center;
+            padding: 26px 0;
+        }
+
+        /* la ficha se desvanece por dentro para que el escalado no deforme */
+        .ficha__top,
+        .ficha__cuerpo { transition: opacity .22s ease; }
+        .ficha--entrando .ficha__top,
+        .ficha--entrando .ficha__cuerpo { opacity: 0; }
+
+
     </style>
 </head>
 
@@ -438,9 +596,9 @@ export default function calendarioTemplate() {
         <h2>El calendario</h2>
 
         <p class="sub">
-            Doce meses en rejilla. Cada casilla lleva el día del calendario
+            Doce meses en rejilla. Cada casilla lleva el dÃ­a del calendario
             Kirk arriba y su equivalente de siempre debajo.
-            Los días en gris son del mes de al lado.
+            Los dÃ­as en gris son del mes de al lado.
         </p>
 
         <div class="calMandos">
@@ -451,7 +609,7 @@ export default function calendarioTemplate() {
             </div>
 
             <div>
-                <span class="et">Año</span>
+                <span class="et">AÃ±o</span>
                 <input
                     type="number"
                     id="inAnio"
@@ -478,12 +636,22 @@ export default function calendarioTemplate() {
                     type="button"
                     aria-label="Mes anterior"
                 >
-                    ‹
+                    â€¹
+                </button>
+
+                <button
+                    class="cal__nav"
+                    id="btnPantalla"
+                    type="button"
+                    aria-label="Pantalla completa"
+                    title="Pantalla completa"
+                >
+                    â¤¡
                 </button>
 
                 <h3 class="cal__mes" id="calTitulo">
-                    —
-                    <small id="calSub">—</small>
+                    â€”
+                    <small id="calSub">â€”</small>
                 </h3>
 
                 <button
@@ -501,7 +669,7 @@ export default function calendarioTemplate() {
                     type="button"
                     aria-label="Mes siguiente"
                 >
-                    ›
+                    â€º
                 </button>
 
             </div>
@@ -516,17 +684,17 @@ export default function calendarioTemplate() {
 
             <div>
                 <span class="et">Hoy</span>
-                <b id="pieHoy">—</b>
+                <b id="pieHoy">â€”</b>
             </div>
 
             <div>
                 <span class="et">Equivale a</span>
-                <b id="pieGreg">—</b>
+                <b id="pieGreg">â€”</b>
             </div>
 
             <div>
-                <span class="et">Día del año</span>
-                <b id="pieDia">—</b>
+                <span class="et">DÃ­a del aÃ±o</span>
+                <b id="pieDia">â€”</b>
             </div>
 
         </div>
@@ -536,7 +704,7 @@ export default function calendarioTemplate() {
 </main>
 
 <footer class="pie env">
-    Calendario Kirk · rejilla mensual
+    Calendario Kirk Â· rejilla mensual
 </footer>
 
 <script>
@@ -545,10 +713,10 @@ export default function calendarioTemplate() {
     "use strict";
 
     /*
-     * CONFIGURACIÓN
+     * CONFIGURACIÃ“N
      *
-     * Define dónde cae el día 1 del mes 1
-     * del Año 1 del calendario Kirk.
+     * Define dÃ³nde cae el dÃ­a 1 del mes 1
+     * del AÃ±o 1 del calendario Kirk.
      */
     var EPOCA_ANIO = 2025;
     var EPOCA_MES = 9;
@@ -565,7 +733,7 @@ export default function calendarioTemplate() {
         { n: "Kirkwashington", d: 31 },
         { n: "Kirkmessi", d: 30 },
         { n: "Kirkronaldo", d: 31 },
-        { n: "Kirkcabrón", d: 30 },
+        { n: "KirkcabrÃ³n", d: 30 },
         { n: "Kirkeroro", d: 31 }
     ];
 
@@ -602,10 +770,10 @@ export default function calendarioTemplate() {
     var SEM = [
         "lunes",
         "martes",
-        "miércoles",
+        "miÃ©rcoles",
         "jueves",
         "viernes",
-        "sábado",
+        "sÃ¡bado",
         "domingo"
     ];
 
@@ -651,10 +819,14 @@ export default function calendarioTemplate() {
             : EPOCA_ANIO + a;
     }
 
+    function sem(ms) {
+        return SEM[(new Date(ms).getUTCDay() + 6) % 7];
+    }
+
     function nAnio(a) {
         return a > 0
-            ? "Año " + a + " d.K."
-            : "Año " + Math.abs(a) + " a.K.";
+            ? "AÃ±o " + a + " d.K."
+            : "AÃ±o " + Math.abs(a) + " a.K.";
     }
 
     function inicioG(g) {
@@ -825,7 +997,7 @@ export default function calendarioTemplate() {
 
 
     /*
-     * Días de la semana
+     * DÃ­as de la semana
      */
     $("calSem").innerHTML = SEM
         .map(function (s) {
@@ -885,11 +1057,11 @@ export default function calendarioTemplate() {
 
         $("calSub").textContent =
             nAnio(vistaAnio) +
-            " · " +
+            " Â· " +
             total +
-            " días · " +
+            " dÃ­as Â· " +
             tGc(primero) +
-            " – " +
+            " â€“ " +
             tGc(ultimo);
 
         var arranque =
@@ -931,7 +1103,7 @@ export default function calendarioTemplate() {
             var eventosHtml = eventosDia.map(function(evento) {
 
                 var hora = evento.time
-                    ? " · " + evento.time
+                    ? " Â· " + evento.time
                     : "";
 
                 return (
@@ -948,7 +1120,9 @@ export default function calendarioTemplate() {
             celdas +=
                 '<div class="' +
                 cls +
-                '">' +
+                '" data-ms="' +
+                ms +
+                '" tabindex="0" role="button">' +
 
                 "<b>" +
                 k.dia +
@@ -1080,6 +1254,10 @@ export default function calendarioTemplate() {
         "keydown",
         function (e) {
 
+            if (ficha) {
+                return;
+            }
+
             if (e.key === "ArrowLeft") {
                 mover(-1);
             }
@@ -1089,6 +1267,309 @@ export default function calendarioTemplate() {
             }
         }
     );
+
+    /*
+     * PANTALLA COMPLETA
+     */
+    function enPantalla() {
+        return !!(
+            document.fullscreenElement ||
+            document.webkitFullscreenElement
+        );
+    }
+
+    function pintarBotonPantalla() {
+
+        var on = enPantalla();
+
+        document.body.classList.toggle("pantalla", on);
+
+        var b = $("btnPantalla");
+
+        b.textContent = on ? "\u2715" : "\u2921";
+
+        b.title = on
+            ? "Salir de pantalla completa"
+            : "Pantalla completa";
+    }
+
+    $("btnPantalla").onclick = function () {
+
+        if (enPantalla()) {
+
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            }
+
+            return;
+        }
+
+        var e = document.documentElement;
+
+        if (e.requestFullscreen) {
+            e.requestFullscreen();
+        } else if (e.webkitRequestFullscreen) {
+            e.webkitRequestFullscreen();
+        } else {
+            /* sin API: al menos expandimos el layout */
+            document.body.classList.toggle("pantalla");
+        }
+    };
+
+    document.addEventListener("fullscreenchange", pintarBotonPantalla);
+    document.addEventListener("webkitfullscreenchange", pintarBotonPantalla);
+
+    /*
+     * FICHA DEL DIA
+     */
+    var velo = null;
+    var ficha = null;
+    var celdaAbierta = null;
+
+    var CURVA = "cubic-bezier(.22,1,.36,1)";
+
+    function fichaHtml(ms) {
+
+        var k = kkMs(ms);
+        var evs = eventosDelDia(ms);
+
+        var cuerpo;
+
+        if (!evs.length) {
+
+            cuerpo =
+                '<p class="ficha__vacio">' +
+                "No hay eventos este d\u00eda." +
+                "</p>";
+
+        } else {
+
+            cuerpo = evs.map(function (ev) {
+
+                var meta = "";
+
+                if (ev.time) {
+                    meta += "<span>" + escapeHtml(ev.time) + "</span>";
+                }
+
+                if (ev.category) {
+                    meta +=
+                        '<span class="ficha__cat">' +
+                        escapeHtml(ev.category) +
+                        "</span>";
+                }
+
+                return (
+                    '<article class="ficha__ev">' +
+                    "<h4>" + escapeHtml(ev.title) + "</h4>" +
+                    (
+                        meta
+                            ? '<div class="ficha__meta">' + meta + "</div>"
+                            : ""
+                    ) +
+                    (
+                        ev.description
+                            ? "<p>" + escapeHtml(ev.description) + "</p>"
+                            : ""
+                    ) +
+                    "</article>"
+                );
+
+            }).join("");
+        }
+
+        return (
+            '<div class="ficha__top">' +
+            '<h3 class="ficha__dia">' +
+            tK(k) +
+            "<small>" +
+            sem(ms) + " \u00b7 " + tG(ms) + " \u00b7 " +
+            nAnio(k.anio) +
+            "</small>" +
+            "</h3>" +
+            '<button class="ficha__x" type="button" aria-label="Cerrar">' +
+            "\u2715" +
+            "</button>" +
+            "</div>" +
+            '<div class="ficha__cuerpo">' + cuerpo + "</div>"
+        );
+    }
+
+    function abrirDia(celda) {
+
+        if (ficha) {
+            return;
+        }
+
+        var ms = parseInt(celda.dataset.ms, 10);
+        var origen = celda.getBoundingClientRect();
+
+        velo = document.createElement("div");
+        velo.className = "velo";
+        velo.onclick = cerrarDia;
+        document.body.appendChild(velo);
+
+        ficha = document.createElement("div");
+        ficha.className = "ficha";
+        ficha.setAttribute("role", "dialog");
+        ficha.setAttribute("aria-modal", "true");
+        ficha.innerHTML = fichaHtml(ms);
+
+        var vw = window.innerWidth;
+        var vh = window.innerHeight;
+        var an = Math.min(520, vw - 32);
+
+        ficha.style.width = an + "px";
+        ficha.style.left = "0px";
+        ficha.style.top = "0px";
+        ficha.style.visibility = "hidden";
+
+        document.body.appendChild(ficha);
+
+        /* medimos con altura libre y luego la fijamos para poder escalar */
+        var al = Math.min(ficha.offsetHeight, Math.round(vh * 0.8));
+
+        var iz = Math.round((vw - an) / 2);
+        var ar = Math.round((vh - al) / 2);
+
+        ficha.style.height = al + "px";
+        ficha.style.left = iz + "px";
+        ficha.style.top = ar + "px";
+        ficha.style.visibility = "";
+
+        /* FLIP con Web Animations: de la celda a la ficha */
+        var ex = origen.width / an;
+        var ey = origen.height / al;
+
+        celda.classList.add("dia--abierta");
+        celdaAbierta = celda;
+
+        velo.animate(
+            [{ opacity: 0 }, { opacity: 1 }],
+            { duration: 300, easing: "ease", fill: "forwards" }
+        );
+
+        ficha.animate(
+            [
+                {
+                    transform:
+                        "translate(" + (origen.left - iz) + "px," +
+                        (origen.top - ar) + "px) scale(" + ex + "," + ey + ")"
+                },
+                { transform: "translate(0,0) scale(1,1)" }
+            ],
+            { duration: 420, easing: CURVA, fill: "backwards" }
+        );
+
+        /* el contenido entra por opacidad para que el escalado no lo deforme */
+        [".ficha__top", ".ficha__cuerpo"].forEach(function (sel) {
+            ficha.querySelector(sel).animate(
+                [
+                    { opacity: 0, offset: 0 },
+                    { opacity: 0, offset: .35 },
+                    { opacity: 1, offset: 1 }
+                ],
+                { duration: 420, easing: "ease-out", fill: "backwards" }
+            );
+        });
+
+        ficha.querySelector(".ficha__x").onclick = cerrarDia;
+        ficha.querySelector(".ficha__x").focus();
+    }
+
+    function cerrarDia() {
+
+        if (!ficha) {
+            return;
+        }
+
+        var f = ficha;
+        var v = velo;
+        var celda = celdaAbierta;
+
+        ficha = null;
+        velo = null;
+        celdaAbierta = null;
+
+        var origen = celda.getBoundingClientRect();
+
+        var iz = parseFloat(f.style.left);
+        var ar = parseFloat(f.style.top);
+        var an = parseFloat(f.style.width);
+        var al = parseFloat(f.style.height);
+
+        velo_fuera(v);
+
+        [".ficha__top", ".ficha__cuerpo"].forEach(function (sel) {
+            f.querySelector(sel).animate(
+                [{ opacity: 1 }, { opacity: 0 }],
+                { duration: 180, easing: "ease-in", fill: "forwards" }
+            );
+        });
+
+        var salida = f.animate(
+            [
+                { transform: "translate(0,0) scale(1,1)" },
+                {
+                    transform:
+                        "translate(" + (origen.left - iz) + "px," +
+                        (origen.top - ar) + "px) scale(" +
+                        (origen.width / an) + "," + (origen.height / al) + ")"
+                }
+            ],
+            { duration: 340, easing: CURVA, fill: "forwards" }
+        );
+
+        salida.finished.then(function () {
+
+            f.remove();
+            v.remove();
+
+            celda.classList.remove("dia--abierta");
+            celda.focus();
+        });
+    }
+
+    function velo_fuera(v) {
+        v.animate(
+            [{ opacity: 1 }, { opacity: 0 }],
+            { duration: 300, easing: "ease", fill: "forwards" }
+        );
+    }
+
+    /* delegacion: las celdas se repintan en cada mes */
+    $("calDias").addEventListener("click", function (e) {
+
+        var celda = e.target.closest(".dia");
+
+        if (celda) {
+            abrirDia(celda);
+        }
+    });
+
+    $("calDias").addEventListener("keydown", function (e) {
+
+        if (e.key !== "Enter" && e.key !== " ") {
+            return;
+        }
+
+        var celda = e.target.closest(".dia");
+
+        if (celda) {
+            e.preventDefault();
+            abrirDia(celda);
+        }
+    });
+
+    document.addEventListener("keydown", function (e) {
+
+        if (e.key === "Escape" && ficha) {
+            e.preventDefault();
+            cerrarDia();
+        }
+    });
 
     /*
      * Tema noche/papel
