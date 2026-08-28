@@ -365,23 +365,44 @@ app.get("/admin", requireLogin, async (req, res) => {
 
         const users = result.results || [];
 
-        res
-            .status(200)
-            .setHeader("Content-Type", "text/html; charset=utf-8")
-            .send(
-                render(adminTemplate, {
-                    users,
-                    sessionUserId: req.session.userId
-                })
-            );
+        res.status(200).send(`
+            <!DOCTYPE html>
+            <html lang="es">
+            <head>
+                <meta charset="UTF-8">
+                <title>Admin</title>
+            </head>
+
+            <body>
+
+                <h1>Panel de administración</h1>
+
+                <p>
+                    Has iniciado sesión como:
+                    <strong>${escapeHtml(req.session.username)}</strong>
+                </p>
+
+                <h2>Usuarios</h2>
+
+                <ul>
+                    ${users.map(user => `
+                        <li>
+                            ${escapeHtml(user.username)}
+                        </li>
+                    `).join("")}
+                </ul>
+
+            </body>
+            </html>
+        `);
 
     } catch (error) {
 
-        console.error(error);
+        console.error("ERROR ADMIN:", error);
 
-        res
-            .status(500)
-            .send("Error al cargar el panel.");
+        res.status(500).send(
+            "Error al cargar el panel: " + error.message
+        );
     }
 });
 

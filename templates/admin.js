@@ -1,1 +1,1401 @@
-export default "<!DOCTYPE html>\r\n<html lang=\"es\" data-tema=\"papel\">\r\n<head>\r\n<meta charset=\"utf-8\">\r\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n<title>Administrar eventos - Kirkversario</title>\r\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\r\n<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\r\n<link href=\"https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap\" rel=\"stylesheet\">\r\n<style>\r\n:root{\r\n  --fondo:#F3EDDF; --texto:#191552; --tarjeta:#FBF7EC; --rosa:#FF4A6E; --amarillo:#FFC233;\r\n  --borde:rgba(25,21,82,.2); --fuerte:rgba(25,21,82,.5); --tenue:rgba(25,21,82,.55);\r\n  --display:'Bricolage Grotesque','Arial Black',sans-serif;\r\n  --cuerpo:'Instrument Sans',system-ui,-apple-system,sans-serif;\r\n  --mono:'DM Mono',ui-monospace,Menlo,monospace;\r\n}\r\n[data-tema=\"noche\"]{\r\n  --fondo:#12103F; --texto:#F3EDDF; --tarjeta:#1B1857;\r\n  --borde:rgba(243,237,223,.2); --fuerte:rgba(243,237,223,.45); --tenue:rgba(243,237,223,.58);\r\n}\r\n*{box-sizing:border-box}\r\n[hidden]{display:none!important}\r\nbody{margin:0;background:var(--fondo);color:var(--texto);font-family:var(--cuerpo);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}\r\n.env{max-width:900px;margin:0 auto;padding:0 18px}\r\n\r\n.top{display:flex;align-items:center;gap:10px;padding:16px 18px;max-width:900px;margin:0 auto;border-bottom:2px solid var(--texto);flex-wrap:wrap}\r\n.top h1{font-family:var(--display);font-weight:800;font-size:17px;text-transform:uppercase;letter-spacing:-.02em;margin:0 auto 0 0}\r\n.top h1 a{color:inherit;text-decoration:none}\r\n.top h1 span{color:var(--rosa)}\r\n\r\n.btn{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.07em;background:transparent;color:var(--texto);border:1.5px solid var(--texto);border-radius:999px;padding:7px 14px;cursor:pointer;text-decoration:none;display:inline-block;line-height:1.3}\r\n.btn:hover{background:var(--texto);color:var(--fondo)}\r\n.btn--peligro{border-color:var(--rosa);color:var(--rosa)}\r\n.btn--peligro:hover{background:var(--rosa);color:#FBF7EC}\r\n:focus-visible{outline:3px solid var(--rosa);outline-offset:2px}\r\n\r\nsection{padding:40px 0}\r\nsection+section{border-top:2px solid var(--texto)}\r\nh2{font-family:var(--display);font-weight:800;font-size:clamp(22px,3.6vw,30px);letter-spacing:-.03em;margin:0 0 6px}\r\n.sub{color:var(--tenue);margin:0 0 22px;max-width:60ch;font-size:15px}\r\n.vacio{color:var(--tenue);font-size:15px}\r\n\r\n/* Users */\r\n.usuarios{display:grid;gap:10px;list-style:none;margin:0;padding:0}\r\n.usuario{display:flex;align-items:center;gap:10px;flex-wrap:wrap;background:var(--tarjeta);border:1.5px solid var(--borde);border-radius:12px;padding:12px 14px}\r\n.usuario__nombre{font-family:var(--display);font-weight:700;font-size:17px;margin-right:auto}\r\n.usuario__yo{font-family:var(--mono);font-size:9px;text-transform:uppercase;letter-spacing:.1em;background:var(--amarillo);color:#191552;border-radius:999px;padding:4px 8px}\r\n\r\n/* Form */\r\n.formulario{background:var(--tarjeta);border:2px solid var(--texto);border-radius:14px;padding:20px}\r\n.rejilla{display:grid;grid-template-columns:1fr 1fr;gap:14px}\r\n.campo{margin-bottom:14px}\r\n.et{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--tenue);display:block;margin-bottom:4px}\r\ninput[type=\"text\"],input[type=\"date\"],input[type=\"time\"],textarea{background:var(--fondo);border:1.5px solid var(--fuerte);border-radius:8px;padding:10px;font-family:var(--mono);font-size:15px;width:100%;color:inherit;min-height:44px}\r\ninput:focus,textarea:focus{border-color:var(--texto)}\r\ntextarea{font-family:var(--cuerpo);font-size:16px;resize:vertical;min-height:90px;line-height:1.4}\r\n.enviar{min-height:46px;padding:0 26px;margin-top:4px;font-family:var(--mono);font-size:12px;text-transform:uppercase;letter-spacing:.09em;background:var(--rosa);color:#FBF7EC;border:2px solid var(--texto);border-radius:999px;cursor:pointer}\r\n.enviar:hover{background:var(--texto);color:var(--fondo)}\r\n\r\n#message{margin:16px 0 0;font-family:var(--mono);font-size:12px;letter-spacing:.03em;border-left:4px solid var(--amarillo);padding:8px 0 8px 12px}\r\n#message:empty{display:none}\r\n\r\n/* Events */\r\n.eventos{display:grid;gap:12px}\r\n.evento{background:var(--tarjeta);border:2px solid var(--texto);border-radius:14px;padding:18px}\r\n.evento h3{font-family:var(--display);font-weight:800;font-size:24px;margin:0 0 8px}\r\n.evento p{margin:6px 0}\r\n.evento__fecha{font-family:var(--mono);font-size:12px;color:var(--tenue)}\r\n.evento__categoria{display:inline-block;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.08em;border:1px solid var(--borde);border-radius:999px;padding:5px 9px;color:var(--tenue)}\r\n.evento__acciones{display:flex;gap:8px;margin-top:14px;padding-top:14px;border-top:1px solid var(--borde)}\r\n\r\n.pie{border-top:2px solid var(--texto);padding:22px 0 36px;font-family:var(--mono);font-size:11px;color:var(--tenue);text-transform:uppercase;letter-spacing:.07em}\r\n\r\n@media (max-width:720px){\r\n  .rejilla{grid-template-columns:1fr}\r\n  section{padding:32px 0}\r\n}\r\n@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}\r\n</style>\r\n</head>\r\n<body>\r\n\r\n<header class=\"top\">\r\n  <h1><a href=\"/\">Kirkversario <span>Hail Hittler</span></a></h1>\r\n  <a class=\"btn\" href=\"/\">Ver la web</a>\r\n  <button class=\"btn\" id=\"btnTema\" type=\"button\">Noche</button>\r\n</header>\r\n\r\n<main class=\"env\">\r\n\r\n  <!-- USUARIOS -->\r\n  <section>\r\n    <h2>Usuarios registrados</h2>\r\n    <p class=\"sub\">Todas las cuentas que pueden administrar el Kirkversario.</p>\r\n\r\n    <div id=\"usersList\">\r\n\r\n      <% if (!users || users.length === 0) { %>\r\n\r\n        <p class=\"vacio\">No hay usuarios registrados.</p>\r\n\r\n      <% } else { %>\r\n\r\n        <ul class=\"usuarios\">\r\n\r\n          <% users.forEach(user => { %>\r\n\r\n            <li class=\"usuario\">\r\n\r\n              <span class=\"usuario__nombre\"><%= user.username %></span>\r\n\r\n              <% if (user.id === sessionUserId) { %>\r\n                <span class=\"usuario__yo\">Tú</span>\r\n              <% } %>\r\n\r\n              <button\r\n                class=\"btn\"\r\n                type=\"button\"\r\n                onclick=\"changePassword('<%= user.id %>', '<%= user.username %>')\"\r\n              >\r\n                Cambiar contraseña\r\n              </button>\r\n\r\n              <% if (user.id === sessionUserId) { %>\r\n\r\n                <button\r\n                  class=\"btn btn--peligro\"\r\n                  type=\"button\"\r\n                  onclick=\"deleteMyAccount()\"\r\n                >\r\n                  Borrar mi cuenta\r\n                </button>\r\n\r\n              <% } %>\r\n\r\n            </li>\r\n\r\n          <% }) %>\r\n\r\n        </ul>\r\n\r\n      <% } %>\r\n\r\n    </div>\r\n  </section>\r\n\r\n  <!-- NUEVO EVENTO -->\r\n  <section>\r\n    <h2>Nuevo evento</h2>\r\n    <p class=\"sub\">Rellena los datos y aparecerá en la portada. Al editar uno existente, el formulario se rellena solo.</p>\r\n\r\n    <form class=\"formulario\" id=\"eventForm\">\r\n\r\n      <div class=\"campo\">\r\n        <label class=\"et\" for=\"title\">Título</label>\r\n        <input type=\"text\" id=\"title\" name=\"title\" required>\r\n      </div>\r\n\r\n      <div class=\"campo\">\r\n        <label class=\"et\" for=\"description\">Descripción</label>\r\n        <textarea id=\"description\" name=\"description\"></textarea>\r\n      </div>\r\n\r\n      <div class=\"rejilla\">\r\n        <div class=\"campo\">\r\n          <label class=\"et\" for=\"date\">Fecha</label>\r\n          <input type=\"date\" id=\"date\" name=\"date\" required>\r\n        </div>\r\n\r\n        <div class=\"campo\">\r\n          <label class=\"et\" for=\"time\">Hora</label>\r\n          <input type=\"time\" id=\"time\" name=\"time\">\r\n        </div>\r\n      </div>\r\n\r\n      <div class=\"campo\">\r\n        <label class=\"et\" for=\"category\">Categoría</label>\r\n        <input type=\"text\" id=\"category\" name=\"category\" placeholder=\"general\">\r\n      </div>\r\n\r\n      <button class=\"enviar\" type=\"submit\">\r\n        Crear evento\r\n      </button>\r\n\r\n    </form>\r\n\r\n    <p id=\"message\"></p>\r\n  </section>\r\n\r\n  <!-- EVENTOS EXISTENTES -->\r\n  <section>\r\n    <h2>Eventos existentes</h2>\r\n    <p class=\"sub\">Todo lo que hay ahora mismo en el calendario.</p>\r\n    <div id=\"eventsList\"></div>\r\n  </section>\r\n\r\n  <div class=\"pie\">Kirkversario · Panel de administración</div>\r\n</main>\r\n\r\n<script>\r\nasync function deleteMyAccount() {\r\n\r\n    const confirmed = confirm(\r\n        \"¿Seguro que quieres borrar tu cuenta?\"\r\n    );\r\n\r\n    if (!confirmed) {\r\n        return;\r\n    }\r\n\r\n    try {\r\n\r\n        const response = await fetch(\"/api/users/me\", {\r\n            method: \"DELETE\"\r\n        });\r\n\r\n        console.log(\"Status:\", response.status);\r\n\r\n        const texto = await response.text();\r\n\r\n        console.log(\"Respuesta:\", texto);\r\n\r\n        if (!response.ok) {\r\n            alert(\"Error del servidor: \" + texto);\r\n            return;\r\n        }\r\n\r\n        alert(\"Cuenta eliminada correctamente.\");\r\n\r\n        window.location.href = \"/login\";\r\n\r\n    } catch (error) {\r\n\r\n        console.error(\"ERROR FETCH:\", error);\r\n\r\n        alert(\"Error de conexión con el servidor. Mira la consola (F12).\");\r\n    }\r\n}\r\n\r\nconst eventForm = document.getElementById(\"eventForm\");\r\nconst message = document.getElementById(\"message\");\r\nconst eventsList = document.getElementById(\"eventsList\");\r\n\r\nlet editingId = null;\r\n\r\n\r\n// ============================\r\n// TEMA\r\n// ============================\r\n\r\ndocument.getElementById(\"btnTema\").addEventListener(\"click\", function() {\r\n    const esNoche =\r\n        document.documentElement.getAttribute(\"data-tema\") === \"noche\";\r\n\r\n    document.documentElement.setAttribute(\r\n        \"data-tema\",\r\n        esNoche ? \"papel\" : \"noche\"\r\n    );\r\n\r\n    this.textContent = esNoche ? \"Noche\" : \"Papel\";\r\n});\r\n\r\n\r\n// ============================\r\n// CARGAR EVENTOS\r\n// ============================\r\n\r\nasync function loadEvents() {\r\n\r\n    try {\r\n\r\n        const response = await fetch(\"/api/events\");\r\n\r\n        if (!response.ok) {\r\n            throw new Error(\"No se pudieron cargar los eventos\");\r\n        }\r\n\r\n        const events = await response.json();\r\n\r\n        eventsList.innerHTML = \"\";\r\n\r\n        if (events.length === 0) {\r\n\r\n            const emptyMessage = document.createElement(\"p\");\r\n            emptyMessage.className = \"vacio\";\r\n            emptyMessage.textContent = \"No hay eventos todavía.\";\r\n\r\n            eventsList.appendChild(emptyMessage);\r\n\r\n            return;\r\n        }\r\n\r\n        const contenedor = document.createElement(\"div\");\r\n        contenedor.className = \"eventos\";\r\n\r\n        events.forEach(event => {\r\n\r\n            const article = document.createElement(\"article\");\r\n            article.className = \"evento\";\r\n\r\n            const title = document.createElement(\"h3\");\r\n            title.textContent = event.title;\r\n\r\n            article.appendChild(title);\r\n\r\n            if (event.description) {\r\n\r\n                const description = document.createElement(\"p\");\r\n                description.textContent = event.description;\r\n\r\n                article.appendChild(description);\r\n            }\r\n\r\n            const date = document.createElement(\"p\");\r\n            date.className = \"evento__fecha\";\r\n            date.textContent =\r\n                \"📅 \" +\r\n                event.date +\r\n                (event.time ? \" — \" + event.time : \"\");\r\n\r\n            const category = document.createElement(\"p\");\r\n            category.className = \"evento__categoria\";\r\n            category.textContent = event.category || \"general\";\r\n\r\n            const acciones = document.createElement(\"div\");\r\n            acciones.className = \"evento__acciones\";\r\n\r\n            const editButton = document.createElement(\"button\");\r\n            editButton.className = \"btn\";\r\n            editButton.type = \"button\";\r\n            editButton.textContent = \"Editar\";\r\n\r\n            editButton.addEventListener(\"click\", function() {\r\n                editEvent(event.id);\r\n            });\r\n\r\n            const deleteButton = document.createElement(\"button\");\r\n            deleteButton.className = \"btn btn--peligro\";\r\n            deleteButton.type = \"button\";\r\n            deleteButton.textContent = \"Eliminar\";\r\n\r\n            deleteButton.addEventListener(\"click\", function() {\r\n                deleteEvent(event.id);\r\n            });\r\n\r\n            acciones.appendChild(editButton);\r\n            acciones.appendChild(deleteButton);\r\n\r\n            article.appendChild(date);\r\n            article.appendChild(category);\r\n            article.appendChild(acciones);\r\n\r\n            contenedor.appendChild(article);\r\n\r\n        });\r\n\r\n        eventsList.appendChild(contenedor);\r\n\r\n    } catch (error) {\r\n\r\n        console.error(error);\r\n\r\n        eventsList.innerHTML =\r\n            '<p class=\"vacio\">Error al cargar los eventos.</p>';\r\n\r\n    }\r\n}\r\n\r\n\r\n// ============================\r\n// CREAR / EDITAR\r\n// ============================\r\n\r\neventForm.addEventListener(\"submit\", async (event) => {\r\n\r\n    event.preventDefault();\r\n\r\n    const eventData = {\r\n\r\n        title: document.getElementById(\"title\").value,\r\n\r\n        description:\r\n            document.getElementById(\"description\").value,\r\n\r\n        date:\r\n            document.getElementById(\"date\").value,\r\n\r\n        time:\r\n            document.getElementById(\"time\").value,\r\n\r\n        category:\r\n            document.getElementById(\"category\").value\r\n\r\n    };\r\n\r\n\r\n    let response;\r\n\r\n\r\n    if (editingId === null) {\r\n\r\n        // CREAR\r\n\r\n        response = await fetch(\"/api/events\", {\r\n\r\n            method: \"POST\",\r\n\r\n            headers: {\r\n                \"Content-Type\": \"application/json\"\r\n            },\r\n\r\n            body: JSON.stringify(eventData)\r\n\r\n        });\r\n\r\n    } else {\r\n\r\n        // EDITAR\r\n\r\n        response = await fetch(`/api/events/${editingId}`, {\r\n\r\n            method: \"PUT\",\r\n\r\n            headers: {\r\n                \"Content-Type\": \"application/json\"\r\n            },\r\n\r\n            body: JSON.stringify(eventData)\r\n\r\n        });\r\n\r\n    }\r\n\r\n\r\n    const data = await response.json();\r\n\r\n\r\n    if (response.ok) {\r\n\r\n        if (editingId === null) {\r\n\r\n            message.textContent =\r\n                \"Evento creado correctamente.\";\r\n\r\n        } else {\r\n\r\n            message.textContent =\r\n                \"Evento actualizado correctamente.\";\r\n\r\n        }\r\n\r\n        editingId = null;\r\n\r\n        eventForm.reset();\r\n\r\n        document.querySelector(\r\n            '#eventForm button[type=\"submit\"]'\r\n        ).textContent = \"Crear evento\";\r\n\r\n        loadEvents();\r\n\r\n    } else {\r\n\r\n        message.textContent =\r\n            data.error || \"Ha ocurrido un error.\";\r\n\r\n    }\r\n\r\n});\r\n\r\n\r\n// ============================\r\n// EDITAR EVENTO\r\n// ============================\r\n\r\nasync function editEvent(id) {\r\n\r\n    const response = await fetch(\"/api/events\");\r\n\r\n    const events = await response.json();\r\n\r\n    const event = events.find(event => event.id === id);\r\n\r\n    if (!event) {\r\n        return;\r\n    }\r\n\r\n\r\n    document.getElementById(\"title\").value =\r\n        event.title;\r\n\r\n    document.getElementById(\"description\").value =\r\n        event.description || \"\";\r\n\r\n    document.getElementById(\"date\").value =\r\n        event.date;\r\n\r\n    document.getElementById(\"time\").value =\r\n        event.time || \"\";\r\n\r\n    document.getElementById(\"category\").value =\r\n        event.category || \"\";\r\n\r\n\r\n    editingId = id;\r\n\r\n\r\n    document.querySelector(\r\n        '#eventForm button[type=\"submit\"]'\r\n    ).textContent = \"Guardar cambios\";\r\n\r\n\r\n    window.scrollTo({\r\n        top: 0,\r\n        behavior: \"smooth\"\r\n    });\r\n\r\n}\r\n\r\n\r\n// ============================\r\n// ELIMINAR EVENTO\r\n// ============================\r\n\r\nasync function deleteEvent(id) {\r\n\r\n    const confirmar = confirm(\r\n        \"¿Seguro que quieres eliminar este evento?\"\r\n    );\r\n\r\n    if (!confirmar) {\r\n        return;\r\n    }\r\n\r\n\r\n    const response = await fetch(\r\n        `/api/events/${id}`,\r\n        {\r\n            method: \"DELETE\"\r\n        }\r\n    );\r\n\r\n\r\n    const data = await response.json();\r\n\r\n\r\n    if (response.ok) {\r\n\r\n        message.textContent =\r\n            \"Evento eliminado correctamente.\";\r\n\r\n        loadEvents();\r\n\r\n    } else {\r\n\r\n        message.textContent =\r\n            data.error || \"No se ha podido eliminar.\";\r\n\r\n    }\r\n\r\n}\r\n\r\n\r\n// ============================\r\n// CONTRASEÑAS\r\n// ============================\r\n\r\nasync function changePassword(userId, username) {\r\n\r\n    const newPassword = prompt(\r\n        \"Nueva contraseña para \" + username + \":\"\r\n    );\r\n\r\n    if (!newPassword) {\r\n        return;\r\n    }\r\n\r\n    if (newPassword.length < 6) {\r\n        alert(\"La contraseña debe tener al menos 6 caracteres.\");\r\n        return;\r\n    }\r\n\r\n    const response = await fetch(\r\n        \"/api/users/\" + userId + \"/password\",\r\n        {\r\n            method: \"PUT\",\r\n            headers: {\r\n                \"Content-Type\": \"application/json\"\r\n            },\r\n            body: JSON.stringify({\r\n                password: newPassword\r\n            })\r\n        }\r\n    );\r\n\r\n    const data = await response.json();\r\n\r\n    if (response.ok) {\r\n        alert(\"Contraseña cambiada correctamente.\");\r\n    } else {\r\n        alert(data.error || \"No se pudo cambiar la contraseña.\");\r\n    }\r\n}\r\n\r\n\r\n// ============================\r\n// ARRANQUE\r\n// ============================\r\n\r\nloadEvents();\r\n</script>\r\n\r\n</body>\r\n</html>";
+export default `
+<!DOCTYPE html>
+<html lang="es" data-tema="papel">
+
+<head>
+    <meta charset="utf-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1"
+    >
+
+    <title>Administrar eventos - Kirkversario</title>
+
+    <link
+        rel="preconnect"
+        href="https://fonts.googleapis.com"
+    >
+
+    <link
+        rel="preconnect"
+        href="https://fonts.gstatic.com"
+        crossorigin
+    >
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        :root {
+            --fondo: #F3EDDF;
+            --texto: #191552;
+            --tarjeta: #FBF7EC;
+            --rosa: #FF4A6E;
+            --amarillo: #FFC233;
+
+            --borde: rgba(25, 21, 82, .2);
+            --fuerte: rgba(25, 21, 82, .5);
+            --tenue: rgba(25, 21, 82, .55);
+
+            --display:
+                'Bricolage Grotesque',
+                'Arial Black',
+                sans-serif;
+
+            --cuerpo:
+                'Instrument Sans',
+                system-ui,
+                sans-serif;
+
+            --mono:
+                'DM Mono',
+                ui-monospace,
+                Menlo,
+                monospace;
+        }
+
+        [data-tema="noche"] {
+            --fondo: #12103F;
+            --texto: #F3EDDF;
+            --tarjeta: #1B1857;
+
+            --borde: rgba(243, 237, 223, .2);
+            --fuerte: rgba(243, 237, 223, .45);
+            --tenue: rgba(243, 237, 223, .58);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        [hidden] {
+            display: none !important;
+        }
+
+        body {
+            margin: 0;
+            background: var(--fondo);
+            color: var(--texto);
+
+            font-family: var(--cuerpo);
+            font-size: 16px;
+            line-height: 1.5;
+
+            -webkit-font-smoothing: antialiased;
+        }
+
+        .env {
+            width: 100%;
+            max-width: 900px;
+
+            margin: 0 auto;
+            padding: 0 18px;
+        }
+
+        .top {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            max-width: 900px;
+            margin: 0 auto;
+
+            padding: 16px 18px;
+
+            border-bottom: 2px solid var(--texto);
+
+            flex-wrap: wrap;
+        }
+
+        .top h1 {
+            margin: 0 auto 0 0;
+
+            font-family: var(--display);
+            font-size: 17px;
+            font-weight: 800;
+
+            text-transform: uppercase;
+            letter-spacing: -.02em;
+        }
+
+        .top h1 a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .top h1 span {
+            color: var(--rosa);
+        }
+
+        .btn {
+            display: inline-block;
+
+            padding: 7px 14px;
+
+            border: 1.5px solid var(--texto);
+            border-radius: 999px;
+
+            background: transparent;
+            color: var(--texto);
+
+            font-family: var(--mono);
+            font-size: 11px;
+
+            text-transform: uppercase;
+            letter-spacing: .07em;
+
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: var(--texto);
+            color: var(--fondo);
+        }
+
+        .btn--peligro {
+            border-color: var(--rosa);
+            color: var(--rosa);
+        }
+
+        .btn--peligro:hover {
+            background: var(--rosa);
+            color: #FBF7EC;
+        }
+
+        .enviar {
+            min-height: 46px;
+
+            padding: 0 26px;
+            margin-top: 4px;
+
+            border: 2px solid var(--texto);
+            border-radius: 999px;
+
+            background: var(--rosa);
+            color: #FBF7EC;
+
+            font-family: var(--mono);
+            font-size: 12px;
+
+            text-transform: uppercase;
+            letter-spacing: .09em;
+
+            cursor: pointer;
+        }
+
+        .enviar:hover {
+            background: var(--texto);
+            color: var(--fondo);
+        }
+
+        :focus-visible {
+            outline: 3px solid var(--rosa);
+            outline-offset: 2px;
+        }
+
+        section {
+            padding: 40px 0;
+        }
+
+        section + section {
+            border-top: 2px solid var(--texto);
+        }
+
+        h2 {
+            margin: 0 0 6px;
+
+            font-family: var(--display);
+            font-size: clamp(22px, 3.6vw, 30px);
+            font-weight: 800;
+
+            letter-spacing: -.03em;
+        }
+
+        .sub {
+            max-width: 60ch;
+
+            margin: 0 0 22px;
+
+            color: var(--tenue);
+
+            font-size: 15px;
+        }
+
+        .vacio {
+            color: var(--tenue);
+            font-size: 15px;
+        }
+
+        /* =========================
+           USUARIOS
+        ========================= */
+
+        .usuarios {
+            display: grid;
+            gap: 10px;
+
+            margin: 0;
+            padding: 0;
+
+            list-style: none;
+        }
+
+        .usuario {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+
+            padding: 12px 14px;
+
+            border: 1.5px solid var(--borde);
+            border-radius: 12px;
+
+            background: var(--tarjeta);
+
+            flex-wrap: wrap;
+        }
+
+        .usuario__nombre {
+            margin-right: auto;
+
+            font-family: var(--display);
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .usuario__yo {
+            padding: 4px 8px;
+
+            border-radius: 999px;
+
+            background: var(--amarillo);
+            color: #191552;
+
+            font-family: var(--mono);
+            font-size: 9px;
+
+            text-transform: uppercase;
+            letter-spacing: .1em;
+        }
+
+        /* =========================
+           FORMULARIO
+        ========================= */
+
+        .formulario {
+            padding: 20px;
+
+            border: 2px solid var(--texto);
+            border-radius: 14px;
+
+            background: var(--tarjeta);
+        }
+
+        .rejilla {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .campo {
+            margin-bottom: 14px;
+        }
+
+        .et {
+            display: block;
+
+            margin-bottom: 4px;
+
+            color: var(--tenue);
+
+            font-family: var(--mono);
+            font-size: 10px;
+
+            text-transform: uppercase;
+            letter-spacing: .1em;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        textarea {
+            width: 100%;
+            min-height: 44px;
+
+            padding: 10px;
+
+            border: 1.5px solid var(--fuerte);
+            border-radius: 8px;
+
+            background: var(--fondo);
+            color: inherit;
+
+            font-family: var(--mono);
+            font-size: 15px;
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: var(--texto);
+        }
+
+        textarea {
+            min-height: 90px;
+
+            font-family: var(--cuerpo);
+            font-size: 16px;
+
+            line-height: 1.4;
+            resize: vertical;
+        }
+
+        #message {
+            margin: 16px 0 0;
+
+            padding: 8px 0 8px 12px;
+
+            border-left: 4px solid var(--amarillo);
+
+            font-family: var(--mono);
+            font-size: 12px;
+            letter-spacing: .03em;
+        }
+
+        #message:empty {
+            display: none;
+        }
+
+        /* =========================
+           EVENTOS
+        ========================= */
+
+        .eventos {
+            display: grid;
+            gap: 12px;
+        }
+
+        .evento {
+            padding: 18px;
+
+            border: 2px solid var(--texto);
+            border-radius: 14px;
+
+            background: var(--tarjeta);
+        }
+
+        .evento h3 {
+            margin: 0 0 8px;
+
+            font-family: var(--display);
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .evento p {
+            margin: 6px 0;
+        }
+
+        .evento__fecha {
+            color: var(--tenue);
+
+            font-family: var(--mono);
+            font-size: 12px;
+        }
+
+        .evento__categoria {
+            display: inline-block;
+
+            padding: 5px 9px;
+
+            border: 1px solid var(--borde);
+            border-radius: 999px;
+
+            color: var(--tenue);
+
+            font-family: var(--mono);
+            font-size: 10px;
+
+            text-transform: uppercase;
+            letter-spacing: .08em;
+        }
+
+        .evento__acciones {
+            display: flex;
+            gap: 8px;
+
+            margin-top: 14px;
+            padding-top: 14px;
+
+            border-top: 1px solid var(--borde);
+
+            flex-wrap: wrap;
+        }
+
+        .pie {
+            padding: 22px 0 36px;
+
+            border-top: 2px solid var(--texto);
+
+            color: var(--tenue);
+
+            font-family: var(--mono);
+            font-size: 11px;
+
+            text-transform: uppercase;
+            letter-spacing: .07em;
+        }
+
+        @media (max-width: 720px) {
+
+            .rejilla {
+                grid-template-columns: 1fr;
+            }
+
+            section {
+                padding: 32px 0;
+            }
+
+            .usuario {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .usuario__nombre {
+                margin-right: 0;
+            }
+
+        }
+
+    </style>
+</head>
+
+<body>
+
+<header class="top">
+
+    <h1>
+        <a href="/">
+            Kirkversario
+            <span>Hail Hittler</span>
+        </a>
+    </h1>
+
+    <a
+        class="btn"
+        href="/"
+    >
+        Ver la web
+    </a>
+
+    <button
+        class="btn"
+        id="btnTema"
+        type="button"
+    >
+        Noche
+    </button>
+
+</header>
+
+<main class="env">
+
+    <!-- =========================
+         USUARIOS
+    ========================== -->
+
+    <section>
+
+        <h2>Usuarios registrados</h2>
+
+        <p class="sub">
+            Todas las cuentas que pueden administrar el Kirkversario.
+        </p>
+
+        <div id="usersList">
+
+            <% if (!users || users.length === 0) { %>
+
+                <p class="vacio">
+                    No hay usuarios registrados.
+                </p>
+
+            <% } else { %>
+
+                <ul class="usuarios">
+
+                    <% users.forEach(function(user) { %>
+
+                        <li class="usuario">
+
+                            <span class="usuario__nombre">
+                                <%= user.username %>
+                            </span>
+
+                            <% if (user.id === sessionUserId) { %>
+
+                                <span class="usuario__yo">
+                                    Tú
+                                </span>
+
+                            <% } %>
+
+                            <button
+                                class="btn"
+                                type="button"
+                                onclick="changePassword('<%= user.id %>', '<%= user.username %>')"
+                            >
+                                Cambiar contraseña
+                            </button>
+
+                            <% if (user.id === sessionUserId) { %>
+
+                                <button
+                                    class="btn btn--peligro"
+                                    type="button"
+                                    onclick="deleteMyAccount()"
+                                >
+                                    Borrar mi cuenta
+                                </button>
+
+                            <% } %>
+
+                        </li>
+
+                    <% }); %>
+
+                </ul>
+
+            <% } %>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         CREAR EVENTO
+    ========================== -->
+
+    <section>
+
+        <h2>Nuevo evento</h2>
+
+        <p class="sub">
+            Rellena los datos y aparecerá en la portada.
+        </p>
+
+        <form
+            class="formulario"
+            id="eventForm"
+        >
+
+            <div class="campo">
+
+                <label
+                    class="et"
+                    for="title"
+                >
+                    Título
+                </label>
+
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    required
+                >
+
+            </div>
+
+
+            <div class="campo">
+
+                <label
+                    class="et"
+                    for="description"
+                >
+                    Descripción
+                </label>
+
+                <textarea
+                    id="description"
+                    name="description"
+                ></textarea>
+
+            </div>
+
+
+            <div class="rejilla">
+
+                <div class="campo">
+
+                    <label
+                        class="et"
+                        for="date"
+                    >
+                        Fecha
+                    </label>
+
+                    <input
+                        type="date"
+                        id="date"
+                        name="date"
+                        required
+                    >
+
+                </div>
+
+
+                <div class="campo">
+
+                    <label
+                        class="et"
+                        for="time"
+                    >
+                        Hora
+                    </label>
+
+                    <input
+                        type="time"
+                        id="time"
+                        name="time"
+                    >
+
+                </div>
+
+            </div>
+
+
+            <div class="campo">
+
+                <label
+                    class="et"
+                    for="category"
+                >
+                    Categoría
+                </label>
+
+                <input
+                    type="text"
+                    id="category"
+                    name="category"
+                    placeholder="general"
+                >
+
+            </div>
+
+
+            <button
+                class="enviar"
+                type="submit"
+            >
+                Crear evento
+            </button>
+
+        </form>
+
+
+        <p id="message"></p>
+
+    </section>
+
+
+    <!-- =========================
+         EVENTOS EXISTENTES
+    ========================== -->
+
+    <section>
+
+        <h2>Eventos existentes</h2>
+
+        <p class="sub">
+            Todo lo que hay ahora mismo en el calendario.
+        </p>
+
+        <div id="eventsList"></div>
+
+    </section>
+
+
+    <div class="pie">
+        Kirkversario · Panel de administración
+    </div>
+
+</main>
+
+
+<script>
+
+"use strict";
+
+
+/* ============================================================
+   ELEMENTOS
+============================================================ */
+
+const eventForm =
+    document.getElementById("eventForm");
+
+const message =
+    document.getElementById("message");
+
+const eventsList =
+    document.getElementById("eventsList");
+
+let editingId = null;
+
+
+/* ============================================================
+   TEMA
+============================================================ */
+
+document
+    .getElementById("btnTema")
+    .addEventListener("click", function () {
+
+        const noche =
+            document.documentElement
+                .getAttribute("data-tema") === "noche";
+
+        document.documentElement
+            .setAttribute(
+                "data-tema",
+                noche ? "papel" : "noche"
+            );
+
+        this.textContent =
+            noche ? "Noche" : "Papel";
+    });
+
+
+/* ============================================================
+   CARGAR EVENTOS
+============================================================ */
+
+async function loadEvents() {
+
+    try {
+
+        const response =
+            await fetch("/api/events");
+
+        if (!response.ok) {
+            throw new Error(
+                "No se pudieron cargar los eventos."
+            );
+        }
+
+        const events =
+            await response.json();
+
+        eventsList.innerHTML = "";
+
+
+        if (!events || events.length === 0) {
+
+            const empty =
+                document.createElement("p");
+
+            empty.className = "vacio";
+
+            empty.textContent =
+                "No hay eventos todavía.";
+
+            eventsList.appendChild(empty);
+
+            return;
+        }
+
+
+        const container =
+            document.createElement("div");
+
+        container.className = "eventos";
+
+
+        events.forEach(function (event) {
+
+            const article =
+                document.createElement("article");
+
+            article.className = "evento";
+
+
+            const title =
+                document.createElement("h3");
+
+            title.textContent =
+                event.title || "";
+
+            article.appendChild(title);
+
+
+            if (event.description) {
+
+                const description =
+                    document.createElement("p");
+
+                description.textContent =
+                    event.description;
+
+                article.appendChild(description);
+            }
+
+
+            const date =
+                document.createElement("p");
+
+            date.className =
+                "evento__fecha";
+
+            date.textContent =
+                "📅 " +
+                event.date +
+                (
+                    event.time
+                        ? " — " + event.time
+                        : ""
+                );
+
+            article.appendChild(date);
+
+
+            const category =
+                document.createElement("p");
+
+            category.className =
+                "evento__categoria";
+
+            category.textContent =
+                event.category || "general";
+
+            article.appendChild(category);
+
+
+            const actions =
+                document.createElement("div");
+
+            actions.className =
+                "evento__acciones";
+
+
+            const editButton =
+                document.createElement("button");
+
+            editButton.className =
+                "btn";
+
+            editButton.type =
+                "button";
+
+            editButton.textContent =
+                "Editar";
+
+
+            editButton.addEventListener(
+                "click",
+                function () {
+                    editEvent(event.id);
+                }
+            );
+
+
+            const deleteButton =
+                document.createElement("button");
+
+            deleteButton.className =
+                "btn btn--peligro";
+
+            deleteButton.type =
+                "button";
+
+            deleteButton.textContent =
+                "Eliminar";
+
+
+            deleteButton.addEventListener(
+                "click",
+                function () {
+                    deleteEvent(event.id);
+                }
+            );
+
+
+            actions.appendChild(editButton);
+            actions.appendChild(deleteButton);
+
+            article.appendChild(actions);
+
+            container.appendChild(article);
+
+        });
+
+
+        eventsList.appendChild(container);
+
+    } catch (error) {
+
+        console.error(error);
+
+        eventsList.innerHTML =
+            '<p class="vacio">' +
+            'Error al cargar los eventos.' +
+            '</p>';
+    }
+}
+
+
+/* ============================================================
+   CREAR / EDITAR EVENTO
+============================================================ */
+
+eventForm.addEventListener(
+    "submit",
+    async function (event) {
+
+        event.preventDefault();
+
+
+        const eventData = {
+
+            title:
+                document
+                    .getElementById("title")
+                    .value
+                    .trim(),
+
+            description:
+                document
+                    .getElementById("description")
+                    .value
+                    .trim(),
+
+            date:
+                document
+                    .getElementById("date")
+                    .value,
+
+            time:
+                document
+                    .getElementById("time")
+                    .value,
+
+            category:
+                document
+                    .getElementById("category")
+                    .value
+                    .trim()
+
+        };
+
+
+        let response;
+
+
+        try {
+
+            if (editingId === null) {
+
+                response =
+                    await fetch(
+                        "/api/events",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(eventData)
+                        }
+                    );
+
+            } else {
+
+                response =
+                    await fetch(
+                        "/api/events/" + editingId,
+                        {
+                            method: "PUT",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(eventData)
+                        }
+                    );
+            }
+
+
+            const data =
+                await response.json();
+
+
+            if (!response.ok) {
+
+                message.textContent =
+                    data.error ||
+                    "Ha ocurrido un error.";
+
+                return;
+            }
+
+
+            if (editingId === null) {
+
+                message.textContent =
+                    "Evento creado correctamente.";
+
+            } else {
+
+                message.textContent =
+                    "Evento actualizado correctamente.";
+            }
+
+
+            editingId = null;
+
+            eventForm.reset();
+
+
+            document
+                .querySelector(
+                    '#eventForm button[type="submit"]'
+                )
+                .textContent =
+                "Crear evento";
+
+
+            await loadEvents();
+
+        } catch (error) {
+
+            console.error(error);
+
+            message.textContent =
+                "Error de conexión con el servidor.";
+        }
+
+    }
+);
+
+
+/* ============================================================
+   EDITAR EVENTO
+============================================================ */
+
+async function editEvent(id) {
+
+    try {
+
+        const response =
+            await fetch("/api/events");
+
+        if (!response.ok) {
+            throw new Error(
+                "No se pudieron cargar los eventos."
+            );
+        }
+
+        const events =
+            await response.json();
+
+
+        const event =
+            events.find(function (item) {
+                return item.id === id;
+            });
+
+
+        if (!event) {
+            return;
+        }
+
+
+        document
+            .getElementById("title")
+            .value =
+            event.title || "";
+
+
+        document
+            .getElementById("description")
+            .value =
+            event.description || "";
+
+
+        document
+            .getElementById("date")
+            .value =
+            event.date || "";
+
+
+        document
+            .getElementById("time")
+            .value =
+            event.time || "";
+
+
+        document
+            .getElementById("category")
+            .value =
+            event.category || "";
+
+
+        editingId = id;
+
+
+        document
+            .querySelector(
+                '#eventForm button[type="submit"]'
+            )
+            .textContent =
+            "Guardar cambios";
+
+
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        message.textContent =
+            "No se pudo cargar el evento.";
+    }
+}
+
+
+/* ============================================================
+   ELIMINAR EVENTO
+============================================================ */
+
+async function deleteEvent(id) {
+
+    const confirmar =
+        confirm(
+            "¿Seguro que quieres eliminar este evento?"
+        );
+
+
+    if (!confirmar) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/events/" + id,
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            message.textContent =
+                data.error ||
+                "No se ha podido eliminar.";
+
+            return;
+        }
+
+
+        message.textContent =
+            "Evento eliminado correctamente.";
+
+
+        await loadEvents();
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        message.textContent =
+            "Error de conexión con el servidor.";
+    }
+}
+
+
+/* ============================================================
+   CAMBIAR CONTRASEÑA
+============================================================ */
+
+async function changePassword(
+    userId,
+    username
+) {
+
+    const newPassword =
+        prompt(
+            "Nueva contraseña para " +
+            username +
+            ":"
+        );
+
+
+    if (!newPassword) {
+        return;
+    }
+
+
+    if (newPassword.length < 6) {
+
+        alert(
+            "La contraseña debe tener al menos 6 caracteres."
+        );
+
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/users/" +
+                userId +
+                "/password",
+                {
+                    method: "PUT",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify({
+                            password: newPassword
+                        })
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            alert(
+                data.error ||
+                "No se pudo cambiar la contraseña."
+            );
+
+            return;
+        }
+
+
+        alert(
+            "Contraseña cambiada correctamente."
+        );
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Error de conexión con el servidor."
+        );
+    }
+}
+
+
+/* ============================================================
+   BORRAR MI CUENTA
+============================================================ */
+
+async function deleteMyAccount() {
+
+    const confirmed =
+        confirm(
+            "¿Seguro que quieres borrar tu cuenta? " +
+            "Esta acción no se puede deshacer."
+        );
+
+
+    if (!confirmed) {
+        return;
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/api/users/me",
+                {
+                    method: "DELETE"
+                }
+            );
+
+
+        const text =
+            await response.text();
+
+
+        if (!response.ok) {
+
+            alert(
+                "Error del servidor: " +
+                text
+            );
+
+            return;
+        }
+
+
+        alert(
+            "Cuenta eliminada correctamente."
+        );
+
+
+        window.location.href =
+            "/login";
+
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert(
+            "Error de conexión con el servidor."
+        );
+    }
+}
+
+
+/* ============================================================
+   ARRANQUE
+============================================================ */
+
+loadEvents();
+
+</script>
+
+</body>
+</html>
+`;
