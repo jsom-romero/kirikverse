@@ -770,10 +770,10 @@ export default function calendarioTemplate() {
     var SEM = [
         "lunes",
         "martes",
-        "miÃ©rcoles",
+        "miercoles",
         "jueves",
         "viernes",
-        "sÃ¡bado",
+        "sabado",
         "domingo"
     ];
 

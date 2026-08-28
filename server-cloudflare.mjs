@@ -13,6 +13,9 @@ import loginTemplate from "./templates/login.js";
 import registerTemplate from "./templates/register.js";
 import calendarioTemplate from "./templates/calendar.js";
 import verifyEmailTemplate from "./templates/verify-email.js";
+import registerSuccessTemplate from "./templates/register-success.js";
+
+
 
 const app = express();
 
@@ -587,26 +590,9 @@ app.post("/register", async (req, res) => {
         // RESPUESTA
         // ========================================================
 
-        return res.status(201).send(`
-            <h2>Cuenta creada</h2>
-
-            <p>
-                Hemos enviado un correo de verificación a:
-            </p>
-
-            <strong>
-                ${escapeHtml(email)}
-            </strong>
-
-            <p>
-                Revisa tu bandeja de entrada y pulsa el
-                enlace para activar tu cuenta.
-            </p>
-
-            <a href="/login">
-                Ir al login
-            </a>
-        `);
+        return res.status(201).send(
+            registerSuccessTemplate(email)
+        );
 
     } catch (error) {
 
