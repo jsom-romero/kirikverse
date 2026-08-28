@@ -26,10 +26,84 @@ app.use(express.urlencoded({ extended: true }));
 // ============================================================
 
 function render(template, data = {}) {
-    return template
-        .replace(/<%=\s*([\s\S]*?)\s*%>/g, (_, expression) => {
-            return escapeHtml(evaluateExpression(expression, data));
-        });
+
+    let output = template;
+
+    // ========================================================
+    // IF / ELSE
+    // ========================================================
+
+    output = output.replace(
+        /<%\s*if\s*\(([\s\S]*?)\)\s*\{\s*%>([\s\S]*?)<%\s*\}\s*else\s*\{\s*%>([\s\S]*?)<%\s*\}\s*%>/g,
+        (_, condition, yes, no) => {
+
+            const resultado = evaluateExpression(
+                condition,
+                data
+            );
+
+            return resultado ? yes : no;
+        }
+    );
+
+    // ========================================================
+    // IF SIN ELSE
+    // ========================================================
+
+    output = output.replace(
+        /<%\s*if\s*\(([\s\S]*?)\)\s*\{\s*%>([\s\S]*?)<%\s*\}\s*%>/g,
+        (_, condition, content) => {
+
+            const resultado = evaluateExpression(
+                condition,
+                data
+            );
+
+            return resultado ? content : "";
+        }
+    );
+
+    // ========================================================
+    // FOR EACH
+    // ========================================================
+
+    output = output.replace(
+        /<%\s*events\.forEach\(function\(event\)\s*\{\s*%>([\s\S]*?)<%\s*\}\);\s*%>/g,
+        (_, content) => {
+
+            if (!Array.isArray(data.events)) {
+                return "";
+            }
+
+            return data.events
+                .map(event => {
+                    return render(content, {
+                        ...data,
+                        event
+                    });
+                })
+                .join("");
+        }
+    );
+
+    // ========================================================
+    // VARIABLES <%= ... %>
+    // ========================================================
+
+    output = output.replace(
+        /<%=\s*([\s\S]*?)\s*%>/g,
+        (_, expression) => {
+
+            return escapeHtml(
+                evaluateExpression(
+                    expression,
+                    data
+                )
+            );
+        }
+    );
+
+    return output;
 }
 
 function escapeHtml(value) {
