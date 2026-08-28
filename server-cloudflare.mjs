@@ -439,13 +439,42 @@ app.delete("/api/users/me", requireLogin, async (req, res) => {
 // ============================================================
 
 app.get("/register", (req, res) => {
+    res.status(200).send(`
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <title>Registro</title>
+        </head>
+        <body>
+            <h1>Registro</h1>
 
-    res
-        .status(200)
-        .setHeader("Content-Type", "text/html; charset=utf-8")
-        .send(
-            render(registerTemplate)
-        );
+            <form method="POST" action="/register">
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="Usuario"
+                    required
+                >
+
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Contraseña"
+                    required
+                >
+
+                <button type="submit">
+                    Registrarse
+                </button>
+            </form>
+
+            <p>
+                <a href="/login">Ir al login</a>
+            </p>
+        </body>
+        </html>
+    `);
 });
 
 
@@ -479,13 +508,42 @@ app.post("/register", async (req, res) => {
 // ============================================================
 
 app.get("/login", (req, res) => {
+    res.status(200).send(`
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <title>Login</title>
+        </head>
+        <body>
+            <h1>Login</h1>
 
-    res
-        .status(200)
-        .setHeader("Content-Type", "text/html; charset=utf-8")
-        .send(
-            render(loginTemplate)
-        );
+            <form method="POST" action="/login">
+                <input
+                    type="text"
+                    name="username"
+                    placeholder="Usuario"
+                    required
+                >
+
+                <input
+                    type="password"
+                    name="password"
+                    placeholder="Contraseña"
+                    required
+                >
+
+                <button type="submit">
+                    Entrar
+                </button>
+            </form>
+
+            <p>
+                <a href="/register">Crear cuenta</a>
+            </p>
+        </body>
+        </html>
+    `);
 });
 
 
