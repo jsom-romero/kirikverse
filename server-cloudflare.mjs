@@ -7,10 +7,10 @@ import { httpServerHandler } from "cloudflare:node";
 
 
 
-import homeTemplate from "./templates/home.js";
-import loginTemplate from "./templates/login.js";
-import registerTemplate from "./templates/register.js";
-import calendarioTemplate from "./templates/calendar.js";
+import homeTemplate from "./public/templates/home.js";
+import loginTemplate from "./public/templates/login.js";
+import registerTemplate from "./public/templates/register.js";
+import calendarioTemplate from "./public/templates/calendar.js";
 
 
 const app = express();
@@ -598,31 +598,33 @@ app.post("/login", async (req, res) => {
 // ============================================================
 // REGISTRO
 // ============================================================
-app.get("/register", async (req, res) => {
+app.get("/register", (req, res) => {
 
-    const assetResponse =
-        await env.ASSETS.fetch(
-            new Request(
-                "https://assets.local/register.html"
+    try {
+
+        const html = registerTemplate();
+
+        return res
+            .status(200)
+            .set(
+                "Content-Type",
+                "text/html; charset=utf-8"
             )
+            .send(html);
+
+    } catch (error) {
+
+        console.error(
+            "ERROR REGISTER:",
+            error
         );
 
-    if (!assetResponse.ok) {
         return res
-            .status(404)
-            .send("No se pudo cargar la página de registro.");
+            .status(500)
+            .send(
+                "Error al cargar la página de registro."
+            );
     }
-
-    const html =
-        await assetResponse.text();
-
-    return res
-        .status(200)
-        .set(
-            "Content-Type",
-            "text/html; charset=utf-8"
-        )
-        .send(html);
 });
 
 
