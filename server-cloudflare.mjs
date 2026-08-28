@@ -12,9 +12,6 @@ import adminTemplate from "./templates/admin.js";
 import loginTemplate from "./templates/login.js";
 import registerTemplate from "./templates/register.js";
 import calendarioTemplate from "./templates/calendar.js";
-import verifyEmailTemplate from "./templates/verify-email.js";
-import registerSuccessTemplate from "./templates/register-success.js";
-
 
 
 const app = express();
@@ -411,210 +408,6 @@ app.get("/admin", requireLogin, async (req, res) => {
     }
 });
 
-app.post("/register", async (req, res) => {
-    console.log("========== REGISTER ==========");
-
-    try {
-
-        const { username, email, password } = req.body;
-
-        console.log("USERNAME:", username);
-        console.log("EMAIL:", email);
-
-        // ========================================================
-        // COMPROBAR DATOS
-        // ========================================================
-
-        if (!username || !email || !password) {
-            return res.status(400).send(
-                "El usuario, el correo y la contraseña son obligatorios."
-            );
-        }
-
-        if (password.length < 6) {
-            return res.status(400).send(
-                "La contraseña debe tener al menos 6 caracteres."
-            );
-        }
-
-        // ========================================================
-        // COMPROBAR USUARIO
-        // ========================================================
-
-        const existingUser = await env.DB
-            .prepare(`
-                SELECT id
-                FROM users
-                WHERE username = ?
-            `)
-            .bind(username)
-            .first();
-
-        if (existingUser) {
-            return res.status(400).send(
-                "Ese nombre de usuario ya está registrado."
-            );
-        }
-
-        // ========================================================
-        // COMPROBAR EMAIL
-        // ========================================================
-
-        const existingEmail = await env.DB
-            .prepare(`
-                SELECT id
-                FROM users
-                WHERE email = ?
-            `)
-            .bind(email)
-            .first();
-
-        if (existingEmail) {
-            return res.status(400).send(
-                "Ese correo electrónico ya está registrado."
-            );
-        }
-
-        // ========================================================
-        // HASHEAR CONTRASEÑA
-        // ========================================================
-
-        const hashedPassword = await bcrypt.hash(
-            password,
-            12
-        );
-
-        // ========================================================
-        // CREAR USUARIO
-        // ========================================================
-
-        const result = await env.DB
-            .prepare(`
-                INSERT INTO users
-                (
-                    username,
-                    password,
-                    email,
-                    email_verified
-                )
-                VALUES (?, ?, ?, 0)
-            `)
-            .bind(
-                username,
-                hashedPassword,
-                email
-            )
-            .run();
-
-        const userId = result.meta.last_row_id;
-
-        // ========================================================
-        // CREAR TOKEN DE VERIFICACIÓN
-        // ========================================================
-
-        const token = crypto
-            .randomBytes(32)
-            .toString("hex");
-
-        const expiresAt =
-            Date.now() + (24 * 60 * 60 * 1000);
-
-        await env.DB
-            .prepare(`
-                INSERT INTO email_verifications
-                (
-                    user_id,
-                    token,
-                    expires_at
-                )
-                VALUES (?, ?, ?)
-            `)
-            .bind(
-                userId,
-                token,
-                expiresAt
-            )
-            .run();
-
-        // ========================================================
-        // ENVIAR EMAIL
-        // ========================================================
-
-        const resend = new Resend(
-            env.RESEND_API_KEY
-        );
-
-        const verifyUrl =
-            `https://kirkversario.shit-afk-slighted247.workers.dev/verify-email?token=${encodeURIComponent(token)}`;
-
-        const emailResult = await resend.emails.send({
-            from: "Kirkversario <onboarding@resend.dev>",
-            to: email,
-            subject: "Verifica tu cuenta de Kirkversario",
-            html: `
-                <h2>Bienvenido a Kirkversario</h2>
-
-                <p>
-                    Hola ${escapeHtml(username)}.
-                </p>
-
-                <p>
-                    Tu cuenta se ha creado correctamente.
-                </p>
-
-                <p>
-                    Para activar tu cuenta, pulsa aquí:
-                </p>
-
-                <p>
-                    <a href="${verifyUrl}">
-                        Verificar mi correo
-                    </a>
-                </p>
-
-                <p>
-                    Este enlace caduca en 24 horas.
-                </p>
-            `
-        });
-
-        console.log("EMAIL RESEND:", emailResult);
-
-        if (emailResult?.error) {
-
-            console.error(
-                "ERROR ENVIANDO EMAIL:",
-                emailResult.error
-            );
-
-            return res.status(500).send(
-                "La cuenta se creó, pero no se pudo enviar el correo de verificación."
-            );
-        }
-
-        // ========================================================
-        // RESPUESTA
-        // ========================================================
-
-        return res.status(201).send(
-            registerSuccessTemplate(email)
-        );
-
-    } catch (error) {
-
-        console.error(
-            "REGISTER ERROR:",
-            error
-        );
-
-        return res.status(500).send(
-            "Error al registrar el usuario: " +
-            String(error?.message || error)
-        );
-    }
-});
-
-
 // ============================================================
 // LOGIN
 // ============================================================
@@ -641,8 +434,6 @@ app.post("/login", async (req, res) => {
                     id,
                     username,
                     password,
-                    email,
-                    email_verified,
                     is_admin
                 FROM users
                 WHERE username = ?
@@ -666,22 +457,6 @@ app.post("/login", async (req, res) => {
             return res.status(401).send(
                 "Usuario o contraseña incorrectos."
             );
-        }
-
-        // Comprobar que el correo está verificado
-        if (user.email_verified !== 1) {
-            return res.status(403).send(`
-                <h2>Correo no verificado</h2>
-
-                <p>
-                    Tienes que verificar tu correo electrónico
-                    antes de iniciar sesión.
-                </p>
-
-                <a href="/login">
-                    Volver al login
-                </a>
-            `);
         }
 
         // Crear sesión
@@ -729,117 +504,72 @@ app.get("/register", async (req, res) => {
     }
 });
 
-
 app.post("/register", async (req, res) => {
+
+    console.log("========== REGISTER ==========");
 
     try {
 
-        const {
-            username,
-            email,
-            password
-        } = req.body;
+        const { username, password } = req.body;
 
-        if (!username || !email || !password) {
+        console.log("USERNAME:", username);
+
+        if (!username || !password) {
+
             return res.status(400).send(
-                "El usuario, el correo y la contraseña son obligatorios."
+                "El nombre de usuario y la contraseña son obligatorios."
             );
         }
 
         if (password.length < 6) {
+
             return res.status(400).send(
                 "La contraseña debe tener al menos 6 caracteres."
             );
         }
 
-        // Comprobar usuario
-        const existingUser = await env.DB.prepare(`
-            SELECT id
-            FROM users
-            WHERE username = ?
-        `)
+        const existingUser = await env.DB
+            .prepare(`
+                SELECT id
+                FROM users
+                WHERE username = ?
+            `)
             .bind(username)
             .first();
 
         if (existingUser) {
+
             return res.status(400).send(
                 "Ese nombre de usuario ya está registrado."
             );
         }
 
-        // Comprobar email
-        const existingEmail = await env.DB.prepare(`
-            SELECT id
-            FROM users
-            WHERE email = ?
-        `)
-            .bind(email)
-            .first();
-
-        if (existingEmail) {
-            return res.status(400).send(
-                "Ese correo electrónico ya está registrado."
-            );
-        }
-
-        // Crear contraseña segura
         const hashedPassword = await bcrypt.hash(
             password,
             12
         );
 
-        // Crear usuario
-        const result = await env.DB.prepare(`
-            INSERT INTO users
-            (
-                username,
-                password,
-                email,
-                email_verified
-            )
-            VALUES (?, ?, ?, 0)
-        `)
+        await env.DB
+            .prepare(`
+                INSERT INTO users
+                (
+                    username,
+                    password
+                )
+                VALUES (?, ?)
+            `)
             .bind(
                 username,
-                hashedPassword,
-                email
-            )
-            .run();
-
-        const userId = result.meta.last_row_id;
-
-        // Crear token
-        const token = crypto
-            .randomBytes(32)
-            .toString("hex");
-
-        const expiresAt =
-            Date.now() + 24 * 60 * 60 * 1000;
-
-        await env.DB.prepare(`
-            INSERT INTO email_verifications
-            (
-                user_id,
-                token,
-                expires_at
-            )
-            VALUES (?, ?, ?)
-        `)
-            .bind(
-                userId,
-                token,
-                expiresAt
+                hashedPassword
             )
             .run();
 
         console.log(
-            "Token de verificación:",
-            token
+            "Usuario registrado correctamente:",
+            username
         );
 
-        return res.status(201).send(
-            "Cuenta creada. Revisa tu correo para verificarla."
-        );
+        return res.redirect("/login");
 
     } catch (error) {
 
@@ -854,114 +584,6 @@ app.post("/register", async (req, res) => {
         );
     }
 });
-
-
-// ============================================================
-// VERIFICAR EMAIL
-// ============================================================
-
-app.get("/verify-email", async (req, res) => {
-
-    try {
-
-        const token = req.query.token;
-
-        if (!token) {
-            return res.status(400).send(
-                verifyEmailTemplate({
-                    success: false,
-                    title: "Enlace inválido",
-                    message: "No se ha proporcionado ningún token de verificación."
-                })
-            );
-        }
-
-        const verification = await env.DB
-            .prepare(`
-                SELECT
-                    email_verifications.user_id,
-                    email_verifications.expires_at
-                FROM email_verifications
-                INNER JOIN users
-                    ON users.id = email_verifications.user_id
-                WHERE email_verifications.token = ?
-            `)
-            .bind(token)
-            .first();
-
-        if (!verification) {
-            return res.status(400).send(
-                verifyEmailTemplate({
-                    success: false,
-                    title: "Enlace inválido",
-                    message: "Este enlace no existe o ya ha sido utilizado."
-                })
-            );
-        }
-
-        if (verification.expires_at < Date.now()) {
-
-            await env.DB
-                .prepare(`
-                    DELETE FROM email_verifications
-                    WHERE token = ?
-                `)
-                .bind(token)
-                .run();
-
-            return res.status(400).send(
-                verifyEmailTemplate({
-                    success: false,
-                    title: "Enlace caducado",
-                    message: "Este enlace de verificación ha caducado. Solicita un nuevo correo de verificación."
-                })
-            );
-        }
-
-        await env.DB
-            .prepare(`
-                UPDATE users
-                SET email_verified = 1
-                WHERE id = ?
-            `)
-            .bind(verification.user_id)
-            .run();
-
-        await env.DB
-            .prepare(`
-                DELETE FROM email_verifications
-                WHERE token = ?
-            `)
-            .bind(token)
-            .run();
-
-        return res.status(200).send(
-            verifyEmailTemplate({
-                success: true,
-                title: "Correo verificado",
-                message: "Tu correo electrónico ha sido verificado correctamente. Ya puedes iniciar sesión.",
-                link: "/login",
-                linkText: "Iniciar sesión"
-            })
-        );
-
-    } catch (error) {
-
-        console.error(
-            "VERIFY EMAIL ERROR:",
-            error
-        );
-
-        return res.status(500).send(
-            verifyEmailTemplate({
-                success: false,
-                title: "Ha ocurrido un error",
-                message: "No hemos podido verificar tu correo electrónico. Inténtalo de nuevo más tarde."
-            })
-        );
-    }
-});
-
 
 // ============================================================
 // ADMIN
