@@ -19,7 +19,80 @@ const eventsList =
 const btnTema =
     document.getElementById("btnTema");
 
+const colorPalette =
+    document.getElementById("colorPalette");
+
+const colorInput =
+    document.getElementById("color");
+
 let editingId = null;
+
+
+// ============================================================
+// PALETA DE COLORES
+// ============================================================
+
+function seleccionarColor(color) {
+
+    if (!colorInput) {
+        return;
+    }
+
+    colorInput.value =
+        color;
+
+    if (!colorPalette) {
+        return;
+    }
+
+    colorPalette
+        .querySelectorAll(".color-option")
+        .forEach(function (button) {
+
+            button.classList.remove(
+                "color-option--selected"
+            );
+
+        });
+
+    const seleccionado =
+        colorPalette.querySelector(
+            '[data-color="' + color + '"]'
+        );
+
+    if (seleccionado) {
+
+        seleccionado.classList.add(
+            "color-option--selected"
+        );
+    }
+}
+
+
+if (colorPalette && colorInput) {
+
+    colorPalette
+        .querySelectorAll(".color-option")
+        .forEach(function (button) {
+
+            button.addEventListener(
+                "click",
+                function () {
+
+                    seleccionarColor(
+                        this.dataset.color
+                    );
+
+                }
+            );
+
+        });
+
+    seleccionarColor(
+        colorInput.value ||
+        "#6366f1"
+    );
+}
 
 
 // ============================================================
@@ -45,7 +118,8 @@ async function deleteUser(userId) {
             }
         );
 
-        const data = await response.json();
+        const data =
+            await response.json();
 
         if (response.ok) {
 
@@ -172,10 +246,14 @@ async function loadEvents() {
 
             article.className =
                 "evento";
+
+
+            // COLOR DEL EVENTO
+
+            article.style.backgroundColor = "";
             
-            article.style.borderLeftColor = 
+            article.style.borderLeftColor =
                 event.color || "#6366f1";
-                
 
             // TÍTULO
 
@@ -356,6 +434,7 @@ if (eventForm) {
 
 
             const eventData = {
+
                 title:
                     document
                         .getElementById("title")
@@ -385,6 +464,7 @@ if (eventForm) {
                     document
                         .getElementById("color")
                         .value
+
             };
 
 
@@ -454,7 +534,13 @@ if (eventForm) {
 
                 editingId = null;
 
+
                 eventForm.reset();
+
+
+                seleccionarColor(
+                    "#6366f1"
+                );
 
 
                 const submitButton =
@@ -502,6 +588,7 @@ async function editEvent(id) {
                 "No se pudieron cargar los eventos."
             );
         }
+
 
         const events =
             await response.json();
@@ -554,6 +641,13 @@ async function editEvent(id) {
                 event.category || "";
 
 
+        // SELECCIONAR COLOR DEL EVENTO
+
+        seleccionarColor(
+            event.color || "#6366f1"
+        );
+
+
         editingId =
             Number(id);
 
@@ -572,8 +666,11 @@ async function editEvent(id) {
 
 
         window.scrollTo({
+
             top: 0,
+
             behavior: "smooth"
+
         });
 
 

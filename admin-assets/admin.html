@@ -509,6 +509,43 @@
             letter-spacing: .07em;
         }
 
+
+        /* PALETA DE COLORES */
+
+        .color-palette {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 8px;
+            padding: 8px 2px 6px;
+        }
+
+        .color-option {
+            width: 34px;
+            height: 34px;
+            padding: 0;
+            border: 3px solid transparent;
+            border-radius: 50%;
+            cursor: pointer;
+            box-sizing: border-box;
+            transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+        }
+
+        .color-option:hover {
+            transform: scale(1.12);
+        }
+
+        .color-option--selected {
+            border-color: #191552;
+            box-shadow: 0 0 0 2px #FBF7EC, 0 0 0 4px #191552;
+            transform: scale(1.08);
+        }
+
+        .color-option:focus-visible {
+            outline: 3px solid var(--rosa);
+            outline-offset: 3px;
+        }
+
         @media (max-width: 720px) {
 
             .rejilla {
@@ -702,12 +739,142 @@
                         Color del evento
                     </label>
 
+
+                <div class="campo">
+
+                    <label
+                        class="et"
+                    >
+                        Color del evento
+                    </label>
+
+                    <div
+                        id="colorPalette"
+                        class="color-palette"
+                        role="group"
+                        aria-label="Color del evento"
+                    >
+
+                        <button
+                            type="button"
+                            class="color-option color-option--selected"
+                            data-color="#6366f1"
+                            style="background-color:#6366f1"
+                            aria-label="Morado"
+                            title="Morado"
+                        ></button>
+
+                        <button
+                            type="button"
+                            class="color-option"
+                            data-color="#ef4444"
+                            style="background-color:#ef4444"
+                            aria-label="Rojo"
+                            title="Rojo"
+                        ></button>
+
+                        <button
+                            type="button"
+                            class="color-option"
+                            data-color="#f97316"
+                            style="background-color:#f97316"
+                            aria-label="Naranja"
+                            title="Naranja"
+                        ></button>
+
+                        <button
+                            type="button"
+                            class="color-option"
+                            data-color="#eab308"
+                            style="background-color:#eab308"
+                            aria-label="Amarillo"
+                            title="Amarillo"
+                        ></button>
+
+                        <button
+                            type="button"
+                            class="color-option"
+                            data-color="#22c55e"
+                            style="background-color:#22c55e"
+                            aria-label="Verde"
+                            title="Verde"
+                        ></button>
+
+                        <button
+                            type="button"
+                            class="color-option"
+                            data-color="#14b8a6"
+                            style="background-color:#14b8a6"
+                            aria-label="Turquesa"
+                            title="Turquesa"
+                        ></button>
+
+                        <button
+                            type="button"
+                            class="color-option"
+                            data-color="#06b6d4"
+                            style="background-color:#06b6d4"
+                            aria-label="Cian"
+                            title="Cian"
+                        ></button>
+
+                        <button
+                            type="button"
+                            class="color-option"
+                            data-color="#3b82f6"
+                            style="background-color:#3b82f6"
+                            aria-label="Azul"
+                            title="Azul"
+                        ></button>
+
+                        <button
+                            type="button"
+                            class="color-option"
+                            data-color="#8b5cf6"
+                            style="background-color:#8b5cf6"
+                            aria-label="Violeta"
+                            title="Violeta"
+                        ></button>
+
+                        <button
+                            type="button"
+                            class="color-option"
+                            data-color="#ec4899"
+                            style="background-color:#ec4899"
+                            aria-label="Rosa"
+                            title="Rosa"
+                        ></button>
+
+                        <button
+                            type="button"
+                            class="color-option"
+                            data-color="#64748b"
+                            style="background-color:#64748b"
+                            aria-label="Gris"
+                            title="Gris"
+                        ></button>
+
+                        <button
+                            type="button"
+                            class="color-option"
+                            data-color="#1e293b"
+                            style="background-color:#1e293b"
+                            aria-label="Negro"
+                            title="Negro"
+                        ></button>
+
+                    </div>
+
                     <input
-                        type="color"
+                        type="hidden"
                         id="color"
                         name="color"
                         value="#6366f1"
                     >
+
+                </div>
+
+
 
                 </div>
 
