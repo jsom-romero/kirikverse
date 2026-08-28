@@ -415,8 +415,9 @@ app.get("/", async (req, res) => {
 
         const html = homeTemplate
             .replace("{{EVENTOS}}", renderEvents(events));
-
+        
         res
+        
             .status(200)
             .setHeader("Content-Type", "text/html; charset=utf-8")
             .send(html);
@@ -435,10 +436,13 @@ app.get("/", async (req, res) => {
 // ============================================================
 // PANEL DE ADMINISTRACIÓN
 // ============================================================
-
 app.get("/admin", requireAdmin, async (req, res) => {
-
+    console.log("========== ENTRO EN /ADMIN ==========");
     try {
+
+        // ====================================================
+        // OBTENER USUARIOS
+        // ====================================================
 
         const result =
             await env.DB.prepare(`
@@ -451,6 +455,11 @@ app.get("/admin", requireAdmin, async (req, res) => {
 
         const users =
             result.results || [];
+
+
+        // ====================================================
+        // CARGAR ADMIN.HTML DESDE CLOUDFLARE ASSETS
+        // ====================================================
 
         const assetResponse =
             await env.ASSETS.fetch(
@@ -473,9 +482,29 @@ app.get("/admin", requireAdmin, async (req, res) => {
                 );
         }
 
+
+        // ====================================================
+        // CONVERTIR ADMIN.HTML A TEXTO
+        // ====================================================
+
         let html =
             await assetResponse.text();
 
+
+        console.log(
+            "ADMIN HTML CARGADO:",
+            assetResponse.status
+        );
+
+        console.log(
+            "PLACEHOLDER ANTES:",
+            html.includes("{{USERS_HTML}}")
+        );
+
+
+        // ====================================================
+        // GENERAR HTML DE USUARIOS
+        // ====================================================
 
         const usersHtml =
             renderAdminUsers(
@@ -483,11 +512,33 @@ app.get("/admin", requireAdmin, async (req, res) => {
                 req.session.userId
             );
 
+
+        console.log(
+            "USUARIOS ENCONTRADOS:",
+            users.length
+        );
+
+
+        // ====================================================
+        // INSERTAR USUARIOS EN ADMIN.HTML
+        // ====================================================
+
         html =
             html.replace(
                 "{{USERS_HTML}}",
                 usersHtml
             );
+
+
+        console.log(
+            "PLACEHOLDER DESPUÉS:",
+            html.includes("{{USERS_HTML}}")
+        );
+
+
+        // ====================================================
+        // ENVIAR PANEL
+        // ====================================================
 
         return res
             .status(200)
