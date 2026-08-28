@@ -1,1 +1,2438 @@
-export default "<!DOCTYPE html>\r\n<html lang=\"es\" data-tema=\"papel\">\r\n<head>\r\n<meta charset=\"utf-8\">\r\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\r\n<title>kirkversario</title>\r\n<link rel=\"preconnect\" href=\"https://fonts.googleapis.com\">\r\n<link rel=\"preconnect\" href=\"https://fonts.gstatic.com\" crossorigin>\r\n<link href=\"https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap\" rel=\"stylesheet\">\r\n<style>\r\n:root{\r\n  --fondo:#F3EDDF; --texto:#191552; --tarjeta:#FBF7EC; --rosa:#FF4A6E; --amarillo:#FFC233;\r\n  --borde:rgba(25,21,82,.2); --fuerte:rgba(25,21,82,.5); --tenue:rgba(25,21,82,.55);\r\n  --display:'Bricolage Grotesque','Arial Black',sans-serif;\r\n  --cuerpo:'Instrument Sans',system-ui,-apple-system,sans-serif;\r\n  --mono:'DM Mono',ui-monospace,Menlo,monospace;\r\n}\r\n[data-tema=\"noche\"]{\r\n  --fondo:#12103F; --texto:#F3EDDF; --tarjeta:#1B1857;\r\n  --borde:rgba(243,237,223,.2); --fuerte:rgba(243,237,223,.45); --tenue:rgba(243,237,223,.58);\r\n}\r\n*{box-sizing:border-box}\r\n[hidden]{display:none!important}\r\nbody{margin:0;background:var(--fondo);color:var(--texto);font-family:var(--cuerpo);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased}\r\n.env{max-width:900px;margin:0 auto;padding:0 18px}\r\n\r\n.top{display:flex;align-items:center;gap:12px;padding:16px 18px;max-width:900px;margin:0 auto;border-bottom:2px solid var(--texto)}\r\n.top h1{font-family:var(--display);font-weight:800;font-size:17px;text-transform:uppercase;letter-spacing:-.02em;margin:0 auto 0 0}\r\n.top h1 span{color:var(--rosa)}\r\n\r\n.btn{font-family:var(--mono);font-size:11px;text-transform:uppercase;letter-spacing:.07em;background:transparent;color:var(--texto);border:1.5px solid var(--texto);border-radius:999px;padding:7px 14px;cursor:pointer}\r\n.btn:hover{background:var(--texto);color:var(--fondo)}\r\n:focus-visible{outline:3px solid var(--rosa);outline-offset:2px}\r\n\r\nsection{padding:40px 0}\r\nsection+section{border-top:2px solid var(--texto)}\r\nh2{font-family:var(--display);font-weight:800;font-size:clamp(22px,3.6vw,30px);letter-spacing:-.03em;margin:0 0 6px}\r\n.sub{color:var(--tenue);margin:0 0 22px;max-width:60ch;font-size:15px}\r\n\r\n/* Translator paragraph */\r\n@font-face {\r\n  font-family: \"KarlosKikos\";\r\n  src: url(\"./fonts/karloskikos.ttf\") format(\"truetype\");\r\n}\r\n\r\n.kikos-icon {\r\n  font-family: \"KarlosKikos\";\r\n}\r\n.trad{display:grid;grid-template-columns:1fr 52px 1fr;border:2px solid var(--texto);border-radius:14px;overflow:hidden;background:var(--tarjeta)}\r\n.panel{padding:16px;min-height:170px;display:flex;flex-direction:column}\r\n.panel__et{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--tenue);margin:0 0 12px}\r\n.medio{display:flex;align-items:center;justify-content:center;border-left:2px solid var(--texto);border-right:2px solid var(--texto);background:var(--amarillo)}\r\n.medio button{background:none;border:0;font-size:20px;color:#191552;cursor:pointer;padding:10px;line-height:1}\r\n.salida{font-family:var(--display);font-weight:800;font-size:clamp(22px,3.4vw,30px);line-height:1.1;letter-spacing:-.025em;margin:0;flex:1}\r\n.salida small{display:block;font-family:var(--mono);font-weight:400;font-size:12px;color:var(--tenue);margin-top:8px;letter-spacing:0}\r\n.pieP{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}\r\n\r\ninput[type=\"date\"],input[type=\"number\"],select,textarea{background:var(--fondo);border:1.5px solid var(--fuerte);border-radius:8px;padding:10px;font-family:var(--mono);font-size:15px;width:100%;color:inherit;min-height:44px}\r\ntextarea{font-family:var(--cuerpo);font-size:17px;resize:vertical;min-height:120px;line-height:1.4}\r\n.rejK{display:grid;grid-template-columns:66px 1fr;gap:8px}\r\n.rejK2{display:grid;grid-template-columns:1fr 84px;gap:8px;margin-top:8px}\r\n.et{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--tenue);display:block;margin-bottom:4px}\r\n\r\n/* Months paragraph*/\r\ntable{width:100%;border-collapse:collapse;font-size:15px}\r\nth{font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.09em;color:var(--tenue);text-align:left;padding:0 10px 8px;font-weight:400;border-bottom:2px solid var(--texto)}\r\ntd{padding:11px 10px;border-bottom:1px solid var(--borde)}\r\ntr:last-child td{border-bottom:0}\r\ntd.n{font-family:var(--mono);font-size:12px;color:var(--tenue);width:34px}\r\ntd.m{font-family:var(--display);font-weight:700;white-space:nowrap}\r\ntd.g{font-family:var(--mono);font-size:12.5px;color:var(--tenue);white-space:nowrap}\r\n.desliza{overflow-x:auto}\r\n\r\n/* Alphabet paragraph */\r\n.glifos{display:grid;grid-template-columns:repeat(auto-fill,minmax(74px,1fr));gap:8px}\r\n.gl{background:var(--tarjeta);border:1.5px solid var(--borde);border-radius:10px;padding:10px 6px;text-align:center}\r\n.gl svg{width:36px;height:46px;display:block;margin:0 auto 6px}\r\n.gl b{font-family:var(--mono);font-size:14px;font-weight:500;text-transform:uppercase}\r\n.leyenda{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:0 0 22px}\r\n.leyenda div{border-left:4px solid var(--rosa);padding:2px 0 2px 12px;font-size:14.5px;color:var(--tenue)}\r\n.leyenda b{color:var(--texto);font-family:var(--display);font-weight:700;display:block}\r\n\r\n.lienzo{flex:1;display:flex;flex-wrap:wrap;align-content:flex-start;gap:14px;min-height:80px}\r\n.pal{display:flex;gap:3px}\r\n.lienzo svg{width:24px;height:34px;color:var(--texto)}\r\n.lienzo .raw{font-family:var(--mono);font-size:20px;align-self:center;color:var(--tenue)}\r\n.vacio{color:var(--tenue);font-size:15px;font-family:var(--cuerpo)}\r\n\r\n.teclado{display:grid;grid-template-columns:repeat(auto-fill,minmax(46px,1fr));gap:5px;margin-top:10px}\r\n.tecla{background:var(--fondo);border:1.5px solid var(--borde);border-radius:8px;padding:6px 2px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px}\r\n.tecla:hover{border-color:var(--texto)}\r\n.tecla svg{width:18px;height:26px;color:var(--texto)}\r\n.tecla i{font-style:normal;font-family:var(--mono);font-size:9px;color:var(--tenue);text-transform:uppercase}\r\n.teclaAncha{grid-column:span 2;justify-content:center;font-family:var(--mono);font-size:10px;text-transform:uppercase;letter-spacing:.06em}\r\n\r\n.pie{border-top:2px solid var(--texto);padding:22px 0 36px;font-family:var(--mono);font-size:11px;color:var(--tenue);text-transform:uppercase;letter-spacing:.07em}\r\n\r\n.eventos{\r\n  display:grid;\r\n  gap:12px;\r\n}\r\n\r\n.evento{\r\n  background:var(--tarjeta);\r\n  border:2px solid var(--texto);\r\n  border-radius:14px;\r\n  padding:18px;\r\n}\r\n\r\n.evento h3{\r\n  font-family:var(--display);\r\n  font-weight:800;\r\n  font-size:24px;\r\n  margin:0 0 8px;\r\n}\r\n\r\n.evento p{\r\n  margin:6px 0;\r\n}\r\n\r\n.evento__fecha{\r\n  font-family:var(--mono);\r\n  font-size:12px;\r\n  color:var(--tenue);\r\n}\r\n\r\n.evento__categoria{\r\n  display:inline-block;\r\n  font-family:var(--mono);\r\n  font-size:10px;\r\n  text-transform:uppercase;\r\n  letter-spacing:.08em;\r\n  border:1px solid var(--borde);\r\n  border-radius:999px;\r\n  padding:5px 9px;\r\n  color:var(--tenue);\r\n}\r\n\r\n\r\n@media (max-width:720px){\r\n  .trad{grid-template-columns:1fr}\r\n  .medio{border-left:0;border-right:0;border-top:2px solid var(--texto);border-bottom:2px solid var(--texto);padding:2px}\r\n  .medio button{transform:rotate(90deg)}\r\n  .leyenda{grid-template-columns:1fr}\r\n  section{padding:32px 0}\r\n}\r\n@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}\r\n</style>\r\n</head>\r\n<body>\r\n\r\n<header class=\"top\">\r\n  <h1>Kirkversario <span>Hail Hittler</span></h1>\r\n  <button class=\"btn\" id=\"btnTema\">Noche</button>\r\n</header>\r\n\r\n<main class=\"env\">\r\n\r\n  <!-- Dates -->\r\n  <section>\r\n    <h2>Fechas</h2>\r\n    <p class=\"sub\">El 10 de septiembre es el 1 de Kirknero del Año 1. Escribe una fecha y sale la otra. El botón del medio cambia el sentido.</p>\r\n\r\n    <div class=\"trad\">\r\n      <div class=\"panel\" id=\"panelIzq\">\r\n        <p class=\"panel__et\" id=\"etIzq\">Calendario gregoriano</p>\r\n        <div id=\"entradaG\">\r\n          <span class=\"et\">Fecha</span>\r\n          <input type=\"date\" id=\"inGreg\">\r\n        </div>\r\n        <div id=\"entradaK\" hidden>\r\n          <div class=\"rejK\">\r\n            <div><span class=\"et\">Día</span><input type=\"number\" id=\"inDia\" min=\"1\" max=\"31\" value=\"1\"></div>\r\n            <div><span class=\"et\">Mes</span><select id=\"inMes\"></select></div>\r\n          </div>\r\n          <div class=\"rejK2\">\r\n            <div><span class=\"et\">Año</span><input type=\"number\" id=\"inAnio\" min=\"1\" value=\"1\"></div>\r\n            <div><span class=\"et\">Era</span><select id=\"inEra\"><option value=\"d\">d.K.</option><option value=\"a\">a.K.</option></select></div>\r\n          </div>\r\n        </div>\r\n        <div class=\"pieP\"><button class=\"btn\" id=\"btnHoy\">Hoy</button></div>\r\n      </div>\r\n\r\n      <div class=\"medio\"><button id=\"btnGirar\" title=\"Cambiar el sentido\" aria-label=\"Cambiar el sentido\">⇄</button></div>\r\n\r\n      <div class=\"panel\">\r\n        <p class=\"panel__et\" id=\"etDer\">Calendario Charlie Kirk</p>\r\n        <p class=\"salida\" id=\"salidaF\">—</p>\r\n        <div class=\"pieP\"><button class=\"btn\" id=\"btnCopiaF\">Copiar</button></div>\r\n      </div>\r\n    </div>\r\n  </section>\r\n\r\n  <!-- MESES -->\r\n  <section>\r\n    <h2>Los meses</h2>\r\n    <p class=\"sub\">Doce meses. Cada uno empieza a mitad de un mes normal, porque el año arranca el 10 de septiembre.</p>\r\n    <div class=\"desliza\"><table id=\"tablaMeses\"></table></div>\r\n  </section>\r\n  \r\n<!-- EVENTOS -->\r\n<section>\r\n  <h2>Eventos</h2>\r\n  <p class=\"sub\">Todos los eventos del Kirkversario.</p>\r\n\r\n  <% if (events.length === 0) { %>\r\n\r\n    <p class=\"vacio\">No hay eventos todavía.</p>\r\n\r\n  <% } else { %>\r\n\r\n    <div class=\"eventos\">\r\n\r\n      <% events.forEach(function(event) { %>\r\n\r\n        <article class=\"evento\">\r\n\r\n          <h3><%= event.title %></h3>\r\n\r\n          <% if (event.description) { %>\r\n            <p><%= event.description %></p>\r\n          <% } %>\r\n\r\n          <p class=\"evento__fecha\">\r\n            📅 <%= event.date %>\r\n            <% if (event.time) { %>\r\n              — <%= event.time %>\r\n            <% } %>\r\n          </p>\r\n\r\n          <% if (event.category) { %>\r\n            <p class=\"evento__categoria\">\r\n              <%= event.category %>\r\n            </p>\r\n          <% } %>\r\n\r\n        </article>\r\n\r\n      <% }); %>\r\n\r\n    </div>\r\n\r\n  <% } %>\r\n</section>\r\n\r\n\r\n  \r\n  <!-- TEXTO -->\r\n  <section>\r\n    <h2>Texto</h2>\r\n    <p class=\"sub\">Escribe cualquier cosa y se pasa al alfabeto Charlie Kirk. Gira el sentido y aparece un teclado de glifos para hacerlo al revés.</p>\r\n\r\n    <div class=\"trad\">\r\n      <div class=\"panel\">\r\n        <p class=\"panel__et\" id=\"etTxtIzq\">Español</p>\r\n        <textarea id=\"inTexto\" placeholder=\"Escribe aquí…\" rows=\"4\"></textarea>\r\n        <div id=\"tecladoCaja\" hidden>\r\n          <div class=\"teclado\" id=\"teclado\"></div>\r\n        </div>\r\n      </div>\r\n\r\n      <div class=\"medio\"><button id=\"btnGirarT\" title=\"Cambiar el sentido\" aria-label=\"Cambiar el sentido\">⇄</button></div>\r\n\r\n      <div class=\"panel\">\r\n        <p class=\"panel__et\" id=\"etTxtDer\">Alfabeto Kirk</p>\r\n        <div class=\"lienzo\" id=\"lienzo\"><span class=\"vacio\">La traducción aparece aquí.</span></div>\r\n        <p class=\"salida\" id=\"salidaT\" hidden></p>\r\n        <div class=\"pieP\"><button class=\"btn\" id=\"btnCopiaT\" hidden>Copiar</button></div>\r\n      </div>\r\n    </div>\r\n  </section>\r\n\r\n  <!-- ALFABETO -->\r\n  <section>\r\n    <h2>El alfabeto Kirk</h2>\r\n    <p class=\"sub\">Veintisiete letras con una lógica detrás, para que se pueda aprender en un rato.</p>\r\n    <div class=\"leyenda\">\r\n      <div><b>No se parecen al abecedario</b>Ninguna letra recuerda a una latina ni a un número. Comprobado contra las 62 letras y cifras en tres tipografías distintas.</div>\r\n      <div><b>Ni se parecen entre ellas</b>Cada una es una figura entera: casa, escalera, nube, trébol, cometa, arcoíris. Nada de troncos con rayitas.</div>\r\n    </div>\r\n    <div class=\"glifos\" id=\"glifos\"></div>\r\n  </section>\r\n\r\n  <div class=\"pie\" id=\"pie\"></div>\r\n</main>\r\n\r\n<script>\r\n(function(){\r\n  \"use strict\";\r\n\r\n  /* Calendar */\r\n  var MESES=[\r\n    {n:\"Kirktrump\",d:31},{n:\"Kirknigger\",d:28},{n:\"Kirkbaiden\",d:31},{n:\"Kirkennedy\",d:30},\r\n    {n:\"Kirknetanyahu\",d:31},{n:\"Kirkfranco\",d:30},{n:\"Kirkgandhi\",d:31},{n:\"Kirkwashington\",d:31},\r\n    {n:\"Kirkmessi\",d:30},{n:\"Kirkronaldo\",d:31},{n:\"Kirkgay\",d:30},{n:\"Kirkeroro\",d:31}\r\n  ];\r\n  var MG=[\"Enero\",\"Febrero\",\"Marzo\",\"Abril\",\"Mayo\",\"Junio\",\"Julio\",\"Agosto\",\"Septiembre\",\"Octubre\",\"Noviembre\",\"Diciembre\"];\r\n  var MGC=[\"ene\",\"feb\",\"mar\",\"abr\",\"may\",\"jun\",\"jul\",\"ago\",\"sep\",\"oct\",\"nov\",\"dic\"];\r\n  var SEM=[\"lunes\",\"martes\",\"miércoles\",\"jueves\",\"viernes\",\"sábado\",\"domingo\"];\r\n  var MS=86400000, EPOCA=2025, dir=\"g2k\";\r\n\r\n  function $(i){return document.getElementById(i);}\r\n  function utc(y,m,d){var f=new Date(Date.UTC(2000,0,1));f.setUTCFullYear(y,m-1,d);f.setUTCHours(0,0,0,0);return f.getTime();}\r\n  function bis(y){return (y%4===0&&y%100!==0)||y%400===0;}\r\n  function dm(i,g){return (i===1&&bis(g+1))?29:MESES[i].d;}\r\n  function largo(g){return bis(g+1)?366:365;}\r\n  function gDe(a){return a>0?EPOCA+a-1:EPOCA+a;}\r\n  function nAnio(a){return a>0?\"Año \"+a+\" d.K.\":\"Año \"+Math.abs(a)+\" a.K.\";}\r\n  function aKK(y,m,d){\r\n    var g=(m>9||(m===9&&d>=10))?y:y-1;\r\n    var dia=Math.round((utc(y,m,d)-utc(g,9,10))/MS)+1;\r\n    var n=g-EPOCA,anio=n>=0?n+1:n,r=dia,me=0;\r\n    while(r>dm(me,g)){r-=dm(me,g);me++;}\r\n    return {anio:anio,mes:me+1,dia:r,diaAnio:dia,gI:g,largo:largo(g)};\r\n  }\r\n  function kkMs(ms){var f=new Date(ms);return aKK(f.getUTCFullYear(),f.getUTCMonth()+1,f.getUTCDate());}\r\n  function msKK(a,m,d){var g=gDe(a),ac=0;for(var i=0;i<m-1;i++)ac+=dm(i,g);return utc(g,9,10)+(ac+d-1)*MS;}\r\n  function tG(ms){var f=new Date(ms);return f.getUTCDate()+\" de \"+MG[f.getUTCMonth()]+\" de \"+f.getUTCFullYear();}\r\n  function tGc(ms){var f=new Date(ms);return f.getUTCDate()+\" \"+MGC[f.getUTCMonth()];}\r\n  function tK(k){return k.dia+\" de \"+MESES[k.mes-1].n;}\r\n  function iso(ms){var f=new Date(ms);return f.getUTCFullYear()+\"-\"+String(f.getUTCMonth()+1).padStart(2,\"0\")+\"-\"+String(f.getUTCDate()).padStart(2,\"0\");}\r\n  function hoyMs(){var h=new Date();return utc(h.getFullYear(),h.getMonth()+1,h.getDate());}\r\n  function sem(ms){return SEM[(new Date(ms).getUTCDay()+6)%7];}\r\n\r\n  var op=\"\";MESES.forEach(function(m,i){op+='<option value=\"'+(i+1)+'\">'+m.n+'</option>';});\r\n  $(\"inMes\").innerHTML=op;\r\n\r\n  function traducirFecha(){\r\n    if(dir===\"g2k\"){\r\n      var v=$(\"inGreg\").value; if(!v){$(\"salidaF\").textContent=\"—\";return;}\r\n      var p=v.split(\"-\").map(Number), k=aKK(p[0],p[1],p[2]);\r\n      $(\"salidaF\").innerHTML=tK(k)+\"<small>\"+nAnio(k.anio)+\" · día \"+k.diaAnio+\" de \"+k.largo+\"</small>\";\r\n    }else{\r\n      var d=parseInt($(\"inDia\").value,10)||1;\r\n      var m=parseInt($(\"inMes\").value,10);\r\n      var a=Math.abs(parseInt($(\"inAnio\").value,10))||1;\r\n      if($(\"inEra\").value===\"a\")a=-a;\r\n      var mx=dm(m-1,gDe(a)); if(d>mx){d=mx;$(\"inDia\").value=mx;} if(d<1){d=1;$(\"inDia\").value=1;}\r\n      $(\"inDia\").max=mx;\r\n      var ms=msKK(a,m,d);\r\n      $(\"salidaF\").innerHTML=tG(ms)+\"<small>\"+sem(ms)+\"</small>\";\r\n    }\r\n  }\r\n  function girar(){\r\n    dir=dir===\"g2k\"?\"k2g\":\"g2k\";\r\n    var g=dir===\"g2k\";\r\n    $(\"entradaG\").hidden=!g; $(\"entradaK\").hidden=g;\r\n    $(\"etIzq\").textContent=g?\"Calendario de siempre\":\"Calendario Charlie Kirk\";\r\n    $(\"etDer\").textContent=g?\"Calendario Charlie Kirk\":\"Calendario de siempre\";\r\n    traducirFecha();\r\n  }\r\n  function ponHoy(){\r\n    var h=hoyMs(), k=kkMs(h);\r\n    $(\"inGreg\").value=iso(h);\r\n    $(\"inDia\").value=k.dia; $(\"inMes\").value=k.mes;\r\n    $(\"inAnio\").value=Math.abs(k.anio); $(\"inEra\").value=k.anio>0?\"d\":\"a\";\r\n    traducirFecha();\r\n  }\r\n  $(\"btnGirar\").addEventListener(\"click\",girar);\r\n  $(\"btnHoy\").addEventListener(\"click\",ponHoy);\r\n  [\"inGreg\",\"inDia\",\"inMes\",\"inAnio\",\"inEra\"].forEach(function(i){\r\n    $(i).addEventListener(\"input\",traducirFecha);\r\n    $(i).addEventListener(\"change\",traducirFecha);\r\n  });\r\n\r\n  function tablaMeses(){\r\n    var k=kkMs(hoyMs()), a=k.anio, g=gDe(a);\r\n    var f=\"<tr><th></th><th>Mes</th><th>Días</th><th>Va del … al …</th></tr>\";\r\n    for(var i=0;i<12;i++){\r\n      var t=dm(i,g), p=msKK(a,i+1,1), u=msKK(a,i+1,t);\r\n      var mk=(i+1===k.mes)?' style=\"background:var(--amarillo);color:#191552\"':\"\";\r\n      f+=\"<tr\"+mk+\"><td class='n'>\"+(i+1)+\"</td><td class='m'>\"+MESES[i].n+\"</td><td class='g'>\"+t+\"</td><td class='g'>\"+tGc(p)+\" – \"+tGc(u)+\"</td></tr>\";\r\n    }\r\n    $(\"tablaMeses\").innerHTML=f;\r\n  }\r\n\r\n  /* ================= alfabeto ================= */\r\n  var GLIFOS={\r\n    a:'<circle cx=\"30\" cy=\"21\" r=\"12\"/><circle cx=\"30\" cy=\"59\" r=\"12\"/>',\r\n    b:'<path d=\"M30 12 L52 32 L52 66 L8 66 L8 32 Z\"/>',\r\n    c:'<path d=\"M8 66 L8 52 L26 52 L26 34 L44 34 L44 16 L54 16\"/>',\r\n    d:'<path d=\"M8 48 q11 -30 22 0 q11 30 22 0\"/>',\r\n    e:'<path d=\"M30 10 L30 70 M11 25 L49 55 M49 25 L11 55\"/>',\r\n    f:'<path d=\"M8 28 q11 -22 22 0 q11 22 22 0 M8 58 q11 -22 22 0 q11 22 22 0\"/>',\r\n    g:'<path d=\"M18 12 L42 26 L18 40 L42 54 L18 68\"/>',\r\n    h:'<path d=\"M8 18 L30 42 L52 18 M8 42 L30 66 L52 42\"/>',\r\n    i:'<circle cx=\"30\" cy=\"17\" r=\"9\" fill=\"currentColor\"/><circle cx=\"14\" cy=\"58\" r=\"9\" fill=\"currentColor\"/><circle cx=\"46\" cy=\"58\" r=\"9\" fill=\"currentColor\"/>',\r\n    j:'<path d=\"M8 66 L8 22 L20 40 L30 18 L40 40 L52 22 L52 66\"/>',\r\n    k:'<path d=\"M12 66 L48 20 M26 16 L50 16 L50 40\"/>',\r\n    l:'<path d=\"M6 20 L18 20 L18 38 L34 38 L34 56 L54 56\"/>',\r\n    m:'<rect x=\"12\" y=\"30\" width=\"36\" height=\"32\"/><path d=\"M8 15 L52 15\"/>',\r\n    n:'<path d=\"M30 12 L50 52 L10 52 Z\"/><path d=\"M8 66 L52 66\"/>',\r\n    \"ñ\":'<path d=\"M14 14 L14 66 M30 14 L30 66 M46 14 L46 66\"/>',\r\n    o:'<rect x=\"7\" y=\"17\" width=\"46\" height=\"46\"/><rect x=\"21\" y=\"31\" width=\"18\" height=\"18\"/>',\r\n    p:'<path d=\"M30 16 a24 24 0 0 0 0 48 Z\" fill=\"currentColor\"/><path d=\"M30 12 L30 68\"/>',\r\n    q:'<path d=\"M10 62 a20 20 0 0 1 40 0 M20 62 a10 10 0 0 1 20 0\"/>',\r\n    r:'<rect x=\"9\" y=\"19\" width=\"42\" height=\"42\"/><path d=\"M30 19 L30 61\"/>',\r\n    s:'<path d=\"M12 40 L48 40\"/><circle cx=\"12\" cy=\"40\" r=\"9\" fill=\"currentColor\"/><circle cx=\"48\" cy=\"40\" r=\"9\" fill=\"currentColor\"/>',\r\n    t:'<path d=\"M14 14 a14 14 0 0 1 0 28 M46 38 a14 14 0 0 1 0 28\"/>',\r\n    u:'<circle cx=\"30\" cy=\"22\" r=\"12\"/><circle cx=\"18\" cy=\"46\" r=\"12\"/><circle cx=\"42\" cy=\"46\" r=\"12\"/>',\r\n    v:'<path d=\"M6 14 L30 40 L6 66 Z\" fill=\"currentColor\"/><path d=\"M32 14 L56 40 L32 66 Z\" fill=\"currentColor\"/>',\r\n    w:'<path d=\"M30 10 L48 40 L30 56 L12 40 Z\"/><path d=\"M30 56 L30 70\"/>',\r\n    x:'<path d=\"M14 56 a12 12 0 0 1 0 -24 a16 16 0 0 1 32 0 a12 12 0 0 1 0 24 Z\"/>',\r\n    y:'<path d=\"M22 10 q28 12 0 24 q-28 12 0 24 q28 12 0 24\"/>',\r\n    z:'<path d=\"M10 30 L34 6 M10 52 L44 18 M20 64 L50 34 M40 68 L54 54\"/>'\r\n  };\r\n  var ORDEN=\"abcdefghijklmnñopqrstuvwxyz\".split(\"\");\r\n  function svg(ch){\r\n    var c=GLIFOS[ch]; if(!c) return null;\r\n    return '<svg viewBox=\"0 0 60 80\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"7\" '+\r\n           'stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\">'+c+'</svg>';\r\n  }\r\n\r\n  function normaliza(t){\r\n    return t.toLowerCase()\r\n      .replace(/[áàäâ]/g,\"a\").replace(/[éèëê]/g,\"e\").replace(/[íìïî]/g,\"i\")\r\n      .replace(/[óòöô]/g,\"o\").replace(/[úùüû]/g,\"u\");\r\n  }\r\n\r\n  function pintarGlifos(){\r\n    var h=\"\";\r\n    ORDEN.forEach(function(l){ h+='<div class=\"gl\">'+svg(l)+'<b>'+l+'</b></div>'; });\r\n    $(\"glifos\").innerHTML=h;\r\n  }\r\n\r\n  /* ---- traductor de texto ---- */\r\n  var dirT=\"es2k\", buffer=\"\";\r\n\r\n    function pintarTexto(){\r\n      if(dirT===\"es2k\"){\r\n        var t=normaliza($(\"inTexto\").value);\r\n        if(!t.trim()){$(\"lienzo\").innerHTML='<span class=\"vacio\">La traducción aparece aquí.</span>';return;}\r\n        var h=\"\";\r\n        t.split(/(\\s+)/).forEach(function(p){\r\n          if(!p.trim())return;\r\n          h+='<span class=\"pal\">';\r\n          p.split(\"\").forEach(function(c){\r\n            var s=svg(c);\r\n            h+= s ? s : '<span class=\"raw\">'+c.replace(/&/g,\"&amp;\").replace(/</g,\"&lt;\")+'</span>';\r\n          });\r\n          h+='</span>';\r\n        });\r\n        $(\"lienzo\").innerHTML=h;\r\n      }else{\r\n        $(\"salidaT\").textContent=buffer||\"—\";\r\n      }\r\n    }\r\n    function girarT(){\r\n      dirT=dirT===\"es2k\"?\"k2es\":\"es2k\";\r\n      var es=dirT===\"es2k\";\r\n      $(\"inTexto\").hidden=!es;\r\n      $(\"tecladoCaja\").hidden=es;\r\n      $(\"lienzo\").hidden=!es;\r\n      $(\"salidaT\").hidden=es;\r\n      $(\"btnCopiaT\").hidden=es;\r\n      $(\"etTxtIzq\").textContent=es?\"Español\":\"Alfabeto Charlie Kirk\";\r\n      $(\"etTxtDer\").textContent=es?\"Alfabeto Charlie Kirk\":\"Español\";\r\n      pintarTexto();\r\n    }\r\n    function pintarTeclado(){\r\n      var h=\"\";\r\n      ORDEN.forEach(function(l){ h+='<button class=\"tecla\" data-l=\"'+l+'\">'+svg(l)+'<i>'+l+'</i></button>'; });\r\n      h+='<button class=\"tecla teclaAncha\" data-l=\" \">espacio</button>';\r\n      h+='<button class=\"tecla teclaAncha\" data-l=\"__del\">borrar</button>';\r\n      $(\"teclado\").innerHTML=h;\r\n    }\r\n    $(\"teclado\").addEventListener(\"click\",function(e){\r\n      var b=e.target.closest(\"button[data-l]\"); if(!b)return;\r\n      var l=b.dataset.l;\r\n      if(l===\"__del\") buffer=buffer.slice(0,-1); else buffer+=l;\r\n      pintarTexto();\r\n    });\r\n    $(\"inTexto\").addEventListener(\"input\",pintarTexto);\r\n    $(\"btnGirarT\").addEventListener(\"click\",girarT);\r\n\r\n    function copiar(btn,texto){\r\n      var t=btn.textContent;\r\n      var ok=function(){btn.textContent=\"Copiado\";setTimeout(function(){btn.textContent=t;},1500);};\r\n      if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(texto).then(ok,function(){});\r\n      else{var ta=document.createElement(\"textarea\");ta.value=texto;document.body.appendChild(ta);ta.select();\r\n        try{document.execCommand(\"copy\");ok();}catch(err){} document.body.removeChild(ta);}\r\n    }\r\n    $(\"btnCopiaF\").addEventListener(\"click\",function(){copiar(this,$(\"salidaF\").textContent);});\r\n    $(\"btnCopiaT\").addEventListener(\"click\",function(){copiar(this,buffer);});\r\n\r\n    $(\"btnTema\").addEventListener(\"click\",function(){\r\n      var n=document.documentElement.getAttribute(\"data-tema\")===\"noche\";\r\n      document.documentElement.setAttribute(\"data-tema\",n?\"papel\":\"noche\");\r\n      this.textContent=n?\"Noche\":\"Papel\";\r\n    });\r\n\r\n  /* ---- arranque ---- */\r\n  pintarGlifos(); pintarTeclado(); tablaMeses(); ponHoy();\r\n  var k=kkMs(hoyMs());\r\n  $(\"pie\").textContent=\"Hoy · \"+tK(k)+\" · \"+nAnio(k.anio);\r\n})();\r\n</script>\r\n</body>\r\n</html>";
+export default `
+<!DOCTYPE html>
+<html lang="es" data-tema="papel">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>kirkversario</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500&family=DM+Mono:wght@400;500&display=swap"
+    rel="stylesheet"
+  >
+
+  <style>
+
+    :root {
+      --fondo: #F3EDDF;
+      --texto: #191552;
+      --tarjeta: #FBF7EC;
+      --rosa: #FF4A6E;
+      --amarillo: #FFC233;
+
+      --borde: rgba(25, 21, 82, .2);
+      --fuerte: rgba(25, 21, 82, .5);
+      --tenue: rgba(25, 21, 82, .55);
+
+      --display: 'Bricolage Grotesque', 'Arial Black', sans-serif;
+      --cuerpo: 'Instrument Sans', system-ui, -apple-system, sans-serif;
+      --mono: 'DM Mono', ui-monospace, Menlo, monospace;
+    }
+
+    [data-tema="noche"] {
+      --fondo: #12103F;
+      --texto: #F3EDDF;
+      --tarjeta: #1B1857;
+
+      --borde: rgba(243, 237, 223, .2);
+      --fuerte: rgba(243, 237, 223, .45);
+      --tenue: rgba(243, 237, 223, .58);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    body {
+      margin: 0;
+      background: var(--fondo);
+      color: var(--texto);
+      font-family: var(--cuerpo);
+      font-size: 16px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .env {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 18px;
+    }
+
+    .top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 18px;
+      max-width: 900px;
+      margin: 0 auto;
+      border-bottom: 2px solid var(--texto);
+    }
+
+    .top h1 {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 17px;
+      text-transform: uppercase;
+      letter-spacing: -.02em;
+      margin: 0 auto 0 0;
+    }
+
+    .top h1 span {
+      color: var(--rosa);
+    }
+
+    .btn {
+      font-family: var(--mono);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      background: transparent;
+      color: var(--texto);
+      border: 1.5px solid var(--texto);
+      border-radius: 999px;
+      padding: 7px 14px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background: var(--texto);
+      color: var(--fondo);
+    }
+
+    :focus-visible {
+      outline: 3px solid var(--rosa);
+      outline-offset: 2px;
+    }
+
+    section {
+      padding: 40px 0;
+    }
+
+    section + section {
+      border-top: 2px solid var(--texto);
+    }
+
+    h2 {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: clamp(22px, 3.6vw, 30px);
+      letter-spacing: -.03em;
+      margin: 0 0 6px;
+    }
+
+    .sub {
+      color: var(--tenue);
+      margin: 0 0 22px;
+      max-width: 60ch;
+      font-size: 15px;
+    }
+
+    /* =========================================================
+       FUENTE
+       ========================================================= */
+
+    @font-face {
+      font-family: "KarlosKikos";
+      src: url("./fonts/karloskikos.ttf") format("truetype");
+    }
+
+    .kikos-icon {
+      font-family: "KarlosKikos";
+    }
+
+    /* =========================================================
+       TRADUCTOR
+       ========================================================= */
+
+    .trad {
+      display: grid;
+      grid-template-columns: 1fr 52px 1fr;
+      border: 2px solid var(--texto);
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--tarjeta);
+    }
+
+    .panel {
+      padding: 16px;
+      min-height: 170px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .panel__et {
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--tenue);
+      margin: 0 0 12px;
+    }
+
+    .medio {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-left: 2px solid var(--texto);
+      border-right: 2px solid var(--texto);
+      background: var(--amarillo);
+    }
+
+    .medio button {
+      background: none;
+      border: 0;
+      font-size: 20px;
+      color: #191552;
+      cursor: pointer;
+      padding: 10px;
+      line-height: 1;
+    }
+
+    .salida {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: clamp(22px, 3.4vw, 30px);
+      line-height: 1.1;
+      letter-spacing: -.025em;
+      margin: 0;
+      flex: 1;
+    }
+
+    .salida small {
+      display: block;
+      font-family: var(--mono);
+      font-weight: 400;
+      font-size: 12px;
+      color: var(--tenue);
+      margin-top: 8px;
+      letter-spacing: 0;
+    }
+
+    .pieP {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+      flex-wrap: wrap;
+    }
+
+    input[type="date"],
+    input[type="number"],
+    select,
+    textarea {
+      background: var(--fondo);
+      border: 1.5px solid var(--fuerte);
+      border-radius: 8px;
+      padding: 10px;
+      font-family: var(--mono);
+      font-size: 15px;
+      width: 100%;
+      color: inherit;
+      min-height: 44px;
+    }
+
+    textarea {
+      font-family: var(--cuerpo);
+      font-size: 17px;
+      resize: vertical;
+      min-height: 120px;
+      line-height: 1.4;
+    }
+
+    .rejK {
+      display: grid;
+      grid-template-columns: 66px 1fr;
+      gap: 8px;
+    }
+
+    .rejK2 {
+      display: grid;
+      grid-template-columns: 1fr 84px;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .et {
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      color: var(--tenue);
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* =========================================================
+       MESES
+       ========================================================= */
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 15px;
+    }
+
+    th {
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      color: var(--tenue);
+      text-align: left;
+      padding: 0 10px 8px;
+      font-weight: 400;
+      border-bottom: 2px solid var(--texto);
+    }
+
+    td {
+      padding: 11px 10px;
+      border-bottom: 1px solid var(--borde);
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    td.n {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--tenue);
+      width: 34px;
+    }
+
+    td.m {
+      font-family: var(--display);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    td.g {
+      font-family: var(--mono);
+      font-size: 12.5px;
+      color: var(--tenue);
+      white-space: nowrap;
+    }
+
+    .desliza {
+      overflow-x: auto;
+    }
+
+    /* =========================================================
+       ALFABETO
+       ========================================================= */
+
+    .glifos {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(74px, 1fr));
+      gap: 8px;
+    }
+
+    .gl {
+      background: var(--tarjeta);
+      border: 1.5px solid var(--borde);
+      border-radius: 10px;
+      padding: 10px 6px;
+      text-align: center;
+    }
+
+    .gl svg {
+      width: 36px;
+      height: 46px;
+      display: block;
+      margin: 0 auto 6px;
+    }
+
+    .gl b {
+      font-family: var(--mono);
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+
+    .leyenda {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin: 0 0 22px;
+    }
+
+    .leyenda div {
+      border-left: 4px solid var(--rosa);
+      padding: 2px 0 2px 12px;
+      font-size: 14.5px;
+      color: var(--tenue);
+    }
+
+    .leyenda b {
+      color: var(--texto);
+      font-family: var(--display);
+      font-weight: 700;
+      display: block;
+    }
+
+    /* =========================================================
+       LIENZO
+       ========================================================= */
+
+    .lienzo {
+      flex: 1;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: flex-start;
+      gap: 14px;
+      min-height: 80px;
+    }
+
+    .pal {
+      display: flex;
+      gap: 3px;
+    }
+
+    .lienzo svg {
+      width: 24px;
+      height: 34px;
+      color: var(--texto);
+    }
+
+    .lienzo .raw {
+      font-family: var(--mono);
+      font-size: 20px;
+      align-self: center;
+      color: var(--tenue);
+    }
+
+    .vacio {
+      color: var(--tenue);
+      font-size: 15px;
+      font-family: var(--cuerpo);
+    }
+
+    /* =========================================================
+       TECLADO
+       ========================================================= */
+
+    .teclado {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+      gap: 5px;
+      margin-top: 10px;
+    }
+
+    .tecla {
+      background: var(--fondo);
+      border: 1.5px solid var(--borde);
+      border-radius: 8px;
+      padding: 6px 2px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .tecla:hover {
+      border-color: var(--texto);
+    }
+
+    .tecla svg {
+      width: 18px;
+      height: 26px;
+      color: var(--texto);
+    }
+
+    .tecla i {
+      font-style: normal;
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--tenue);
+      text-transform: uppercase;
+    }
+
+    .teclaAncha {
+      grid-column: span 2;
+      justify-content: center;
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+    }
+
+    /* =========================================================
+       PIE
+       ========================================================= */
+
+    .pie {
+      border-top: 2px solid var(--texto);
+      padding: 22px 0 36px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--tenue);
+      text-transform: uppercase;
+      letter-spacing: .07em;
+    }
+
+    /* =========================================================
+       EVENTOS
+       ========================================================= */
+
+    .eventos {
+      display: grid;
+      gap: 12px;
+    }
+
+    .evento {
+      background: var(--tarjeta);
+      border: 2px solid var(--texto);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .evento h3 {
+      font-family: var(--display);
+      font-weight: 800;
+      font-size: 24px;
+      margin: 0 0 8px;
+    }
+
+    .evento p {
+      margin: 6px 0;
+    }
+
+    .evento__fecha {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--tenue);
+    }
+
+    .evento__categoria {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      border: 1px solid var(--borde);
+      border-radius: 999px;
+      padding: 5px 9px;
+      color: var(--tenue);
+    }
+
+    /* =========================================================
+       RESPONSIVE
+       ========================================================= */
+
+    @media (max-width: 720px) {
+
+      .trad {
+        grid-template-columns: 1fr;
+      }
+
+      .medio {
+        border-left: 0;
+        border-right: 0;
+        border-top: 2px solid var(--texto);
+        border-bottom: 2px solid var(--texto);
+        padding: 2px;
+      }
+
+      .medio button {
+        transform: rotate(90deg);
+      }
+
+      .leyenda {
+        grid-template-columns: 1fr;
+      }
+
+      section {
+        padding: 32px 0;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        transition: none !important;
+        animation: none !important;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <!-- ========================================================
+       CABECERA
+       ======================================================== -->
+
+  <header class="top">
+
+    <h1>
+      Kirkversario
+      <span>Hail Hittler</span>
+    </h1>
+
+    <button class="btn" id="btnTema">
+      Noche
+    </button>
+
+  </header>
+
+
+  <main class="env">
+
+    <!-- ======================================================
+         FECHAS
+         ====================================================== -->
+
+    <section>
+
+      <h2>Fechas</h2>
+
+      <p class="sub">
+        El 10 de septiembre es el 1 de Kirknero del Año 1.
+        Escribe una fecha y sale la otra.
+        El botón del medio cambia el sentido.
+      </p>
+
+
+      <div class="trad">
+
+        <!-- IZQUIERDA -->
+
+        <div class="panel" id="panelIzq">
+
+          <p class="panel__et" id="etIzq">
+            Calendario gregoriano
+          </p>
+
+
+          <div id="entradaG">
+
+            <span class="et">
+              Fecha
+            </span>
+
+            <input
+              type="date"
+              id="inGreg"
+            >
+
+          </div>
+
+
+          <div id="entradaK" hidden>
+
+            <div class="rejK">
+
+              <div>
+
+                <span class="et">
+                  Día
+                </span>
+
+                <input
+                  type="number"
+                  id="inDia"
+                  min="1"
+                  max="31"
+                  value="1"
+                >
+
+              </div>
+
+
+              <div>
+
+                <span class="et">
+                  Mes
+                </span>
+
+                <select id="inMes"></select>
+
+              </div>
+
+            </div>
+
+
+            <div class="rejK2">
+
+              <div>
+
+                <span class="et">
+                  Año
+                </span>
+
+                <input
+                  type="number"
+                  id="inAnio"
+                  min="1"
+                  value="1"
+                >
+
+              </div>
+
+
+              <div>
+
+                <span class="et">
+                  Era
+                </span>
+
+                <select id="inEra">
+
+                  <option value="d">
+                    d.K.
+                  </option>
+
+                  <option value="a">
+                    a.K.
+                  </option>
+
+                </select>
+
+              </div>
+
+            </div>
+
+          </div>
+
+
+          <div class="pieP">
+
+            <button class="btn" id="btnHoy">
+              Hoy
+            </button>
+
+          </div>
+
+        </div>
+
+
+        <!-- BOTÓN CENTRAL -->
+
+        <div class="medio">
+
+          <button
+            id="btnGirar"
+            title="Cambiar el sentido"
+            aria-label="Cambiar el sentido"
+          >
+            ⇄
+          </button>
+
+        </div>
+
+
+        <!-- DERECHA -->
+
+        <div class="panel">
+
+          <p class="panel__et" id="etDer">
+            Calendario Charlie Kirk
+          </p>
+
+          <p class="salida" id="salidaF">
+            —
+          </p>
+
+          <div class="pieP">
+
+            <button class="btn" id="btnCopiaF">
+              Copiar
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ======================================================
+         MESES
+         ====================================================== -->
+
+    <section>
+
+      <h2>
+        Los meses
+      </h2>
+
+      <p class="sub">
+        Doce meses. Cada uno empieza a mitad de un mes normal,
+        porque el año arranca el 10 de septiembre.
+      </p>
+
+      <div class="desliza">
+
+        <table id="tablaMeses"></table>
+
+      </div>
+
+    </section>
+
+    <!-- EVENTOS -->
+    <section>
+        <h2>Eventos</h2>
+
+        <p class="sub">
+            Todos los eventos del Kirkversario.
+        </p>
+
+        <div id="eventos" class="eventos">
+            <p class="vacio">Cargando eventos...</p>
+        </div>
+    </section>
+
+
+    <!-- ======================================================
+         TEXTO
+         ====================================================== -->
+
+    <section>
+
+      <h2>
+        Texto
+      </h2>
+
+      <p class="sub">
+        Escribe cualquier cosa y se pasa al alfabeto Charlie Kirk.
+        Gira el sentido y aparece un teclado de glifos para hacerlo
+        al revés.
+      </p>
+
+
+      <div class="trad">
+
+        <!-- TEXTO IZQUIERDA -->
+
+        <div class="panel">
+
+          <p class="panel__et" id="etTxtIzq">
+            Español
+          </p>
+
+
+          <textarea
+            id="inTexto"
+            placeholder="Escribe aquí…"
+            rows="4"
+          ></textarea>
+
+
+          <div id="tecladoCaja" hidden>
+
+            <div
+              class="teclado"
+              id="teclado"
+            ></div>
+
+          </div>
+
+        </div>
+
+
+        <!-- BOTÓN -->
+
+        <div class="medio">
+
+          <button
+            id="btnGirarT"
+            title="Cambiar el sentido"
+            aria-label="Cambiar el sentido"
+          >
+            ⇄
+          </button>
+
+        </div>
+
+
+        <!-- RESULTADO -->
+
+        <div class="panel">
+
+          <p class="panel__et" id="etTxtDer">
+            Alfabeto Kirk
+          </p>
+
+
+          <div
+            class="lienzo"
+            id="lienzo"
+          >
+            <span class="vacio">
+              La traducción aparece aquí.
+            </span>
+          </div>
+
+
+          <p
+            class="salida"
+            id="salidaT"
+            hidden
+          ></p>
+
+
+          <div class="pieP">
+
+            <button
+              class="btn"
+              id="btnCopiaT"
+              hidden
+            >
+              Copiar
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ======================================================
+         ALFABETO
+         ====================================================== -->
+
+    <section>
+
+      <h2>
+        El alfabeto Kirk
+      </h2>
+
+      <p class="sub">
+        Veintisiete letras con una lógica detrás,
+        para que se pueda aprender en un rato.
+      </p>
+
+
+      <div class="leyenda">
+
+        <div>
+
+          <b>
+            No se parecen al abecedario
+          </b>
+
+          Ninguna letra recuerda a una latina ni a un número.
+          Comprobado contra las 62 letras y cifras en tres tipografías
+          distintas.
+
+        </div>
+
+
+        <div>
+
+          <b>
+            Ni se parecen entre ellas
+          </b>
+
+          Cada una es una figura entera:
+          casa, escalera, nube, trébol, cometa, arcoíris.
+          Nada de troncos con rayitas.
+
+        </div>
+
+      </div>
+
+
+      <div
+        class="glifos"
+        id="glifos"
+      ></div>
+
+    </section>
+
+
+    <!-- PIE -->
+
+    <div
+      class="pie"
+      id="pie"
+    ></div>
+
+  </main>
+
+
+  <!-- ========================================================
+       JAVASCRIPT
+       ======================================================== -->
+
+  <script>
+
+    (function () {
+
+      "use strict";
+
+
+      /* ======================================================
+         CALENDARIO
+         ====================================================== */
+
+      var MESES = [
+
+        {
+          n: "Kirktrump",
+          d: 31
+        },
+
+        {
+          n: "Kirknigger",
+          d: 28
+        },
+
+        {
+          n: "Kirkbaiden",
+          d: 31
+        },
+
+        {
+          n: "Kirkennedy",
+          d: 30
+        },
+
+        {
+          n: "Kirknetanyahu",
+          d: 31
+        },
+
+        {
+          n: "Kirkfranco",
+          d: 30
+        },
+
+        {
+          n: "Kirkgandhi",
+          d: 31
+        },
+
+        {
+          n: "Kirkwashington",
+          d: 31
+        },
+
+        {
+          n: "Kirkmessi",
+          d: 30
+        },
+
+        {
+          n: "Kirkronaldo",
+          d: 31
+        },
+
+        {
+          n: "Kirkgay",
+          d: 30
+        },
+
+        {
+          n: "Kirkeroro",
+          d: 31
+        }
+
+      ];
+
+
+      var MG = [
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre"
+      ];
+
+
+      var MGC = [
+        "ene",
+        "feb",
+        "mar",
+        "abr",
+        "may",
+        "jun",
+        "jul",
+        "ago",
+        "sep",
+        "oct",
+        "nov",
+        "dic"
+      ];
+
+
+      var SEM = [
+        "lunes",
+        "martes",
+        "miércoles",
+        "jueves",
+        "viernes",
+        "sábado",
+        "domingo"
+      ];
+
+
+      var MS = 86400000;
+      var EPOCA = 2025;
+      var dir = "g2k";
+
+
+      /* ======================================================
+         UTILIDADES
+         ====================================================== */
+
+      function $(i) {
+        return document.getElementById(i);
+      }
+
+
+      function utc(y, m, d) {
+
+        var f = new Date(
+          Date.UTC(2000, 0, 1)
+        );
+
+        f.setUTCFullYear(
+          y,
+          m - 1,
+          d
+        );
+
+        f.setUTCHours(
+          0,
+          0,
+          0,
+          0
+        );
+
+        return f.getTime();
+      }
+
+
+      function bis(y) {
+
+        return (
+          (y % 4 === 0 && y % 100 !== 0) ||
+          y % 400 === 0
+        );
+
+      }
+
+
+      function dm(i, g) {
+
+        return (
+          i === 1 && bis(g + 1)
+        )
+          ? 29
+          : MESES[i].d;
+
+      }
+
+
+      function largo(g) {
+
+        return bis(g + 1)
+          ? 366
+          : 365;
+
+      }
+
+
+      function gDe(a) {
+
+        return a > 0
+          ? EPOCA + a - 1
+          : EPOCA + a;
+
+      }
+
+
+      function nAnio(a) {
+
+        return a > 0
+          ? "Año " + a + " d.K."
+          : "Año " + Math.abs(a) + " a.K.";
+
+      }
+
+
+      /* ======================================================
+         CONVERSIÓN GREGORIANO -> KIRK
+         ====================================================== */
+
+      function aKK(y, m, d) {
+
+        var g =
+          (
+            m > 9 ||
+            (m === 9 && d >= 10)
+          )
+            ? y
+            : y - 1;
+
+
+        var dia =
+          Math.round(
+            (
+              utc(y, m, d) -
+              utc(g, 9, 10)
+            ) / MS
+          ) + 1;
+
+
+        var n = g - EPOCA;
+
+        var anio =
+          n >= 0
+            ? n + 1
+            : n;
+
+
+        var r = dia;
+        var me = 0;
+
+
+        while (
+          r > dm(me, g)
+        ) {
+
+          r -= dm(me, g);
+          me++;
+
+        }
+
+
+        return {
+
+          anio: anio,
+          mes: me + 1,
+          dia: r,
+          diaAnio: dia,
+          gI: g,
+          largo: largo(g)
+
+        };
+
+      }
+
+
+      function kkMs(ms) {
+
+        var f = new Date(ms);
+
+        return aKK(
+          f.getUTCFullYear(),
+          f.getUTCMonth() + 1,
+          f.getUTCDate()
+        );
+
+      }
+
+
+      function msKK(a, m, d) {
+
+        var g = gDe(a);
+        var ac = 0;
+
+
+        for (
+          var i = 0;
+          i < m - 1;
+          i++
+        ) {
+
+          ac += dm(i, g);
+
+        }
+
+
+        return (
+          utc(g, 9, 10) +
+          (ac + d - 1) * MS
+        );
+
+      }
+
+
+      /* ======================================================
+         FORMATO DE FECHAS
+         ====================================================== */
+
+      function tG(ms) {
+
+        var f = new Date(ms);
+
+        return (
+          f.getUTCDate() +
+          " de " +
+          MG[f.getUTCMonth()] +
+          " de " +
+          f.getUTCFullYear()
+        );
+
+      }
+
+
+      function tGc(ms) {
+
+        var f = new Date(ms);
+
+        return (
+          f.getUTCDate() +
+          " " +
+          MGC[f.getUTCMonth()]
+        );
+
+      }
+
+
+      function tK(k) {
+
+        return (
+          k.dia +
+          " de " +
+          MESES[k.mes - 1].n
+        );
+
+      }
+
+
+      function iso(ms) {
+
+        var f = new Date(ms);
+
+        return (
+          f.getUTCFullYear() +
+          "-" +
+          String(
+            f.getUTCMonth() + 1
+          ).padStart(2, "0") +
+          "-" +
+          String(
+            f.getUTCDate()
+          ).padStart(2, "0")
+        );
+
+      }
+
+
+      function hoyMs() {
+
+        var h = new Date();
+
+        return utc(
+          h.getFullYear(),
+          h.getMonth() + 1,
+          h.getDate()
+        );
+
+      }
+
+
+      function sem(ms) {
+
+        return SEM[
+          (
+            new Date(ms).getUTCDay() +
+            6
+          ) % 7
+        ];
+
+      }
+
+
+      /* ======================================================
+         SELECTOR DE MESES
+         ====================================================== */
+
+      var op = "";
+
+      MESES.forEach(
+        function (m, i) {
+
+          op +=
+            '<option value="' +
+            (i + 1) +
+            '">' +
+            m.n +
+            "</option>";
+
+        }
+      );
+
+
+      $("inMes").innerHTML = op;
+
+
+      /* ======================================================
+         TRADUCIR FECHA
+         ====================================================== */
+
+      function traducirFecha() {
+
+        if (dir === "g2k") {
+
+          var v =
+            $("inGreg").value;
+
+
+          if (!v) {
+
+            $("salidaF").textContent = "—";
+            return;
+
+          }
+
+
+          var p =
+            v.split("-").map(Number);
+
+
+          var k =
+            aKK(
+              p[0],
+              p[1],
+              p[2]
+            );
+
+
+          $("salidaF").innerHTML =
+            tK(k) +
+            "<small>" +
+            nAnio(k.anio) +
+            " · día " +
+            k.diaAnio +
+            " de " +
+            k.largo +
+            "</small>";
+
+        }
+
+        else {
+
+          var d =
+            parseInt(
+              $("inDia").value,
+              10
+            ) || 1;
+
+
+          var m =
+            parseInt(
+              $("inMes").value,
+              10
+            );
+
+
+          var a =
+            Math.abs(
+              parseInt(
+                $("inAnio").value,
+                10
+              )
+            ) || 1;
+
+
+          if (
+            $("inEra").value === "a"
+          ) {
+
+            a = -a;
+
+          }
+
+
+          var mx =
+            dm(
+              m - 1,
+              gDe(a)
+            );
+
+
+          if (d > mx) {
+
+            d = mx;
+            $("inDia").value = mx;
+
+          }
+
+
+          if (d < 1) {
+
+            d = 1;
+            $("inDia").value = 1;
+
+          }
+
+
+          $("inDia").max = mx;
+
+
+          var ms =
+            msKK(
+              a,
+              m,
+              d
+            );
+
+
+          $("salidaF").innerHTML =
+            tG(ms) +
+            "<small>" +
+            sem(ms) +
+            "</small>";
+
+        }
+
+      }
+
+
+      /* ======================================================
+         GIRAR CALENDARIO
+         ====================================================== */
+
+      function girar() {
+
+        dir =
+          dir === "g2k"
+            ? "k2g"
+            : "g2k";
+
+
+        var g =
+          dir === "g2k";
+
+
+        $("entradaG").hidden = !g;
+        $("entradaK").hidden = g;
+
+
+        $("etIzq").textContent =
+          g
+            ? "Calendario de siempre"
+            : "Calendario Charlie Kirk";
+
+
+        $("etDer").textContent =
+          g
+            ? "Calendario Charlie Kirk"
+            : "Calendario de siempre";
+
+
+        traducirFecha();
+
+      }
+
+
+      /* ======================================================
+         HOY
+         ====================================================== */
+
+      function ponHoy() {
+
+        var h = hoyMs();
+        var k = kkMs(h);
+
+
+        $("inGreg").value =
+          iso(h);
+
+
+        $("inDia").value =
+          k.dia;
+
+
+        $("inMes").value =
+          k.mes;
+
+
+        $("inAnio").value =
+          Math.abs(k.anio);
+
+
+        $("inEra").value =
+          k.anio > 0
+            ? "d"
+            : "a";
+
+
+        traducirFecha();
+
+      }
+
+
+      $("btnGirar")
+        .addEventListener(
+          "click",
+          girar
+        );
+
+
+      $("btnHoy")
+        .addEventListener(
+          "click",
+          ponHoy
+        );
+
+
+      [
+        "inGreg",
+        "inDia",
+        "inMes",
+        "inAnio",
+        "inEra"
+      ].forEach(
+        function (i) {
+
+          $(i).addEventListener(
+            "input",
+            traducirFecha
+          );
+
+          $(i).addEventListener(
+            "change",
+            traducirFecha
+          );
+
+        }
+      );
+
+
+      /* ======================================================
+         TABLA DE MESES
+         ====================================================== */
+
+      function tablaMeses() {
+
+        var k =
+          kkMs(hoyMs());
+
+
+        var a =
+          k.anio;
+
+
+        var g =
+          gDe(a);
+
+
+        var f =
+          "<tr>" +
+          "<th></th>" +
+          "<th>Mes</th>" +
+          "<th>Días</th>" +
+          "<th>Va del … al …</th>" +
+          "</tr>";
+
+
+        for (
+          var i = 0;
+          i < 12;
+          i++
+        ) {
+
+          var t =
+            dm(i, g);
+
+
+          var p =
+            msKK(
+              a,
+              i + 1,
+              1
+            );
+
+
+          var u =
+            msKK(
+              a,
+              i + 1,
+              t
+            );
+
+
+          var mk =
+            (
+              i + 1 === k.mes
+            )
+              ? ' style="background:var(--amarillo);color:#191552"'
+              : "";
+
+
+          f +=
+            "<tr" +
+            mk +
+            ">" +
+
+            "<td class='n'>" +
+            (i + 1) +
+            "</td>" +
+
+            "<td class='m'>" +
+            MESES[i].n +
+            "</td>" +
+
+            "<td class='g'>" +
+            t +
+            "</td>" +
+
+            "<td class='g'>" +
+            tGc(p) +
+            " – " +
+            tGc(u) +
+            "</td>" +
+
+            "</tr>";
+
+        }
+
+
+        $("tablaMeses").innerHTML = f;
+
+      }
+
+
+      /* ======================================================
+         ALFABETO
+         ====================================================== */
+
+      var GLIFOS = {
+
+        a:
+          '<circle cx="30" cy="21" r="12"/>' +
+          '<circle cx="30" cy="59" r="12"/>',
+
+        b:
+          '<path d="M30 12 L52 32 L52 66 L8 66 L8 32 Z"/>',
+
+        c:
+          '<path d="M8 66 L8 52 L26 52 L26 34 L44 34 L44 16 L54 16"/>',
+
+        d:
+          '<path d="M8 48 q11 -30 22 0 q11 30 22 0"/>',
+
+        e:
+          '<path d="M30 10 L30 70 M11 25 L49 55 M49 25 L11 55"/>',
+
+        f:
+          '<path d="M8 28 q11 -22 22 0 q11 22 22 0 M8 58 q11 -22 22 0 q11 22 22 0"/>',
+
+        g:
+          '<path d="M18 12 L42 26 L18 40 L42 54 L18 68"/>',
+
+        h:
+          '<path d="M8 18 L30 42 L52 18 M8 42 L30 66 L52 42"/>',
+
+        i:
+          '<circle cx="30" cy="17" r="9" fill="currentColor"/>' +
+          '<circle cx="14" cy="58" r="9" fill="currentColor"/>' +
+          '<circle cx="46" cy="58" r="9" fill="currentColor"/>',
+
+        j:
+          '<path d="M8 66 L8 22 L20 40 L30 18 L40 40 L52 22 L52 66"/>',
+
+        k:
+          '<path d="M12 66 L48 20 M26 16 L50 16 L50 40"/>',
+
+        l:
+          '<path d="M6 20 L18 20 L18 38 L34 38 L34 56 L54 56"/>',
+
+        m:
+          '<rect x="12" y="30" width="36" height="32"/>' +
+          '<path d="M8 15 L52 15"/>',
+
+        n:
+          '<path d="M30 12 L50 52 L10 52 Z"/>' +
+          '<path d="M8 66 L52 66"/>',
+
+        "ñ":
+          '<path d="M14 14 L14 66 M30 14 L30 66 M46 14 L46 66"/>',
+
+        o:
+          '<rect x="7" y="17" width="46" height="46"/>' +
+          '<rect x="21" y="31" width="18" height="18"/>',
+
+        p:
+          '<path d="M30 16 a24 24 0 0 0 0 48 Z" fill="currentColor"/>' +
+          '<path d="M30 12 L30 68"/>',
+
+        q:
+          '<path d="M10 62 a20 20 0 0 1 40 0 M20 62 a10 10 0 0 1 20 0"/>',
+
+        r:
+          '<rect x="9" y="19" width="42" height="42"/>' +
+          '<path d="M30 19 L30 61"/>',
+
+        s:
+          '<path d="M12 40 L48 40"/>' +
+          '<circle cx="12" cy="40" r="9" fill="currentColor"/>' +
+          '<circle cx="48" cy="40" r="9" fill="currentColor"/>',
+
+        t:
+          '<path d="M14 14 a14 14 0 0 1 0 28 M46 38 a14 14 0 0 1 0 28"/>',
+
+        u:
+          '<circle cx="30" cy="22" r="12"/>' +
+          '<circle cx="18" cy="46" r="12"/>' +
+          '<circle cx="42" cy="46" r="12"/>',
+
+        v:
+          '<path d="M6 14 L30 40 L6 66 Z" fill="currentColor"/>' +
+          '<path d="M32 14 L56 40 L32 66 Z" fill="currentColor"/>',
+
+        w:
+          '<path d="M30 10 L48 40 L30 56 L12 40 Z"/>' +
+          '<path d="M30 56 L30 70"/>',
+
+        x:
+          '<path d="M14 56 a12 12 0 0 1 0 -24 a16 16 0 0 1 32 0 a12 12 0 0 1 0 24 Z"/>',
+
+        y:
+          '<path d="M22 10 q28 12 0 24 q-28 12 0 24 q28 12 0 24"/>',
+
+        z:
+          '<path d="M10 30 L34 6 M10 52 L44 18 M20 64 L50 34 M40 68 L54 54"/>'
+
+      };
+
+
+      var ORDEN =
+        "abcdefghijklmnñopqrstuvwxyz"
+          .split("");
+
+
+      function svg(ch) {
+
+        var c =
+          GLIFOS[ch];
+
+
+        if (!c) {
+          return null;
+        }
+
+
+        return (
+          '<svg ' +
+          'viewBox="0 0 60 80" ' +
+          'fill="none" ' +
+          'stroke="currentColor" ' +
+          'stroke-width="7" ' +
+          'stroke-linecap="round" ' +
+          'stroke-linejoin="round" ' +
+          'aria-hidden="true">' +
+          c +
+          "</svg>"
+        );
+
+      }
+
+
+      /* ======================================================
+         NORMALIZAR TEXTO
+         ====================================================== */
+
+      function normaliza(t) {
+
+        return t
+          .toLowerCase()
+          .replace(
+            /[áàäâ]/g,
+            "a"
+          )
+          .replace(
+            /[éèëê]/g,
+            "e"
+          )
+          .replace(
+            /[íìïî]/g,
+            "i"
+          )
+          .replace(
+            /[óòöô]/g,
+            "o"
+          )
+          .replace(
+            /[úùüû]/g,
+            "u"
+          );
+
+      }
+
+
+      /* ======================================================
+         PINTAR GLIFOS
+         ====================================================== */
+
+      function pintarGlifos() {
+
+        var h = "";
+
+
+        ORDEN.forEach(
+          function (l) {
+
+            h +=
+              '<div class="gl">' +
+              svg(l) +
+              "<b>" +
+              l +
+              "</b>" +
+              "</div>";
+
+          }
+        );
+
+
+        $("glifos").innerHTML = h;
+
+      }
+
+
+      /* ======================================================
+         TRADUCTOR DE TEXTO
+         ====================================================== */
+
+      var dirT = "es2k";
+      var buffer = "";
+
+
+      function pintarTexto() {
+
+        if (dirT === "es2k") {
+
+          var t =
+            normaliza(
+              $("inTexto").value
+            );
+
+
+          if (!t.trim()) {
+
+            $("lienzo").innerHTML =
+              '<span class="vacio">' +
+              "La traducción aparece aquí." +
+              "</span>";
+
+            return;
+
+          }
+
+
+          var h = "";
+
+
+          t
+            .split(/(\s+)/)
+            .forEach(
+              function (p) {
+
+                if (!p.trim()) {
+                  return;
+                }
+
+
+                h +=
+                  '<span class="pal">';
+
+
+                p
+                  .split("")
+                  .forEach(
+                    function (c) {
+
+                      var s =
+                        svg(c);
+
+
+                      h += s
+                        ? s
+                        : '<span class="raw">' +
+                          c
+                            .replace(
+                              /&/g,
+                              "&amp;"
+                            )
+                            .replace(
+                              /</g,
+                              "&lt;"
+                            ) +
+                          "</span>";
+
+                    }
+                  );
+
+
+                h +=
+                  "</span>";
+
+              }
+            );
+
+
+          $("lienzo").innerHTML = h;
+
+        }
+
+        else {
+
+          $("salidaT").textContent =
+            buffer || "—";
+
+        }
+
+      }
+
+
+      /* ======================================================
+         GIRAR TRADUCTOR DE TEXTO
+         ====================================================== */
+
+      function girarT() {
+
+        dirT =
+          dirT === "es2k"
+            ? "k2es"
+            : "es2k";
+
+
+        var es =
+          dirT === "es2k";
+
+
+        $("inTexto").hidden =
+          !es;
+
+
+        $("tecladoCaja").hidden =
+          es;
+
+
+        $("lienzo").hidden =
+          !es;
+
+
+        $("salidaT").hidden =
+          es;
+
+
+        $("btnCopiaT").hidden =
+          es;
+
+
+        $("etTxtIzq").textContent =
+          es
+            ? "Español"
+            : "Alfabeto Charlie Kirk";
+
+
+        $("etTxtDer").textContent =
+          es
+            ? "Alfabeto Charlie Kirk"
+            : "Español";
+
+
+        pintarTexto();
+
+      }
+
+
+      /* ======================================================
+         TECLADO
+         ====================================================== */
+
+      function pintarTeclado() {
+
+        var h = "";
+
+
+        ORDEN.forEach(
+          function (l) {
+
+            h +=
+              '<button class="tecla" data-l="' +
+              l +
+              '">' +
+              svg(l) +
+              "<i>" +
+              l +
+              "</i>" +
+              "</button>";
+
+          }
+        );
+
+
+        h +=
+          '<button class="tecla teclaAncha" data-l=" ">' +
+          "espacio" +
+          "</button>";
+
+
+        h +=
+          '<button class="tecla teclaAncha" data-l="__del">' +
+          "borrar" +
+          "</button>";
+
+
+        $("teclado").innerHTML = h;
+
+      }
+
+
+      $("teclado")
+        .addEventListener(
+          "click",
+          function (e) {
+
+            var b =
+              e.target.closest(
+                "button[data-l]"
+              );
+
+
+            if (!b) {
+              return;
+            }
+
+
+            var l =
+              b.dataset.l;
+
+
+            if (l === "__del") {
+
+              buffer =
+                buffer.slice(0, -1);
+
+            }
+
+            else {
+
+              buffer += l;
+
+            }
+
+
+            pintarTexto();
+
+          }
+        );
+
+
+      $("inTexto")
+        .addEventListener(
+          "input",
+          pintarTexto
+        );
+
+
+      $("btnGirarT")
+        .addEventListener(
+          "click",
+          girarT
+        );
+
+
+      /* ======================================================
+         COPIAR
+         ====================================================== */
+
+      function copiar(btn, texto) {
+
+        var t =
+          btn.textContent;
+
+
+        var ok =
+          function () {
+
+            btn.textContent =
+              "Copiado";
+
+
+            setTimeout(
+              function () {
+
+                btn.textContent = t;
+
+              },
+              1500
+            );
+
+          };
+
+
+        if (
+          navigator.clipboard &&
+          navigator.clipboard.writeText
+        ) {
+
+          navigator.clipboard
+            .writeText(texto)
+            .then(
+              ok,
+              function () {}
+            );
+
+        }
+
+        else {
+
+          var ta =
+            document.createElement(
+              "textarea"
+            );
+
+
+          ta.value = texto;
+
+
+          document.body.appendChild(
+            ta
+          );
+
+
+          ta.select();
+
+
+          try {
+
+            document.execCommand(
+              "copy"
+            );
+
+            ok();
+
+          }
+
+          catch (err) {}
+
+
+          document.body.removeChild(
+            ta
+          );
+
+        }
+
+      }
+
+
+      $("btnCopiaF")
+        .addEventListener(
+          "click",
+          function () {
+
+            copiar(
+              this,
+              $("salidaF").textContent
+            );
+
+          }
+        );
+
+
+      $("btnCopiaT")
+        .addEventListener(
+          "click",
+          function () {
+
+            copiar(
+              this,
+              buffer
+            );
+
+          }
+        );
+
+
+      /* ======================================================
+         TEMA
+         ====================================================== */
+
+      $("btnTema")
+        .addEventListener(
+          "click",
+          function () {
+
+            var n =
+              document.documentElement
+                .getAttribute(
+                  "data-tema"
+                ) === "noche";
+
+
+            document.documentElement
+              .setAttribute(
+                "data-tema",
+                n
+                  ? "papel"
+                  : "noche"
+              );
+
+
+            this.textContent =
+              n
+                ? "Noche"
+                : "Papel";
+
+          }
+        );
+
+    /* ================= EVENTOS ================= */
+
+    function escaparHTML(texto) {
+    return String(texto ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+
+    function mostrarEventos(eventos) {
+
+    var contenedor = $("eventos");
+
+    if (!contenedor) {
+        return;
+    }
+
+    if (!Array.isArray(eventos) || eventos.length === 0) {
+
+        contenedor.innerHTML =
+        '<p class="vacio">No hay eventos todavía.</p>';
+
+        return;
+    }
+
+    var html = "";
+
+    eventos.forEach(function(evento) {
+
+        html += '<article class="evento">';
+
+        html +=
+        '<h3>' +
+        escaparHTML(evento.title) +
+        '</h3>';
+
+        if (evento.description) {
+
+        html +=
+            '<p>' +
+            escaparHTML(evento.description) +
+            '</p>';
+        }
+
+        html +=
+        '<p class="evento__fecha">' +
+        '📅 ' +
+        escaparHTML(evento.date);
+
+        if (evento.time) {
+
+        html +=
+            ' — ' +
+            escaparHTML(evento.time);
+        }
+
+        html += '</p>';
+
+        if (evento.category) {
+
+        html +=
+            '<p class="evento__categoria">' +
+            escaparHTML(evento.category) +
+            '</p>';
+        }
+
+        html += '</article>';
+    });
+
+    contenedor.innerHTML = html;
+    }
+
+
+    async function cargarEventos() {
+
+    var contenedor = $("eventos");
+
+    if (!contenedor) {
+        return;
+    }
+
+    try {
+
+        var respuesta = await fetch("/api/events");
+
+        if (!respuesta.ok) {
+        throw new Error(
+            "HTTP " + respuesta.status
+        );
+        }
+
+        var eventos = await respuesta.json();
+
+        mostrarEventos(eventos);
+
+    } catch (error) {
+
+        console.error(
+        "Error cargando eventos:",
+        error
+        );
+
+        contenedor.innerHTML =
+        '<p class="vacio">' +
+        'No se pudieron cargar los eventos.' +
+        '</p>';
+    }
+    }
+
+
+    /*======================================================
+    ARRANQUE
+    ====================================================== */
+
+
+    pintarGlifos();
+    pintarTeclado();
+    tablaMeses();
+    ponHoy();
+    cargarEventos();
+
+    var k = kkMs(hoyMs());
+
+    $("pie").textContent =
+    "Hoy · " +
+    tK(k) +
+    " · " +
+    nAnio(k.anio);
+
+    })();
+
+  </script>
+
+</body>
+</html>
+`;

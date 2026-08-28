@@ -25,86 +25,10 @@ app.use(express.urlencoded({ extended: true }));
 // EJS
 // ============================================================
 
-function render(template, data = {}) {
-
-    let output = template;
-
-    // ========================================================
-    // IF / ELSE
-    // ========================================================
-
-    output = output.replace(
-        /<%\s*if\s*\(([\s\S]*?)\)\s*\{\s*%>([\s\S]*?)<%\s*\}\s*else\s*\{\s*%>([\s\S]*?)<%\s*\}\s*%>/g,
-        (_, condition, yes, no) => {
-
-            const resultado = evaluateExpression(
-                condition,
-                data
-            );
-
-            return resultado ? yes : no;
-        }
-    );
-
-    // ========================================================
-    // IF SIN ELSE
-    // ========================================================
-
-    output = output.replace(
-        /<%\s*if\s*\(([\s\S]*?)\)\s*\{\s*%>([\s\S]*?)<%\s*\}\s*%>/g,
-        (_, condition, content) => {
-
-            const resultado = evaluateExpression(
-                condition,
-                data
-            );
-
-            return resultado ? content : "";
-        }
-    );
-
-    // ========================================================
-    // FOR EACH
-    // ========================================================
-
-    output = output.replace(
-        /<%\s*events\.forEach\(function\(event\)\s*\{\s*%>([\s\S]*?)<%\s*\}\);\s*%>/g,
-        (_, content) => {
-
-            if (!Array.isArray(data.events)) {
-                return "";
-            }
-
-            return data.events
-                .map(event => {
-                    return render(content, {
-                        ...data,
-                        event
-                    });
-                })
-                .join("");
-        }
-    );
-
-    // ========================================================
-    // VARIABLES <%= ... %>
-    // ========================================================
-
-    output = output.replace(
-        /<%=\s*([\s\S]*?)\s*%>/g,
-        (_, expression) => {
-
-            return escapeHtml(
-                evaluateExpression(
-                    expression,
-                    data
-                )
-            );
-        }
-    );
-
-    return output;
-}
+// ============================================================
+// TEMPLATES
+// Compatible con Cloudflare Workers
+// ============================================================
 
 function escapeHtml(value) {
     return String(value ?? "")
@@ -115,18 +39,125 @@ function escapeHtml(value) {
         .replace(/'/g, "&#39;");
 }
 
-function evaluateExpression(expression, data) {
-    try {
-        const keys = Object.keys(data);
-        const values = Object.values(data);
 
-        return Function(
-            ...keys,
-            `"use strict"; return (${expression});`
-        )(...values);
-    } catch {
-        return "";
+function renderEvents(events) {
+
+    if (!events || events.length === 0) {
+        return `<p class="vacio">No hay eventos todavía.</p>`;
     }
+
+    return `
+        <div class="eventos">
+
+            ${events.map(event => `
+                <article class="evento">
+
+                    <h3>${escapeHtml(event.title)}</h3>
+
+                    ${
+                        event.description
+                            ? `<p>${escapeHtml(event.description)}</p>`
+                            : ""
+                    }
+
+                    <p class="evento__fecha">
+                        📅 ${escapeHtml(event.date)}
+                        ${
+                            event.time
+                                ? ` — ${escapeHtml(event.time)}`
+                                : ""
+                        }
+                    </p>
+
+                    ${
+                        event.category
+                            ? `
+                                <p class="evento__categoria">
+                                    ${escapeHtml(event.category)}
+                                </p>
+                            `
+                            : ""
+                    }
+
+                </article>
+            `).join("")}
+
+        </div>
+    `;
+}
+
+
+// ------------------------------------------------------------
+// HOME
+// ------------------------------------------------------------
+
+function renderHome(template, events) {
+
+    let eventosHtml = "";
+
+    if (!events || events.length === 0) {
+
+        eventosHtml = `
+            <p class="vacio">
+                No hay eventos todavía.
+            </p>
+        `;
+
+    } else {
+
+        eventosHtml = `
+            <div class="eventos">
+
+                ${events.map(event => `
+
+                    <article class="evento">
+
+                        <h3>
+                            ${escapeHtml(event.title)}
+                        </h3>
+
+                        ${
+                            event.description
+                                ? `
+                                    <p>
+                                        ${escapeHtml(event.description)}
+                                    </p>
+                                  `
+                                : ""
+                        }
+
+                        <p class="evento__fecha">
+                            📅 ${escapeHtml(event.date)}
+
+                            ${
+                                event.time
+                                    ? ` — ${escapeHtml(event.time)}`
+                                    : ""
+                            }
+                        </p>
+
+                        ${
+                            event.category
+                                ? `
+                                    <p class="evento__categoria">
+                                        ${escapeHtml(event.category)}
+                                    </p>
+                                  `
+                                : ""
+                        }
+
+                    </article>
+
+                `).join("")}
+
+            </div>
+        `;
+    }
+
+    return template.replace(
+        "<!-- EVENTOS_AQUI -->",
+        eventosHtml
+    );
 }
 
 
@@ -299,18 +330,17 @@ app.get("/", async (req, res) => {
 
         const events = result.results || [];
 
+        const html = homeTemplate
+            .replace("{{EVENTOS}}", renderEvents(events));
+
         res
             .status(200)
             .setHeader("Content-Type", "text/html; charset=utf-8")
-            .send(
-                render(homeTemplate, {
-                    events
-                })
-            );
+            .send(html);
 
     } catch (error) {
 
-        console.error(error);
+        console.error("Error cargando home:", error);
 
         res
             .status(500)
