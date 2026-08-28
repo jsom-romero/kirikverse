@@ -7,7 +7,7 @@
   ],
 
   "assets": {
-    "directory": "./admin.files",
+    "directory": "./admin",
     "binding": "ASSETS"
   },
 
