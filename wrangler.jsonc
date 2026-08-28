@@ -6,6 +6,11 @@
     "nodejs_compat"
   ],
 
+  "assets": {
+    "directory": "./admin.files",
+    "binding": "ASSETS"
+  },
+
   "d1_databases": [
     {
       "binding": "DB",

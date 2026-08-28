@@ -8,7 +8,6 @@ import { httpServerHandler } from "cloudflare:node";
 
 
 import homeTemplate from "./templates/home.js";
-import adminTemplate from "./templates/admin.js";
 import loginTemplate from "./templates/login.js";
 import registerTemplate from "./templates/register.js";
 import calendarioTemplate from "./templates/calendar.js";
@@ -39,6 +38,64 @@ function escapeHtml(value) {
         .replace(/'/g, "&#39;");
 }
 
+function renderAdminUsers(users = [], sessionUserId = null) {
+
+    if (users.length === 0) {
+
+        return `
+            <p class="vacio">
+                No hay usuarios registrados.
+            </p>
+        `;
+    }
+
+    return `
+        <ul class="usuarios">
+
+            ${users.map(user => `
+
+                <li class="usuario">
+
+                    <span class="usuario__nombre">
+                        ${escapeHtml(user.username)}
+                    </span>
+
+                    ${
+                        user.id === sessionUserId
+                            ? `
+                                <span class="usuario__yo">
+                                    Tú
+                                </span>
+                            `
+                            : ""
+                    }
+
+                    <button
+                        class="btn"
+                        type="button"
+                        onclick="changePassword(
+                            '${user.id}',
+                            '${escapeHtml(user.username)}'
+                        )"
+                    >
+                        Cambiar contraseña
+                    </button>
+
+                    <button
+                        class="btn btn--peligro"
+                        type="button"
+                        onclick="deleteUser(${user.id})"
+                    >
+                        Eliminar
+                    </button>
+
+                </li>
+
+            `).join("")}
+
+        </ul>
+    `;
+}
 
 function renderEvents(events) {
 
@@ -376,37 +433,86 @@ app.get("/", async (req, res) => {
 
 
 // ============================================================
-// ADMIN
+// PANEL DE ADMINISTRACIÓN
 // ============================================================
 
 app.get("/admin", requireAdmin, async (req, res) => {
 
     try {
 
-        const result = await env.DB.prepare(`
-            SELECT id, username
-            FROM users
-            ORDER BY username ASC
-        `).all();
+        const result =
+            await env.DB.prepare(`
+                SELECT
+                    id,
+                    username
+                FROM users
+                ORDER BY username ASC
+            `).all();
 
-        const users = result.results || [];
+        const users =
+            result.results || [];
 
-        return res.status(200).send(
-            adminTemplate(
+        const assetResponse =
+            await env.ASSETS.fetch(
+                new Request(
+                    "https://assets.local/admin.html"
+                )
+            );
+
+
+        if (!assetResponse.ok) {
+
+            console.error(
+                "ERROR: No se pudo cargar admin.html"
+            );
+
+            return res
+                .status(500)
+                .send(
+                    "No se pudo cargar el panel de administración."
+                );
+        }
+
+        let html =
+            await assetResponse.text();
+
+
+        const usersHtml =
+            renderAdminUsers(
                 users,
                 req.session.userId
+            );
+
+        html =
+            html.replace(
+                "{{USERS_HTML}}",
+                usersHtml
+            );
+
+        return res
+            .status(200)
+            .set(
+                "Content-Type",
+                "text/html; charset=utf-8"
             )
-        );
+            .send(html);
+
 
     } catch (error) {
 
-        console.error("ERROR ADMIN:", error);
+        console.error(
+            "ERROR ADMIN:",
+            error
+        );
 
         return res
             .status(500)
-            .send("Error al cargar el panel");
+            .send(
+                "Error al cargar el panel de administración."
+            );
     }
 });
+
 
 // ============================================================
 // LOGIN
