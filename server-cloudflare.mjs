@@ -564,6 +564,44 @@ app.put(
 
 
 // ============================================================
+// USUARIOS — ELIMINAR CUENTA
+// ============================================================
+
+app.delete("/api/users/:id", requireLogin, async (req, res) => {
+
+    try {
+
+        const userId = Number(req.params.id);
+
+        if (!userId) {
+            return res.status(400).json({
+                error: "ID de usuario inválido"
+            });
+        }
+
+        await env.DB.prepare(
+            "DELETE FROM users WHERE id = ?"
+        )
+        .bind(userId)
+        .run();
+
+        return res.json({
+            ok: true
+        });
+
+    } catch (error) {
+
+        console.error("ERROR DELETE USER:", error);
+
+        return res.status(500).json({
+            error: "No se pudo eliminar el usuario"
+        });
+    }
+});
+
+
+
+// ============================================================
 // EVENTOS — LISTAR
 // ============================================================
 

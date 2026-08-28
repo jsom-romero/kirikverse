@@ -34,24 +34,21 @@ export default function adminTemplate(users = [], sessionUserId = null) {
                         <button
                             class="btn"
                             type="button"
-                            onclick="changePassword('${user.id}', '${escapeHtml(user.username)}')"
+                            onclick="changePassword(
+                                '${user.id}',
+                                '${escapeHtml(user.username)}'
+                            )"
                         >
                             Cambiar contraseña
                         </button>
 
-                        ${
-                            user.id === sessionUserId
-                                ? `
-                                    <button
-                                        class="btn btn--peligro"
-                                        type="button"
-                                        onclick="deleteMyAccount()"
-                                    >
-                                        Borrar mi cuenta
-                                    </button>
-                                `
-                                : ""
-                        }
+                        <button
+                            class="btn btn--peligro"
+                            type="button"
+                            onclick="deleteUser(${user.id})"
+                        >
+                            Eliminar
+                        </button>
 
                     </li>
                 `).join("")}
@@ -795,65 +792,46 @@ export default function adminTemplate(users = [], sessionUserId = null) {
 
     <script>
 
-        async function deleteMyAccount() {
+        async function deleteUser(userId) {
 
-            const confirmed = confirm(
-                "¿Seguro que quieres borrar tu cuenta?"
+            const confirmar = confirm(
+                "¿Seguro que quieres eliminar este usuario?"
             );
 
-            if (!confirmed) {
+            if (!confirmar) {
                 return;
             }
 
             try {
 
                 const response = await fetch(
-                    "/api/users/me",
+                    "/api/users/" + userId,
                     {
                         method: "DELETE"
                     }
                 );
 
-                console.log(
-                    "Status:",
-                    response.status
-                );
+                const data = await response.json();
 
-                const texto =
-                    await response.text();
+                if (response.ok) {
 
-                console.log(
-                    "Respuesta:",
-                    texto
-                );
+                    alert("Usuario eliminado correctamente.");
 
-                if (!response.ok) {
+                    location.reload();
+
+                } else {
 
                     alert(
-                        "Error del servidor: " +
-                        texto
+                        data.error ||
+                        "No se pudo eliminar el usuario."
                     );
-
-                    return;
                 }
-
-                alert(
-                    "Cuenta eliminada correctamente."
-                );
-
-                window.location.href = "/login";
 
             } catch (error) {
 
-                console.error(
-                    "ERROR FETCH:",
-                    error
-                );
+                console.error("ERROR DELETE USER:", error);
 
-                alert(
-                    "Error de conexión con el servidor. " +
-                    "Mira la consola (F12)."
-                );
+                alert("Error de conexión con el servidor.");
             }
         }
 
