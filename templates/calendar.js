@@ -596,9 +596,9 @@ export default function calendarioTemplate() {
         <h2>El calendario</h2>
 
         <p class="sub">
-            Doce meses en rejilla. Cada casilla lleva el dÃ­a del calendario
+            Doce meses en rejilla. Cada casilla lleva el día del calendario
             Kirk arriba y su equivalente de siempre debajo.
-            Los dÃ­as en gris son del mes de al lado.
+            Los días en gris son del mes de al lado.
         </p>
 
         <div class="calMandos">
@@ -609,7 +609,7 @@ export default function calendarioTemplate() {
             </div>
 
             <div>
-                <span class="et">AÃ±o</span>
+                <span class="et">AÑO</span>
                 <input
                     type="number"
                     id="inAnio"
@@ -693,7 +693,7 @@ export default function calendarioTemplate() {
             </div>
 
             <div>
-                <span class="et">DÃ­a del aÃ±o</span>
+                <span class="et">día del AÑO</span>
                 <b id="pieDia">â€”</b>
             </div>
 
@@ -715,8 +715,8 @@ export default function calendarioTemplate() {
     /*
      * CONFIGURACIÃ“N
      *
-     * Define dÃ³nde cae el dÃ­a 1 del mes 1
-     * del AÃ±o 1 del calendario Kirk.
+     * Define dÃ³nde cae el día 1 del mes 1
+     * del AÑO 1 del calendario Kirk.
      */
     var EPOCA_ANIO = 2025;
     var EPOCA_MES = 9;
@@ -825,8 +825,8 @@ export default function calendarioTemplate() {
 
     function nAnio(a) {
         return a > 0
-            ? "AÃ±o " + a + " d.K."
-            : "AÃ±o " + Math.abs(a) + " a.K.";
+            ? "AÑO " + a + " d.K."
+            : "AÑO " + Math.abs(a) + " a.K.";
     }
 
     function inicioG(g) {
@@ -997,7 +997,7 @@ export default function calendarioTemplate() {
 
 
     /*
-     * DÃ­as de la semana
+     * días de la semana
      */
     $("calSem").innerHTML = SEM
         .map(function (s) {
@@ -1057,11 +1057,11 @@ export default function calendarioTemplate() {
 
         $("calSub").textContent =
             nAnio(vistaAnio) +
-            " Â· " +
+            " · " +
             total +
-            " dÃ­as Â· " +
+            " días · " +
             tGc(primero) +
-            " â€“ " +
+            " --> " +
             tGc(ultimo);
 
         var arranque =
