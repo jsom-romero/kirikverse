@@ -12,7 +12,7 @@ import adminTemplate from "./templates/admin.js";
 import loginTemplate from "./templates/login.js";
 import registerTemplate from "./templates/register.js";
 import calendarioTemplate from "./templates/calendar.js";
-import calendarioTemplate from "./templates/verify-email.js";
+import verifyEmailTemplate from "./templates/verify-email.js";
 
 const app = express();
 
@@ -24,11 +24,6 @@ const SESSION_DURATION = 7 * 24 * 60 * 60 * 1000;
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-
-// ============================================================
-// EJS
-// ============================================================
 
 // ============================================================
 // TEMPLATES
@@ -632,6 +627,10 @@ app.post("/register", async (req, res) => {
 // LOGIN
 // ============================================================
 
+app.get("/login", (req, res) => {
+    res.status(200).send(loginTemplate());
+});
+
 app.post("/login", async (req, res) => {
 
     try {
@@ -720,101 +719,154 @@ app.post("/login", async (req, res) => {
     }
 });
 
+
 // ============================================================
-// VERIFICAR EMAIL
+// REGISTRO
 // ============================================================
 
-app.get("/verify-email", async (req, res) => {
-
+app.get("/register", async (req, res) => {
     try {
-
-        const token = req.query.token;
-
-        if (!token) {
-            return res.status(400).send(
-                "Falta el token de verificación."
-            );
-        }
-
-        // Buscar el token
-        const verification = await env.DB.prepare(`
-            SELECT
-                id,
-                user_id,
-                expires_at
-            FROM email_verifications
-            WHERE token = ?
-        `)
-            .bind(token)
-            .first();
-
-        if (!verification) {
-            return res.status(400).send(
-                "El enlace de verificación no es válido."
-            );
-        }
-
-        // Comprobar si ha caducado
-        if (verification.expires_at < Date.now()) {
-
-            await env.DB.prepare(`
-                DELETE FROM email_verifications
-                WHERE id = ?
-            `)
-                .bind(verification.id)
-                .run();
-
-            return res.status(400).send(
-                "El enlace de verificación ha caducado."
-            );
-        }
-
-        // Activar el email
-        await env.DB.prepare(`
-            UPDATE users
-            SET email_verified = 1
-            WHERE id = ?
-        `)
-            .bind(verification.user_id)
-            .run();
-
-        // El token ya no se puede volver a utilizar
-        await env.DB.prepare(`
-            DELETE FROM email_verifications
-            WHERE id = ?
-        `)
-            .bind(verification.id)
-            .run();
-
-        return res.status(200).send(`
-            <h2>Correo verificado</h2>
-
-            <p>
-                Tu correo electrónico ha sido verificado correctamente.
-            </p>
-
-            <p>
-                Ya puedes iniciar sesión.
-            </p>
-
-            <a href="/login">
-                Ir al login
-            </a>
-        `);
-
+        res.status(200).send(registerTemplate());
     } catch (error) {
+        console.error("ERROR REGISTER:", error);
 
-        console.error(
-            "VERIFY EMAIL ERROR:",
-            error
-        );
-
-        return res.status(500).send(
-            "Error al verificar el correo electrónico."
+        res.status(500).send(
+            "Error al cargar el registro: " +
+            String(error?.message || error)
         );
     }
 });
 
+
+app.post("/register", async (req, res) => {
+
+    try {
+
+        const {
+            username,
+            email,
+            password
+        } = req.body;
+
+        if (!username || !email || !password) {
+            return res.status(400).send(
+                "El usuario, el correo y la contraseña son obligatorios."
+            );
+        }
+
+        if (password.length < 6) {
+            return res.status(400).send(
+                "La contraseña debe tener al menos 6 caracteres."
+            );
+        }
+
+        // Comprobar usuario
+        const existingUser = await env.DB.prepare(`
+            SELECT id
+            FROM users
+            WHERE username = ?
+        `)
+            .bind(username)
+            .first();
+
+        if (existingUser) {
+            return res.status(400).send(
+                "Ese nombre de usuario ya está registrado."
+            );
+        }
+
+        // Comprobar email
+        const existingEmail = await env.DB.prepare(`
+            SELECT id
+            FROM users
+            WHERE email = ?
+        `)
+            .bind(email)
+            .first();
+
+        if (existingEmail) {
+            return res.status(400).send(
+                "Ese correo electrónico ya está registrado."
+            );
+        }
+
+        // Crear contraseña segura
+        const hashedPassword = await bcrypt.hash(
+            password,
+            12
+        );
+
+        // Crear usuario
+        const result = await env.DB.prepare(`
+            INSERT INTO users
+            (
+                username,
+                password,
+                email,
+                email_verified
+            )
+            VALUES (?, ?, ?, 0)
+        `)
+            .bind(
+                username,
+                hashedPassword,
+                email
+            )
+            .run();
+
+        const userId = result.meta.last_row_id;
+
+        // Crear token
+        const token = crypto
+            .randomBytes(32)
+            .toString("hex");
+
+        const expiresAt =
+            Date.now() + 24 * 60 * 60 * 1000;
+
+        await env.DB.prepare(`
+            INSERT INTO email_verifications
+            (
+                user_id,
+                token,
+                expires_at
+            )
+            VALUES (?, ?, ?)
+        `)
+            .bind(
+                userId,
+                token,
+                expiresAt
+            )
+            .run();
+
+        console.log(
+            "Token de verificación:",
+            token
+        );
+
+        return res.status(201).send(
+            "Cuenta creada. Revisa tu correo para verificarla."
+        );
+
+    } catch (error) {
+
+        console.error(
+            "REGISTER ERROR:",
+            error
+        );
+
+        return res.status(500).send(
+            "Error al registrar el usuario: " +
+            String(error?.message || error)
+        );
+    }
+});
+
+
+// ============================================================
+// VERIFICAR EMAIL
+// ============================================================
 
 app.get("/verify-email", async (req, res) => {
 
