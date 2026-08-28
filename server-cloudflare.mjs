@@ -451,76 +451,25 @@ app.get("/register", (req, res) => {
 
 app.post("/register", async (req, res) => {
 
-    const { username, password } = req.body;
-
-    console.log("REGISTER:", {
-        username,
-        passwordLength: password ? password.length : 0
-    });
-
-    if (!username || !password) {
-        return res
-            .status(400)
-            .send("Usuario y contraseña son obligatorios.");
-    }
-
-    if (password.length < 6) {
-        return res
-            .status(400)
-            .send("La contraseña debe tener al menos 6 caracteres.");
-    }
+    console.log("========== REGISTER TEST ==========");
 
     try {
 
-        const existing = await env.DB.prepare(`
-            SELECT id
-            FROM users
-            WHERE username = ?
-        `)
-            .bind(username)
-            .all();
+        console.log("BODY:", req.body);
 
-        console.log("USUARIO EXISTENTE:", existing.results);
-
-        if (existing.results && existing.results.length > 0) {
-            return res
-                .status(400)
-                .send("Ese nombre de usuario ya existe.");
-        }
-
-        const hashedPassword =
-            await bcrypt.hash(password, 12);
-
-        console.log("PASSWORD HASH GENERADO");
-
-        const result = await env.DB.prepare(`
-            INSERT INTO users
-            (username, password)
-            VALUES (?, ?)
-        `)
-            .bind(
-                username,
-                hashedPassword
-            )
-            .run();
-
-        console.log("USUARIO CREADO:", result);
-
-        return res.redirect("/login");
+        return res.status(200).send(`
+            <h1>REGISTER FUNCIONA</h1>
+            <pre>${JSON.stringify(req.body, null, 2)}</pre>
+        `);
 
     } catch (error) {
 
-        console.error(
-            "ERROR REGISTER:",
-            error
-        );
+        console.error("REGISTER ERROR:", error);
 
-        return res
-            .status(500)
-            .send(
-                "Error al registrar usuario: " +
-                (error?.message || "error desconocido")
-            );
+        return res.status(500).send(
+            "REGISTER ERROR: " +
+            String(error?.message || error)
+        );
     }
 });
 
