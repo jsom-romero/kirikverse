@@ -224,6 +224,7 @@ export default function registerTemplate() {
         }
 
         input[type="text"],
+        input[type="email"],
         input[type="password"] {
             background: var(--fondo);
 
@@ -243,6 +244,7 @@ export default function registerTemplate() {
         }
 
         input[type="text"]:focus,
+        input[type="password"],
         input[type="password"]:focus {
             border-color: var(--texto);
         }
@@ -400,6 +402,30 @@ export default function registerTemplate() {
                     </div>
 
 
+                    <div class="campo">
+
+                        <label
+                            class="et"
+                            for="email"
+                        >
+                            Correo electrónico
+                        </label>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            autocomplete="email"
+                            required
+                        >
+
+                        <p class="pista">
+                            Necesitarás verificar este correo para activar la cuenta.
+                        </p>
+
+                    </div>
+
+                    
                     <div class="campo">
 
                         <label

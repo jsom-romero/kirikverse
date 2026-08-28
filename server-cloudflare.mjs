@@ -3,12 +3,16 @@ import bcrypt from "bcryptjs";
 import crypto from "node:crypto";
 import { env } from "cloudflare:workers";
 import { httpServerHandler } from "cloudflare:node";
+import { Resend } from "resend";
+
+
 
 import homeTemplate from "./templates/home.js";
 import adminTemplate from "./templates/admin.js";
 import loginTemplate from "./templates/login.js";
 import registerTemplate from "./templates/register.js";
 import calendarioTemplate from "./templates/calendar.js";
+import calendarioTemplate from "./templates/verify-email.js";
 
 const app = express();
 
@@ -409,46 +413,36 @@ app.get("/admin", requireLogin, async (req, res) => {
     }
 });
 
-// ============================================================
-// REGISTRO
-// ============================================================
-
-app.get("/register", async (req, res) => {
-    try {
-        res.status(200).send(registerTemplate());
-    } catch (error) {
-        console.error("ERROR REGISTER:", error);
-
-        res.status(500).send(
-            "Error al cargar el registro: " + error.message
-        );
-    }
-});
-
-
 app.post("/register", async (req, res) => {
     console.log("========== REGISTER ==========");
 
     try {
-        const { username, password } = req.body;
+
+        const { username, email, password } = req.body;
 
         console.log("USERNAME:", username);
+        console.log("EMAIL:", email);
 
-        // Comprobar que llegan los datos
-        if (!username || !password) {
+        // ========================================================
+        // COMPROBAR DATOS
+        // ========================================================
+
+        if (!username || !email || !password) {
             return res.status(400).send(
-                "Faltan el nombre de usuario o la contraseña."
+                "El usuario, el correo y la contraseña son obligatorios."
             );
         }
 
-        // Comprobar longitud de contraseña
         if (password.length < 6) {
             return res.status(400).send(
                 "La contraseña debe tener al menos 6 caracteres."
             );
         }
 
-        // Comprobar si el usuario ya existe
+        // ========================================================
+        // COMPROBAR USUARIO
+        // ========================================================
+
         const existingUser = await env.DB
             .prepare(`
                 SELECT id
@@ -464,23 +458,167 @@ app.post("/register", async (req, res) => {
             );
         }
 
-        // Crear usuario
-        await env.DB
+        // ========================================================
+        // COMPROBAR EMAIL
+        // ========================================================
+
+        const existingEmail = await env.DB
             .prepare(`
-                INSERT INTO users (username, password)
-                VALUES (?, ?)
+                SELECT id
+                FROM users
+                WHERE email = ?
             `)
-            .bind(username, password)
+            .bind(email)
+            .first();
+
+        if (existingEmail) {
+            return res.status(400).send(
+                "Ese correo electrónico ya está registrado."
+            );
+        }
+
+        // ========================================================
+        // HASHEAR CONTRASEÑA
+        // ========================================================
+
+        const hashedPassword = await bcrypt.hash(
+            password,
+            12
+        );
+
+        // ========================================================
+        // CREAR USUARIO
+        // ========================================================
+
+        const result = await env.DB
+            .prepare(`
+                INSERT INTO users
+                (
+                    username,
+                    password,
+                    email,
+                    email_verified
+                )
+                VALUES (?, ?, ?, 0)
+            `)
+            .bind(
+                username,
+                hashedPassword,
+                email
+            )
             .run();
 
-        console.log("Usuario registrado correctamente:", username);
+        const userId = result.meta.last_row_id;
 
-        // Ir a iniciar sesión
-        return res.redirect("/login");
+        // ========================================================
+        // CREAR TOKEN DE VERIFICACIÓN
+        // ========================================================
+
+        const token = crypto
+            .randomBytes(32)
+            .toString("hex");
+
+        const expiresAt =
+            Date.now() + (24 * 60 * 60 * 1000);
+
+        await env.DB
+            .prepare(`
+                INSERT INTO email_verifications
+                (
+                    user_id,
+                    token,
+                    expires_at
+                )
+                VALUES (?, ?, ?)
+            `)
+            .bind(
+                userId,
+                token,
+                expiresAt
+            )
+            .run();
+
+        // ========================================================
+        // ENVIAR EMAIL
+        // ========================================================
+
+        const resend = new Resend(
+            env.RESEND_API_KEY
+        );
+
+        const verifyUrl =
+            `https://kirkversario.shit-afk-slighted247.workers.dev/verify-email?token=${encodeURIComponent(token)}`;
+
+        const emailResult = await resend.emails.send({
+            from: "Kirkversario <onboarding@resend.dev>",
+
+            to: email,
+
+            subject: "Verifica tu cuenta de Kirkversario",
+
+            html: `
+                <h2>Bienvenido a Kirkversario</h2>
+
+                <p>
+                    Hola ${escapeHtml(username)}.
+                </p>
+
+                <p>
+                    Tu cuenta se ha creado correctamente.
+                </p>
+
+                <p>
+                    Para activar tu cuenta, pulsa aquí:
+                </p>
+
+                <p>
+                    <a href="${verifyUrl}">
+                        Verificar mi correo
+                    </a>
+                </p>
+
+                <p>
+                    Este enlace caduca en 24 horas.
+                </p>
+            `
+        });
+
+        console.log(
+            "EMAIL RESEND:",
+            emailResult
+        );
+
+        // ========================================================
+        // RESPUESTA
+        // ========================================================
+
+        return res.status(201).send(`
+            <h2>Cuenta creada</h2>
+
+            <p>
+                Hemos enviado un correo de verificación a:
+            </p>
+
+            <strong>
+                ${escapeHtml(email)}
+            </strong>
+
+            <p>
+                Revisa tu bandeja de entrada y pulsa el
+                enlace para activar tu cuenta.
+            </p>
+
+            <a href="/login">
+                Ir al login
+            </a>
+        `);
 
     } catch (error) {
 
-        console.error("REGISTER ERROR:", error);
+        console.error(
+            "REGISTER ERROR:",
+            error
+        );
 
         return res.status(500).send(
             "Error al registrar el usuario: " +
@@ -494,30 +632,289 @@ app.post("/register", async (req, res) => {
 // LOGIN
 // ============================================================
 
-app.get("/login", (req, res) => {
-    res.status(200).send(loginTemplate());
-});
-
-
 app.post("/login", async (req, res) => {
+
     try {
-        const { username, password } = await req.body;
 
-        // Aquí mantienes tu código actual
-        // que comprueba usuario y contraseña.
+        const { username, password } = req.body;
 
-        // Si las credenciales son correctas:
-        // crear sesión...
+        if (!username || !password) {
+            return res.status(400).send(
+                "El usuario y la contraseña son obligatorios."
+            );
+        }
+
+        const user = await env.DB
+            .prepare(`
+                SELECT
+                    id,
+                    username,
+                    password,
+                    email,
+                    email_verified,
+                    is_admin
+                FROM users
+                WHERE username = ?
+            `)
+            .bind(username)
+            .first();
+
+        if (!user) {
+            return res.status(401).send(
+                "Usuario o contraseña incorrectos."
+            );
+        }
+
+        const passwordCorrect =
+            await bcrypt.compare(
+                password,
+                user.password
+            );
+
+        if (!passwordCorrect) {
+            return res.status(401).send(
+                "Usuario o contraseña incorrectos."
+            );
+        }
+
+        // Comprobar que el correo está verificado
+        if (user.email_verified !== 1) {
+            return res.status(403).send(`
+                <h2>Correo no verificado</h2>
+
+                <p>
+                    Tienes que verificar tu correo electrónico
+                    antes de iniciar sesión.
+                </p>
+
+                <a href="/login">
+                    Volver al login
+                </a>
+            `);
+        }
+
+        // Crear sesión
+        await createSession(
+            user.id,
+            user.username,
+            res
+        );
+
+        console.log(
+            "LOGIN CORRECTO:",
+            user.username
+        );
 
         return res.redirect("/admin");
 
     } catch (error) {
 
-        console.error("ERROR LOGIN:", error);
+        console.error(
+            "LOGIN ERROR:",
+            error
+        );
 
-        return res
-            .status(500)
-            .send("Error interno del servidor");
+        return res.status(500).send(
+            "Error interno del servidor."
+        );
+    }
+});
+
+// ============================================================
+// VERIFICAR EMAIL
+// ============================================================
+
+app.get("/verify-email", async (req, res) => {
+
+    try {
+
+        const token = req.query.token;
+
+        if (!token) {
+            return res.status(400).send(
+                "Falta el token de verificación."
+            );
+        }
+
+        // Buscar el token
+        const verification = await env.DB.prepare(`
+            SELECT
+                id,
+                user_id,
+                expires_at
+            FROM email_verifications
+            WHERE token = ?
+        `)
+            .bind(token)
+            .first();
+
+        if (!verification) {
+            return res.status(400).send(
+                "El enlace de verificación no es válido."
+            );
+        }
+
+        // Comprobar si ha caducado
+        if (verification.expires_at < Date.now()) {
+
+            await env.DB.prepare(`
+                DELETE FROM email_verifications
+                WHERE id = ?
+            `)
+                .bind(verification.id)
+                .run();
+
+            return res.status(400).send(
+                "El enlace de verificación ha caducado."
+            );
+        }
+
+        // Activar el email
+        await env.DB.prepare(`
+            UPDATE users
+            SET email_verified = 1
+            WHERE id = ?
+        `)
+            .bind(verification.user_id)
+            .run();
+
+        // El token ya no se puede volver a utilizar
+        await env.DB.prepare(`
+            DELETE FROM email_verifications
+            WHERE id = ?
+        `)
+            .bind(verification.id)
+            .run();
+
+        return res.status(200).send(`
+            <h2>Correo verificado</h2>
+
+            <p>
+                Tu correo electrónico ha sido verificado correctamente.
+            </p>
+
+            <p>
+                Ya puedes iniciar sesión.
+            </p>
+
+            <a href="/login">
+                Ir al login
+            </a>
+        `);
+
+    } catch (error) {
+
+        console.error(
+            "VERIFY EMAIL ERROR:",
+            error
+        );
+
+        return res.status(500).send(
+            "Error al verificar el correo electrónico."
+        );
+    }
+});
+
+
+app.get("/verify-email", async (req, res) => {
+
+    try {
+
+        const token = req.query.token;
+
+        if (!token) {
+            return res.status(400).send(
+                verifyEmailTemplate({
+                    success: false,
+                    title: "Enlace inválido",
+                    message: "No se ha proporcionado ningún token de verificación."
+                })
+            );
+        }
+
+        const verification = await env.DB
+            .prepare(`
+                SELECT
+                    email_verifications.user_id,
+                    email_verifications.expires_at
+                FROM email_verifications
+                INNER JOIN users
+                    ON users.id = email_verifications.user_id
+                WHERE email_verifications.token = ?
+            `)
+            .bind(token)
+            .first();
+
+        if (!verification) {
+            return res.status(400).send(
+                verifyEmailTemplate({
+                    success: false,
+                    title: "Enlace inválido",
+                    message: "Este enlace no existe o ya ha sido utilizado."
+                })
+            );
+        }
+
+        if (verification.expires_at < Date.now()) {
+
+            await env.DB
+                .prepare(`
+                    DELETE FROM email_verifications
+                    WHERE token = ?
+                `)
+                .bind(token)
+                .run();
+
+            return res.status(400).send(
+                verifyEmailTemplate({
+                    success: false,
+                    title: "Enlace caducado",
+                    message: "Este enlace de verificación ha caducado. Solicita un nuevo correo de verificación."
+                })
+            );
+        }
+
+        await env.DB
+            .prepare(`
+                UPDATE users
+                SET email_verified = 1
+                WHERE id = ?
+            `)
+            .bind(verification.user_id)
+            .run();
+
+        await env.DB
+            .prepare(`
+                DELETE FROM email_verifications
+                WHERE token = ?
+            `)
+            .bind(token)
+            .run();
+
+        return res.status(200).send(
+            verifyEmailTemplate({
+                success: true,
+                title: "Correo verificado",
+                message: "Tu correo electrónico ha sido verificado correctamente. Ya puedes iniciar sesión.",
+                link: "/login",
+                linkText: "Iniciar sesión"
+            })
+        );
+
+    } catch (error) {
+
+        console.error(
+            "VERIFY EMAIL ERROR:",
+            error
+        );
+
+        return res.status(500).send(
+            verifyEmailTemplate({
+                success: false,
+                title: "Ha ocurrido un error",
+                message: "No hemos podido verificar tu correo electrónico. Inténtalo de nuevo más tarde."
+            })
+        );
     }
 });
 
