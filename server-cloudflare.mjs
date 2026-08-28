@@ -500,7 +500,7 @@ app.post("/login", async (req, res) => {
 // ADMIN
 // ============================================================
 
-app.get("/calendario", async (req, res) => {
+app.get("/calendar", async (req, res) => {
     try {
         return res.status(200).send(
             calendarioTemplate()
@@ -516,7 +516,7 @@ app.get("/calendario", async (req, res) => {
 });
 
 // ============================================================
-// ADMIN
+// CALENDAR
 // ============================================================
 
 app.get("/calendario", async (req, res) => {
