@@ -1,21 +1,22 @@
 {
-  "name": "kirkversario",
-  "main": "server-cloudflare.mjs",
-  "compatibility_date": "2026-08-28",
-  "compatibility_flags": [
-    "nodejs_compat"
-  ],
+    "name": "kirkversario",
+    "main": "server-cloudflare.mjs",
+    "compatibility_date": "2026-08-28",
+    "compatibility_flags": [
+        "nodejs_compat"
+    ],
 
-  "assets": {
-    "directory": "./admin",
-    "binding": "ASSETS"
-  },
+    "assets": {
+        "directory": "./admin-assets",
+        "binding": "ASSETS",
+        "not_found_handling": "404-page"
+    },
 
-  "d1_databases": [
-    {
-      "binding": "DB",
-      "database_name": "kirkversario-db",
-      "database_id": "5fe4c36e-3bd7-471e-ab5e-b39d670c7305"
-    }
-  ]
+    "d1_databases": [
+        {
+            "binding": "DB",
+            "database_name": "kirkversario-db",
+            "database_id": "5fe4c36e-3bd7-471e-ab5e-b39d670c7305"
+        }
+    ]
 }
