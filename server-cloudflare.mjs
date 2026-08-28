@@ -379,7 +379,7 @@ app.get("/", async (req, res) => {
 // ADMIN
 // ============================================================
 
-app.get("/admin", requireLogin, async (req, res) => {
+app.get("/admin", requireAdmin, async (req, res) => {
 
     try {
 
@@ -471,7 +471,11 @@ app.post("/login", async (req, res) => {
             user.username
         );
 
-        return res.redirect("/admin");
+        if (Number(user.is_admin) === 1) {
+            return res.redirect("/admin");
+        }
+
+        return res.redirect("/");
 
     } catch (error) {
 
@@ -491,19 +495,6 @@ app.post("/login", async (req, res) => {
 // REGISTRO
 // ============================================================
 
-app.get("/register", async (req, res) => {
-    try {
-        res.status(200).send(registerTemplate());
-    } catch (error) {
-        console.error("ERROR REGISTER:", error);
-
-        res.status(500).send(
-            "Error al cargar el registro: " +
-            String(error?.message || error)
-        );
-    }
-});
-
 app.post("/register", async (req, res) => {
 
     console.log("========== REGISTER ==========");
@@ -513,6 +504,10 @@ app.post("/register", async (req, res) => {
         const { username, password } = req.body;
 
         console.log("USERNAME:", username);
+
+        // --------------------------------------------------------
+        // COMPROBAR DATOS
+        // --------------------------------------------------------
 
         if (!username || !password) {
 
@@ -527,6 +522,10 @@ app.post("/register", async (req, res) => {
                 "La contraseña debe tener al menos 6 caracteres."
             );
         }
+
+        // --------------------------------------------------------
+        // COMPROBAR USUARIO
+        // --------------------------------------------------------
 
         const existingUser = await env.DB
             .prepare(`
@@ -544,19 +543,32 @@ app.post("/register", async (req, res) => {
             );
         }
 
+        // --------------------------------------------------------
+        // HASHEAR CONTRASEÑA
+        // --------------------------------------------------------
+
         const hashedPassword = await bcrypt.hash(
             password,
             12
         );
+
+        // --------------------------------------------------------
+        // CREAR USUARIO
+        // --------------------------------------------------------
+        // IMPORTANTE:
+        // is_admin SIEMPRE se establece en 0.
+        // Nunca utilizamos un valor enviado por el cliente.
+        // --------------------------------------------------------
 
         await env.DB
             .prepare(`
                 INSERT INTO users
                 (
                     username,
-                    password
+                    password,
+                    is_admin
                 )
-                VALUES (?, ?)
+                VALUES (?, ?, 0)
             `)
             .bind(
                 username,
@@ -586,7 +598,7 @@ app.post("/register", async (req, res) => {
 });
 
 // ============================================================
-// ADMIN
+// CALENDAR
 // ============================================================
 
 app.get("/calendar", async (req, res) => {
@@ -692,7 +704,7 @@ app.put(
 // USUARIOS — ELIMINAR CUENTA
 // ============================================================
 
-app.delete("/api/users/:id", requireLogin, async (req, res) => {
+app.delete("/api/users/:id", requireAdmin, async (req, res) => {
 
     try {
 
@@ -730,7 +742,7 @@ app.delete("/api/users/:id", requireLogin, async (req, res) => {
 // EVENTOS — LISTAR
 // ============================================================
 
-app.get("/api/events", async (req, res) => {
+app.get("/api/events", requireAdmin, async (req, res) => {
 
     try {
 

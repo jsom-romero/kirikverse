@@ -37,6 +37,59 @@ function requireLogin(req, res, next) {
 }
 
 // ============================
+// ADMIN
+// ============================
+
+async function requireAdmin(req, res, next) {
+
+    // Primero comprobar que está logueado
+    if (!req.session.userId) {
+        return res.redirect("/login");
+    }
+
+    try {
+
+        // Comprobar el rol directamente en la base de datos
+        const user = await env.DB
+            .prepare(`
+                SELECT is_admin
+                FROM users
+                WHERE id = ?
+            `)
+            .bind(req.session.userId)
+            .first();
+
+        // Usuario inexistente
+        if (!user) {
+            return res.status(403).send(
+                "Acceso denegado."
+            );
+        }
+
+        // Usuario normal
+        if (Number(user.is_admin) !== 1) {
+            return res.status(403).send(
+                "Acceso denegado."
+            );
+        }
+
+        // Es administrador
+        next();
+
+    } catch (error) {
+
+        console.error(
+            "ERROR COMPROBANDO ADMIN:",
+            error
+        );
+
+        return res.status(500).send(
+            "Error comprobando permisos."
+        );
+    }
+}
+
+// ============================
 // BASE DE DATOS
 // ============================
 
