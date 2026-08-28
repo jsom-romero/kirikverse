@@ -172,7 +172,10 @@ async function loadEvents() {
 
             article.className =
                 "evento";
-
+            
+            article.style.borderLeftColor = 
+                event.color || "#6366f1";
+                
 
             // TÍTULO
 
@@ -353,18 +356,15 @@ if (eventForm) {
 
 
             const eventData = {
-
                 title:
                     document
                         .getElementById("title")
-                        .value
-                        .trim(),
+                        .value,
 
                 description:
                     document
                         .getElementById("description")
-                        .value
-                        .trim(),
+                        .value,
 
                 date:
                     document
@@ -379,8 +379,12 @@ if (eventForm) {
                 category:
                     document
                         .getElementById("category")
+                        .value,
+
+                color:
+                    document
+                        .getElementById("color")
                         .value
-                        .trim()
             };
 
 

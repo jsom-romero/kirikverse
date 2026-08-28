@@ -846,7 +846,7 @@ app.delete("/api/users/:id", requireAdmin, async (req, res) => {
 // EVENTOS — LISTAR
 // ============================================================
 
-app.get("/api/events", requireAdmin, async (req, res) => {
+app.get("/api/events", async (req, res) => {
 
     try {
 
@@ -872,15 +872,15 @@ app.get("/api/events", requireAdmin, async (req, res) => {
 // ============================================================
 // EVENTOS — CREAR
 // ============================================================
-
-app.post("/api/events",requireAdmin, async (req, res) => {
+app.post("/api/events", requireAdmin, async (req, res) => {
 
     const {
         title,
         description,
         date,
         time,
-        category
+        category,
+        color
     } = req.body;
 
     if (!title || !date) {
@@ -900,9 +900,10 @@ app.post("/api/events",requireAdmin, async (req, res) => {
                 date,
                 time,
                 category,
+                color,
                 user_id
             )
-            VALUES (?, ?, ?, ?, ?, ?)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
         `)
             .bind(
                 title,
@@ -910,6 +911,7 @@ app.post("/api/events",requireAdmin, async (req, res) => {
                 date,
                 time || "",
                 category || "general",
+                color || "#6366f1",
                 req.session.userId || null
             )
             .run();
@@ -933,8 +935,7 @@ app.post("/api/events",requireAdmin, async (req, res) => {
 // ============================================================
 // EVENTOS — EDITAR
 // ============================================================
-
-app.put("/api/events/:id", async (req, res) => {
+app.put("/api/events/:id", requireAdmin, async (req, res) => {
 
     const eventId = req.params.id;
 
@@ -943,7 +944,8 @@ app.put("/api/events/:id", async (req, res) => {
         description,
         date,
         time,
-        category
+        category,
+        color
     } = req.body;
 
     if (!title || !date) {
@@ -962,7 +964,8 @@ app.put("/api/events/:id", async (req, res) => {
                 description = ?,
                 date = ?,
                 time = ?,
-                category = ?
+                category = ?,
+                color = ?
             WHERE id = ?
         `)
             .bind(
@@ -971,6 +974,7 @@ app.put("/api/events/:id", async (req, res) => {
                 date,
                 time || "",
                 category || "general",
+                color || "#6366f1",
                 eventId
             )
             .run();

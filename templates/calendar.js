@@ -1107,9 +1107,11 @@ export default function calendarioTemplate() {
                     : "";
 
                 return (
-                    '<div class="dia__evento" title="' +
-                    escapeHtml(evento.title) +
-                    '">' +
+                    '<div class="dia__evento" ' +
+                    'title="' + escapeHtml(evento.title) + '" ' +
+                    'style="background-color:' +
+                    escapeHtml(evento.color || "#6366f1") +
+                    ';">' +
                     escapeHtml(evento.title) +
                     hora +
                     "</div>"
@@ -1362,7 +1364,9 @@ export default function calendarioTemplate() {
                 }
 
                 return (
-                    '<article class="ficha__ev">' +
+                    '<article class="ficha__ev" style="background-color:' +
+                    escapeHtml(ev.color || "#6366f1") +
+                    ';">' +
                     "<h4>" + escapeHtml(ev.title) + "</h4>" +
                     (
                         meta
@@ -1376,6 +1380,7 @@ export default function calendarioTemplate() {
                     ) +
                     "</article>"
                 );
+
 
             }).join("");
         }
