@@ -143,31 +143,6 @@ app.get("/", (req, res) => {
 });
 
 // ============================
-// ADMIN
-// ============================
-
-app.get("/admin", requireLogin, (req, res) => {
-
-    const users = db.prepare(`
-        SELECT id, username
-        FROM users
-        ORDER BY username ASC
-    `).all();
-
-    const events = db.prepare(`
-        SELECT *
-        FROM events
-        ORDER BY date ASC, time ASC
-    `).all();
-
-    res.render("admin", {
-        users: users,
-        events: events,
-        sessionUserId: req.session.userId
-    });
-});
-
-// ============================
 // REGISTRO
 // ============================
 

@@ -434,39 +434,28 @@ app.get("/", async (req, res) => {
 
 
 // ============================================================
-// PANEL DE ADMINISTRACIÓN
+// ADMIN
 // ============================================================
-app.get("/admin", requireAdmin, async (req, res) => {
-    console.log("========== ENTRO EN /ADMIN ==========");
+app.get("/admin-panel", requireAdmin, async (req, res) => {
+
     try {
 
-        // ====================================================
-        // OBTENER USUARIOS
-        // ====================================================
+        // Obtener usuarios desde D1
+        const result = await env.DB.prepare(`
+            SELECT
+                id,
+                username
+            FROM users
+            ORDER BY username ASC
+        `).all();
 
-        const result =
-            await env.DB.prepare(`
-                SELECT
-                    id,
-                    username
-                FROM users
-                ORDER BY username ASC
-            `).all();
-
-        const users =
-            result.results || [];
+        const users = result.results || [];
 
 
-        // ====================================================
-        // CARGAR ADMIN.HTML DESDE CLOUDFLARE ASSETS
-        // ====================================================
-
-        const assetResponse =
-            await env.ASSETS.fetch(
-                new Request(
-                    "https://assets.local/admin.html"
-                )
-            );
+        // Cargar admin.html desde Cloudflare Assets
+        const assetResponse = await env.ASSETS.fetch(
+            new Request("https://assets.local/admin.html")
+        );
 
 
         if (!assetResponse.ok) {
@@ -483,63 +472,22 @@ app.get("/admin", requireAdmin, async (req, res) => {
         }
 
 
-        // ====================================================
-        // CONVERTIR ADMIN.HTML A TEXTO
-        // ====================================================
-
-        let html =
-            await assetResponse.text();
+        // Convertir HTML a texto
+        let html = await assetResponse.text();
 
 
-        console.log(
-            "ADMIN HTML CARGADO:",
-            assetResponse.status
+        // Generar la lista de usuarios
+        const usersHtml = renderAdminUsers(
+            users,
+            req.session.userId
         );
 
-        console.log(
-            "PLACEHOLDER ANTES:",
-            html.includes("{{USERS_HTML}}")
+        html = html.replace(
+            "{{USERS_HTML}}",
+            usersHtml
         );
 
-
-        // ====================================================
-        // GENERAR HTML DE USUARIOS
-        // ====================================================
-
-        const usersHtml =
-            renderAdminUsers(
-                users,
-                req.session.userId
-            );
-
-
-        console.log(
-            "USUARIOS ENCONTRADOS:",
-            users.length
-        );
-
-
-        // ====================================================
-        // INSERTAR USUARIOS EN ADMIN.HTML
-        // ====================================================
-
-        html =
-            html.replace(
-                "{{USERS_HTML}}",
-                usersHtml
-            );
-
-
-        console.log(
-            "PLACEHOLDER DESPUÉS:",
-            html.includes("{{USERS_HTML}}")
-        );
-
-
-        // ====================================================
-        // ENVIAR PANEL
-        // ====================================================
-
+        // Enviar HTML final
         return res
             .status(200)
             .set(
@@ -563,7 +511,6 @@ app.get("/admin", requireAdmin, async (req, res) => {
             );
     }
 });
-
 
 // ============================================================
 // LOGIN
@@ -629,7 +576,7 @@ app.post("/login", async (req, res) => {
         );
 
         if (Number(user.is_admin) === 1) {
-            return res.redirect("/admin");
+            return res.redirect("/admin-panel");
         }
 
         return res.redirect("/");
@@ -1092,7 +1039,6 @@ app.delete("/api/events/:id", async (req, res) => {
 // ============================================================
 // CLOUDFLARE WORKER
 // ============================================================
-
 app.listen(3000);
 
 export default httpServerHandler({
