@@ -72,21 +72,15 @@ db.prepare(`
 
 // Admin page
 app.get("/admin", requireLogin, (req, res) => {
+
     const users = db.prepare(`
         SELECT id, username
         FROM users
         ORDER BY username ASC
     `).all();
 
-    const events = db.prepare(`
-        SELECT *
-        FROM events
-        ORDER BY date ASC, time ASC
-    `).all();
-
     res.render("admin", {
-        users,
-        events,
+        users: users,
         sessionUserId: req.session.userId
     });
 });
@@ -143,14 +137,15 @@ app.get("/admin", requireLogin, (req, res) => {
 
 // Home page
 app.get("/", (req, res) => {
+
     const events = db.prepare(`
         SELECT *
         FROM events
         ORDER BY date ASC, time ASC
     `).all();
 
-    res.render("kirkversario", {
-        events
+    res.render("home", {
+        events: events
     });
 });
 
