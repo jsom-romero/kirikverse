@@ -340,7 +340,7 @@ export default function registerTemplate() {
         <h1>
             <a href="/">
                 Kirkversario
-                <span>Hail Hittler</span>
+                <span>REGISTER</span>
             </a>
         </h1>
 
