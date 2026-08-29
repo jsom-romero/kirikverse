@@ -197,6 +197,7 @@ async function loadEvents() {
         const response =
             await fetch("/api/events");
 
+
         if (!response.ok) {
 
             throw new Error(

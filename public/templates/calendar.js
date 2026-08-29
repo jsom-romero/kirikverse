@@ -583,6 +583,8 @@ export default function calendarioTemplate() {
         Home
     </a>
 
+    {{ADMIN_BUTTON}}
+
     <button class="btn" id="btnTema" type="button">
         Noche
     </button>

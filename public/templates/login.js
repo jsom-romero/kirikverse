@@ -329,6 +329,13 @@ export default function loginTemplate() {
             </a>
         </h1>
 
+            <a
+                class="btn"
+                href="/"
+            >
+                Home
+            </a>
+
         <button
             class="btn"
             id="btnTema"

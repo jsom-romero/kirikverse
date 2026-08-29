@@ -583,6 +583,8 @@ export default `
       Calendario
     </a>
 
+    {{ADMIN_BUTTON}}
+    
     <button class="btn" id="btnTema">
       Noche
     </button>

@@ -394,13 +394,41 @@ app.get("/", async (req, res) => {
 
         const events = result.results || [];
 
+        let adminButton = "";
+
+        if (req.session?.userId) {
+
+            const user = await env.DB.prepare(`
+                SELECT is_admin
+                FROM users
+                WHERE id = ?
+            `)
+                .bind(req.session.userId)
+                .first();
+
+            if (user?.is_admin === 1) {
+
+                adminButton = `
+                    <a
+                        class="btn"
+                        href="/admin-panel"
+                    >
+                        Admin
+                    </a>
+                `;
+            }
+        }
+
         const html = homeTemplate
-            .replace("{{EVENTOS}}", renderEvents(events));
-        
+            .replace("{{EVENTOS}}", renderEvents(events))
+            .replace("{{ADMIN_BUTTON}}", adminButton);
+
         res
-        
             .status(200)
-            .setHeader("Content-Type", "text/html; charset=utf-8")
+            .setHeader(
+                "Content-Type",
+                "text/html; charset=utf-8"
+            )
             .send(html);
 
     } catch (error) {
@@ -716,17 +744,57 @@ app.post("/register", async (req, res) => {
 // ============================================================
 
 app.get("/calendar", async (req, res) => {
-    try {
-        return res.status(200).send(
-            calendarioTemplate()
-        );
-    } catch (error) {
-        console.error("ERROR CALENDARIO:", error);
 
-        return res.status(500).send(
-            "Error al cargar el calendario: " +
-            String(error?.message || error)
+    try {
+
+        let adminButton = "";
+
+        if (req.session?.userId) {
+
+            const user = await env.DB.prepare(`
+                SELECT is_admin
+                FROM users
+                WHERE id = ?
+            `)
+                .bind(req.session.userId)
+                .first();
+
+            if (user?.is_admin === 1) {
+
+                adminButton = `
+                    <a
+                        class="btn"
+                        href="/admin-panel"
+                    >
+                        Admin
+                    </a>
+                `;
+            }
+        }
+
+        return res
+            .status(200)
+            .send(
+                calendarioTemplate()
+                    .replace(
+                        "{{ADMIN_BUTTON}}",
+                        adminButton
+                    )
+            );
+
+    } catch (error) {
+
+        console.error(
+            "ERROR CALENDARIO:",
+            error
         );
+
+        return res
+            .status(500)
+            .send(
+                "Error al cargar el calendario: " +
+                String(error?.message || error)
+            );
     }
 });
 
