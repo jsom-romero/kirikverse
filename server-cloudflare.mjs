@@ -70,25 +70,6 @@ function renderAdminUsers(users = [], sessionUserId = null) {
                             : ""
                     }
 
-                    <button
-                        class="btn"
-                        type="button"
-                        onclick="changePassword(
-                            '${user.id}',
-                            '${escapeHtml(user.username)}'
-                        )"
-                    >
-                        Cambiar contraseña
-                    </button>
-
-                    <button
-                        class="btn btn--peligro"
-                        type="button"
-                        onclick="deleteUser(${user.id})"
-                    >
-                        Eliminar
-                    </button>
-
                 </li>
 
             `).join("")}
@@ -454,7 +435,7 @@ app.get("/admin-panel", requireAdmin, async (req, res) => {
 
         // Cargar admin.html desde Cloudflare Assets
         const assetResponse = await env.ASSETS.fetch(
-            new Request("https://assets.local/admin.html")
+            new Request("https://assets.local/admin-assets/admin.html")
         );
 
 
