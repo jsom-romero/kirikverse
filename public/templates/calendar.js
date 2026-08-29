@@ -1124,55 +1124,16 @@ ${BANNER}
 
             var eventosHtml = eventosDia.map(function(evento) {
 
-                var hora = evento.time
-                    ? " · " + evento.time
-                    : "";
-
                 var color = evento.color || "#6366f1";
-
-                var hex = color.replace("#", "");
-
-                var r = parseInt(hex.substring(0, 2), 16);
-                var g = parseInt(hex.substring(2, 4), 16);
-                var b = parseInt(hex.substring(4, 6), 16);
-
-                var luminosidad =
-                    (r * 299 + g * 587 + b * 114) / 1000;
-
-                var colorTexto =
-                    luminosidad > 150
-                        ? "#000000"
-                        : "#ffffff";
-
-                var color = evento.color || "#6366f1";
-
-                var hex = color.replace("#", "");
-
-                var r = parseInt(hex.substring(0, 2), 16);
-                var g = parseInt(hex.substring(2, 4), 16);
-                var b = parseInt(hex.substring(4, 6), 16);
-
-                var luminosidad =
-                    (r * 299 + g * 587 + b * 114) / 1000;
-
-                var colorTexto =
-                    luminosidad > 150
-                        ? "#000000"
-                        : "#ffffff";
 
                 return (
-                    '<div class="dia__evento" ' +
+                    '<span class="dia__evento" ' +
                     'title="' + escapeHtml(evento.title) + '" ' +
                     'style="background-color:' +
                     escapeHtml(color) +
-                    ';color:' +
-                    colorTexto +
                     ';">' +
-                    escapeHtml(evento.title) +
-                    hora +
-                    "</div>"
+                    '</span>'
                 );
-
 
             }).join("");
 
