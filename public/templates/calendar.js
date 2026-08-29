@@ -1,5 +1,7 @@
+import BANNER from "../components/banner.js";
 export default function calendarioTemplate() {
     return `
+
 <!DOCTYPE html>
 <html lang="es" data-tema="papel">
 
@@ -587,6 +589,8 @@ export default function calendarioTemplate() {
 </head>
 
 <body>
+
+${BANNER}
 
 <header class="top">
 

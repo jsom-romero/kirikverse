@@ -1,4 +1,6 @@
+import BANNER from "../components/banner.js";
 export default `
+
 <!DOCTYPE html>
 <html lang="es" data-tema="papel">
 
@@ -565,6 +567,8 @@ export default `
 
   </style>
 </head>
+
+${BANNER}
 
 <body>
 
