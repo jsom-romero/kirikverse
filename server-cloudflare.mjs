@@ -280,22 +280,16 @@ app.use(async (req, res, next) => {
 
 
 function requireLogin(req, res, next) {
-
-    if (!req.session.userId) {
-        return res.redirect("/login");
+    if (!req.session?.user) {
+        return res.redirect("/register");
     }
 
     next();
 }
 
-
 async function requireAdmin(req, res, next) {
 
-    if (!req.session.userId) {
-        return res.status(401).json({
-            error: "Debes iniciar sesión."
-        });
-    }
+    return res.redirect("/");
 
     const user = await env.DB.prepare(`
         SELECT is_admin
@@ -382,7 +376,7 @@ async function destroySession(req, res) {
 // HOME
 // ============================================================
 
-app.get("/", async (req, res) => {
+app.get("/", requireLogin, async (req, res) => {
 
     try {
 
@@ -744,7 +738,7 @@ app.post("/register", async (req, res) => {
 // CALENDAR
 // ============================================================
 
-app.get("/calendar", async (req, res) => {
+app.get("/calendar", requireLogin, async (req, res) => {
 
     try {
 
