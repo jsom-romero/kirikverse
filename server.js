@@ -30,7 +30,7 @@ app.use(
 
 function requireLogin(req, res, next) {
     if (!req.session.userId) {
-        return res.redirect("/login");
+        return res.redirect("/register");
     }
 
     next();
@@ -40,52 +40,27 @@ function requireLogin(req, res, next) {
 // ADMIN
 // ============================
 
-async function requireAdmin(req, res, next) {
-
-    // Primero comprobar que está logueado
-    if (!req.session.userId) {
-        return res.redirect("/login");
+function requireAdmin(req, res, next) {
+    if (!req.session?.userId) {
+        return res.redirect("/");
     }
 
     try {
+        const user = db.prepare(`
+            SELECT is_admin
+            FROM users
+            WHERE id = ?
+        `).get(req.session.userId);
 
-        // Comprobar el rol directamente en la base de datos
-        const user = await env.DB
-            .prepare(`
-                SELECT is_admin
-                FROM users
-                WHERE id = ?
-            `)
-            .bind(req.session.userId)
-            .first();
-
-        // Usuario inexistente
-        if (!user) {
-            return res.status(403).send(
-                "Acceso denegado."
-            );
+        if (!user || Number(user.is_admin) !== 1) {
+            return res.redirect("/");
         }
 
-        // Usuario normal
-        if (Number(user.is_admin) !== 1) {
-            return res.status(403).send(
-                "Acceso denegado."
-            );
-        }
-
-        // Es administrador
         next();
 
     } catch (error) {
-
-        console.error(
-            "ERROR COMPROBANDO ADMIN:",
-            error
-        );
-
-        return res.status(500).send(
-            "Error comprobando permisos."
-        );
+        console.error("ERROR COMPROBANDO ADMIN:", error);
+        return res.redirect("/");
     }
 }
 
@@ -130,7 +105,7 @@ try {
 // HOME
 // ============================
 
-app.get("/", (req, res) => {
+app.get("/", requireLogin, (req, res) => {
     const events = db.prepare(`
         SELECT *
         FROM events

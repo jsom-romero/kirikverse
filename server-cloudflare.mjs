@@ -280,7 +280,7 @@ app.use(async (req, res, next) => {
 
 
 function requireLogin(req, res, next) {
-    if (!req.session?.user) {
+    if (!req.session?.userId) {
         return res.redirect("/register");
     }
 
@@ -288,24 +288,30 @@ function requireLogin(req, res, next) {
 }
 
 async function requireAdmin(req, res, next) {
-
-    return res.redirect("/");
-
-    const user = await env.DB.prepare(`
-        SELECT is_admin
-        FROM users
-        WHERE id = ?
-    `)
-        .bind(req.session.userId)
-        .first();
-
-    if (!user || user.is_admin !== 1) {
-        return res.status(403).json({
-            error: "Solo los administradores pueden hacer esto."
-        });
+    if (!req.session?.userId) {
+        return res.redirect("/");
     }
 
-    next();
+    try {
+        const user = await env.DB
+            .prepare(`
+                SELECT is_admin
+                FROM users
+                WHERE id = ?
+            `)
+            .bind(req.session.userId)
+            .first();
+
+        if (!user || Number(user.is_admin) !== 1) {
+            return res.redirect("/");
+        }
+
+        next();
+
+    } catch (error) {
+        console.error("ERROR COMPROBANDO ADMIN:", error);
+        return res.redirect("/");
+    }
 }
 
 
@@ -377,7 +383,6 @@ async function destroySession(req, res) {
 // ============================================================
 
 app.get("/", requireLogin, async (req, res) => {
-
     try {
 
         const result = await env.DB.prepare(`
@@ -739,7 +744,6 @@ app.post("/register", async (req, res) => {
 // ============================================================
 
 app.get("/calendar", requireLogin, async (req, res) => {
-
     try {
 
         let adminButton = "";
