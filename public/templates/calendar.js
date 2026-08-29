@@ -7,7 +7,7 @@ export default function calendarioTemplate() {
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <title>Calendario · Kirkversario</title>
+    <title>Calendar · Kirkversario</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -592,7 +592,7 @@ export default function calendarioTemplate() {
 
     <h1>
         Kirkversario
-        <span>CALENDARIO</span>
+        <span>CALENDAR</span>
     </h1>
 
     <a class="btn" href="/">

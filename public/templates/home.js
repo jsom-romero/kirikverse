@@ -580,7 +580,7 @@ export default `
     </h1>
 
     <a class="btn" href="/calendar">
-      Calendario
+      Calendar
     </a>
 
     {{ADMIN_BUTTON}}
