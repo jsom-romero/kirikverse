@@ -455,6 +455,7 @@ app.get("/admin-panel", requireAdmin, async (req, res) => {
                 id,
                 username
             FROM users
+            WHERE is_admin = 1
             ORDER BY username ASC
         `).all();
 
@@ -797,7 +798,6 @@ app.get("/calendar", async (req, res) => {
             );
     }
 });
-
 
 // ============================================================
 // USUARIOS — CAMBIAR CONTRASEÑA
