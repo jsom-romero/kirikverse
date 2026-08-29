@@ -768,29 +768,6 @@ ${BANNER}
     </section>
 
 
-    <!-- ======================================================
-         MESES
-         ====================================================== -->
-
-    <section>
-
-      <h2>
-        Los meses
-      </h2>
-
-      <p class="sub">
-        Doce meses. Cada uno empieza a mitad de un mes normal,
-        porque el año arranca el 10 de septiembre.
-      </p>
-
-      <div class="desliza">
-
-        <table id="tablaMeses"></table>
-
-      </div>
-
-    </section>
-
     <!-- EVENTOS -->
     <section>
         <h2>Eventos</h2>
@@ -1625,101 +1602,6 @@ ${BANNER}
         }
       );
 
-
-      /* ======================================================
-         TABLA DE MESES
-         ====================================================== */
-
-      function tablaMeses() {
-
-        var k =
-          kkMs(hoyMs());
-
-
-        var a =
-          k.anio;
-
-
-        var g =
-          gDe(a);
-
-
-        var f =
-          "<tr>" +
-          "<th></th>" +
-          "<th>Mes</th>" +
-          "<th>Días</th>" +
-          "<th>Va del … al …</th>" +
-          "</tr>";
-
-
-        for (
-          var i = 0;
-          i < 12;
-          i++
-        ) {
-
-          var t =
-            dm(i, g);
-
-
-          var p =
-            msKK(
-              a,
-              i + 1,
-              1
-            );
-
-
-          var u =
-            msKK(
-              a,
-              i + 1,
-              t
-            );
-
-
-          var mk =
-            (
-              i + 1 === k.mes
-            )
-              ? ' style="background:var(--amarillo);color:#191552"'
-              : "";
-
-
-          f +=
-            "<tr" +
-            mk +
-            ">" +
-
-            "<td class='n'>" +
-            (i + 1) +
-            "</td>" +
-
-            "<td class='m'>" +
-            MESES[i].n +
-            "</td>" +
-
-            "<td class='g'>" +
-            t +
-            "</td>" +
-
-            "<td class='g'>" +
-            tGc(p) +
-            " – " +
-            tGc(u) +
-            "</td>" +
-
-            "</tr>";
-
-        }
-
-
-        $("tablaMeses").innerHTML = f;
-
-      }
-
-
       /* ======================================================
          ALFABETO
          ====================================================== */
@@ -2427,7 +2309,6 @@ ${BANNER}
 
     pintarGlifos();
     pintarTeclado();
-    tablaMeses();
     ponHoy();
     cargarEventos();
 
