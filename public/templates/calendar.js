@@ -264,7 +264,7 @@ export default function calendarioTemplate() {
         }
 
         .dia {
-            min-height: 96px;
+            height: 110px;
             border-right: 1px solid var(--borde);
             border-bottom: 1px solid var(--borde);
             padding: 9px 10px;
@@ -294,30 +294,74 @@ export default function calendarioTemplate() {
             font-size: 10.5px;
             color: var(--tenue);
             letter-spacing: .01em;
+            white-space: nowrap;
+        }
+
+        .dia__eventos {
+            display: flex;
+            flex-wrap: nowrap;
+            align-items: flex-end;
+            gap: 2px;
+            transition: gap .2s cubic-bezier(.4, 0, .2, 1);
         }
 
         .dia__evento {
-            margin-top: 5px;
-            padding: 5px 6px;
+            position: relative;
+            flex: 0 1 8px;
+            min-width: 0;
+            height: 30px;
+            border-radius: 3px;
             background: var(--rosa);
-            color: #FBF7EC;
-            border: 1px solid var(--texto);
-            border-radius: 6px;
-            font-family: var(--display);
-            font-size: 11px;
-            font-weight: 700;
-            line-height: 1.15;
+            box-shadow: inset 0 0 0 1px var(--texto);
             overflow: hidden;
+            transition:
+                flex-basis .2s cubic-bezier(.4, 0, .2, 1),
+                opacity .2s cubic-bezier(.4, 0, .2, 1);
         }
 
-        .dia--hoy .dia__evento {
-            color: #FBF7EC;
+        /* ancho fijo: así el texto no se re-maqueta en cada
+           fotograma mientras la barra se abre */
+        .dia__ev-txt {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 200px;
+            display: flex;
+            align-items: center;
+            padding: 0 11px;
+            font-family: var(--display);
+            font-weight: 700;
+            font-size: 10px;
+            line-height: 1;
+            white-space: nowrap;
+        }
+
+        /* solo cuando el ratón está encima de una marca de verdad:
+           esa se abre a los dos lados y las demás se van por los costados */
+        .dia__eventos:has(.dia__evento:hover) {
+            gap: 0;
+        }
+
+        .dia__eventos:has(.dia__evento:hover) .dia__evento {
+            flex-basis: 0;
+            opacity: 0;
+        }
+
+        .dia__eventos:has(.dia__evento:hover) .dia__evento:hover {
+            flex-basis: 100%;
+            opacity: 1;
         }
 
         @media (max-width: 720px) {
+            .dia__eventos {
+                gap: 1px;
+            }
+
             .dia__evento {
-                font-size: 9px;
-                padding: 3px 4px;
+                flex-basis: 5px;
+                height: 18px;
+                border-radius: 2px;
             }
         }
 
@@ -339,7 +383,6 @@ export default function calendarioTemplate() {
         }
 
         .dia__marca {
-            margin-top: auto;
             font-family: var(--mono);
             font-size: 9px;
             text-transform: uppercase;
@@ -383,7 +426,7 @@ export default function calendarioTemplate() {
             }
 
             .dia {
-                min-height: 64px;
+                height: 86px;
                 padding: 6px 7px;
             }
 
@@ -435,17 +478,11 @@ export default function calendarioTemplate() {
             min-height: 0;
             grid-template-rows: repeat(6, minmax(0, 1fr));
         }
-        body.pantalla .dia { min-height: 0; }
+        body.pantalla .dia { height: auto; min-height: 0; }
         body.pantalla .dia b { font-size: 26px; }
 
         /* ---- CELDA PULSABLE ---- */
         .dia { cursor: pointer; overflow: hidden; transition: background .18s ease; }
-        .dia .dia__evento {
-            flex: 0 0 auto;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
         .dia:hover { background: rgba(255, 194, 51, .22); }
         .dia--abierta { visibility: hidden; }
 
@@ -972,6 +1009,7 @@ ${BANNER}
     var vistaAnio;
     var vistaMes;
     var eventos = [];
+    var MAX_MARCAS = 13;
 
     async function cargarEventos() {
         try {
@@ -1000,6 +1038,34 @@ ${BANNER}
             .replace(/>/g, "&gt;")
             .replace(/"/g, "&quot;")
             .replace(/'/g, "&#039;");
+    }
+
+    var CACHE_TEXTO = {};
+
+    function colorTextoDe(color) {
+
+        if (CACHE_TEXTO[color] !== undefined) {
+            return CACHE_TEXTO[color];
+        }
+
+        var hex = String(color).replace("#", "");
+
+        var resultado = "#ffffff";
+
+        if (/^[0-9a-f]{6}$/i.test(hex)) {
+
+            var r = parseInt(hex.substring(0, 2), 16);
+            var v = parseInt(hex.substring(2, 4), 16);
+            var b = parseInt(hex.substring(4, 6), 16);
+
+            if ((r * 299 + v * 587 + b * 114) / 1000 > 150) {
+                resultado = "#191552";
+            }
+        }
+
+        CACHE_TEXTO[color] = resultado;
+
+        return resultado;
     }
 
     function eventosDelDia(ms) {
@@ -1122,59 +1188,29 @@ ${BANNER}
 
             var eventosDia = eventosDelDia(ms);
 
-            var eventosHtml = eventosDia.map(function(evento) {
+            var eventosHtml =
+                '<div class="dia__eventos">' +
 
-                var hora = evento.time
-                    ? " · " + evento.time
-                    : "";
+                eventosDia.slice(0, MAX_MARCAS).map(function(evento) {
 
-                var color = evento.color || "#6366f1";
+                    var color = evento.color || "#6366f1";
 
-                var hex = color.replace("#", "");
+                    return (
+                        '<div class="dia__evento" ' +
+                        'style="background-color:' +
+                        escapeHtml(color) +
+                        ";color:" +
+                        colorTextoDe(color) +
+                        ';">' +
+                        '<span class="dia__ev-txt">' +
+                        escapeHtml(evento.title) +
+                        "</span>" +
+                        "</div>"
+                    );
 
-                var r = parseInt(hex.substring(0, 2), 16);
-                var g = parseInt(hex.substring(2, 4), 16);
-                var b = parseInt(hex.substring(4, 6), 16);
+                }).join("") +
 
-                var luminosidad =
-                    (r * 299 + g * 587 + b * 114) / 1000;
-
-                var colorTexto =
-                    luminosidad > 150
-                        ? "#000000"
-                        : "#ffffff";
-
-                var color = evento.color || "#6366f1";
-
-                var hex = color.replace("#", "");
-
-                var r = parseInt(hex.substring(0, 2), 16);
-                var g = parseInt(hex.substring(2, 4), 16);
-                var b = parseInt(hex.substring(4, 6), 16);
-
-                var luminosidad =
-                    (r * 299 + g * 587 + b * 114) / 1000;
-
-                var colorTexto =
-                    luminosidad > 150
-                        ? "#000000"
-                        : "#ffffff";
-
-                return (
-                    '<div class="dia__evento" ' +
-                    'title="' + escapeHtml(evento.title) + '" ' +
-                    'style="background-color:' +
-                    escapeHtml(color) +
-                    ';color:' +
-                    colorTexto +
-                    ';">' +
-                    escapeHtml(evento.title) +
-                    hora +
-                    "</div>"
-                );
-
-
-            }).join("");
+                "</div>";
 
             celdas +=
                 '<div class="' +
@@ -1747,5 +1783,6 @@ ${BANNER}
 
 </body>
 </html>
+
     `;
 }
