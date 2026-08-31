@@ -54,36 +54,262 @@ export default `
       display: none !important;
     }
 
+    html {
+      height: 100%;
+    }
+
     body {
       margin: 0;
       background: var(--fondo);
       color: var(--texto);
       font-family: var(--cuerpo);
-      font-size: 16px;
-      line-height: 1.5;
+      font-size: 17px;
+      line-height: 1.55;
       -webkit-font-smoothing: antialiased;
     }
 
+
     .env {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 0 18px;
+      max-width: none;
+      margin: 0;
+      padding: 0 26px;
+    }
+
+    /* =========================================================
+       DOS COLUMNAS + BOTÓN DE INTERCAMBIO
+       ========================================================= */
+
+    .duo {
+      display: grid;
+      grid-template-columns: 1fr 1px 1fr;
+      column-gap: 40px;
+      align-items: stretch;
+    }
+
+    /* cada columna se estira y su bloque flexible
+       se come el hueco sobrante, para que las dos
+       terminen a la misma altura sin espacios muertos */
+    .duo__lado {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .duo__lado > section {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .duo__lado > section:last-child {
+      flex: 1;
+    }
+
+    .mesesCaja {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .meses {
+      flex: 1;
+    }
+
+    #ladoTexto .glifos {
+      flex: 1;
+      grid-auto-rows: minmax(72px, 1fr);
+    }
+
+    #tecladoCaja {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-height: 0;
+    }
+
+
+    .duo__lado {
+      min-width: 0;
+      grid-row: 1;
+    }
+
+
+    #ladoFechas { grid-column: 1; }
+    #ladoTexto  { grid-column: 3; }
+
+    .duo__medio {
+      grid-row: 1;
+      grid-column: 2;
+    }
+
+    .duo__lado section {
+      padding: 34px 0 40px;
+    }
+
+    .duo__medio {
+      position: relative;
+    }
+
+    /* línea fina que separa las dos columnas */
+    .duo__medio::before {
+      content: "";
+      position: absolute;
+      top: 40px;
+      bottom: 40px;
+      left: 50%;
+      width: 2px;
+      background: var(--borde);
+    }
+
+    /* =========================================================
+       LEYENDA DE MESES
+       ========================================================= */
+
+    .mesesCaja {
+      margin-top: 18px;
+      border: 2px solid var(--texto);
+      border-radius: 14px;
+      background: var(--tarjeta);
+      padding: 14px 16px 16px;
+    }
+
+    .mesesCaja__et {
+      font-family: var(--mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .12em;
+      color: var(--tenue);
+      margin: 0 0 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .meses {
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-auto-rows: minmax(56px, 1fr);
+    }
+
+    .mes {
+      display: grid;
+      grid-template-columns: 30px 1fr auto;
+      align-items: center;
+      gap: 14px;
+      padding: 6px 2px;
+      border-bottom: 1px solid var(--borde);
+    }
+
+    .mes:last-child {
+      border-bottom: 0;
+    }
+
+    .mes__txt {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      min-width: 0;
+    }
+
+    .mes__dias {
+      font-family: var(--mono);
+      font-size: 12px;
+      color: var(--tenue);
+      white-space: nowrap;
+    }
+
+    .mes--hoy .mes__dias {
+      color: var(--rosa);
+    }
+
+    .mes__n {
+      font-family: var(--mono);
+      font-size: 11.5px;
+      color: var(--tenue);
+    }
+
+    .mes__nombre {
+      font-weight: 500;
+      font-size: 16px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .mes__rango {
+      font-family: var(--mono);
+      font-size: 12.5px;
+      color: var(--tenue);
+      white-space: nowrap;
+    }
+
+    .mes--hoy .mes__nombre {
+      color: var(--rosa);
+      font-weight: 700;
+    }
+
+    .mes--hoy .mes__n,
+    .mes--hoy .mes__rango {
+      color: var(--rosa);
+    }
+
+    /* =========================================================
+       GLIFOS PULSADOS
+       ========================================================= */
+
+    /* apilado: alto fijo, igual que el textarea y el lienzo,
+       para que escribir con la tabla tampoco empuje nada */
+    .lienzoK {
+      flex: none;
+      height: 200px;
+      overflow-y: auto;
+      min-height: 78px;
+      line-height: 1.85;
+      word-break: break-word;
+      align-content: flex-start;
+      border: 2px dashed var(--borde);
+      border-radius: 10px;
+      padding: 8px 10px;
+      margin-bottom: 12px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px 10px;
+      overflow-x: auto;
+    }
+
+    .lienzoK svg {
+      display: inline-block;
+      vertical-align: -.3em;
+      width: 19px;
+      height: 24px;
+      margin-right: 1px;
+    }
+
+    .lienzoK .pal {
+      display: inline;
+      margin-right: .5em;
+      overflow-wrap: anywhere;
+    }
+
+    .lienzoK .vacio {
+      font-size: 13px;
+      color: var(--tenue);
     }
 
     .top {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
       gap: 12px;
-      padding: 16px 18px;
-      max-width: 900px;
-      margin: 0 auto;
+      padding: 18px 26px;
+      max-width: none;
+      margin: 0;
       border-bottom: 2px solid var(--texto);
     }
 
     .top h1 {
       font-family: var(--display);
       font-weight: 800;
-      font-size: 17px;
+      font-size: 19px;
       text-transform: uppercase;
       letter-spacing: -.02em;
       margin: 0 auto 0 0;
@@ -124,19 +350,23 @@ export default `
       border-top: 2px solid var(--texto);
     }
 
+    .duo + section {
+      border-top: 2px solid var(--texto);
+    }
+
     h2 {
       font-family: var(--display);
       font-weight: 800;
-      font-size: clamp(22px, 3.6vw, 30px);
+      font-size: clamp(26px, 2.4vw, 38px);
       letter-spacing: -.03em;
-      margin: 0 0 6px;
+      margin: 0 0 8px;
     }
 
     .sub {
       color: var(--tenue);
-      margin: 0 0 22px;
-      max-width: 60ch;
-      font-size: 15px;
+      margin: 0 0 24px;
+      max-width: 70ch;
+      font-size: 16px;
     }
 
     /* =========================================================
@@ -158,7 +388,10 @@ export default `
 
     .trad {
       display: grid;
-      grid-template-columns: 1fr 52px 1fr;
+      /* minmax(0,...) y no 1fr: el mínimo automático de 1fr es
+         el ancho del contenido, y una palabra larga estiraba la
+         columna de salida aplastando la de entrada */
+      grid-template-columns: minmax(0, 1fr) 52px minmax(0, 1fr);
       border: 2px solid var(--texto);
       border-radius: 14px;
       overflow: hidden;
@@ -166,11 +399,35 @@ export default `
     }
 
     .panel {
-      padding: 16px;
-      min-height: 170px;
+      min-width: 0;
+      padding: 22px;
+      min-height: 190px;
       display: flex;
       flex-direction: column;
     }
+
+    #ladoTexto .panel {
+      min-height: 340px;
+    }
+
+    /* apilado: alto fijo, así escribir tampoco empuja nada */
+    #ladoTexto textarea {
+      flex: none;
+      height: 200px;
+      resize: none;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    /* apilado: alto fijo igual que el textarea, así la caja
+       nunca cambia de tamaño según lo que escribas */
+    #ladoTexto .lienzo {
+      flex: none;
+      height: 200px;
+      min-height: 0;
+      overflow-y: auto;
+    }
+
 
     .panel__et {
       font-family: var(--mono);
@@ -203,21 +460,46 @@ export default `
     .salida {
       font-family: var(--display);
       font-weight: 800;
-      font-size: clamp(22px, 3.4vw, 30px);
+      font-size: clamp(26px, 2.6vw, 40px);
       line-height: 1.1;
       letter-spacing: -.025em;
       margin: 0;
       flex: 1;
     }
 
+    .salida {
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    /* apilado: la salida en español tampoco puede empujar
+       el panel cuando el texto pasa de una línea */
+    #salidaT {
+      flex: none;
+      height: 200px;
+      overflow-y: auto;
+    }
+
     .salida small {
       display: block;
       font-family: var(--mono);
       font-weight: 400;
-      font-size: 12px;
+      font-size: 13.5px;
       color: var(--tenue);
       margin-top: 8px;
       letter-spacing: 0;
+    }
+
+    .contador {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--tenue);
+      margin: 6px 0 0;
+      text-align: right;
+    }
+
+    .contador--tope {
+      color: var(--rosa);
     }
 
     .pieP {
@@ -334,16 +616,29 @@ export default `
 
     .glifos {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(74px, 1fr));
-      gap: 8px;
+      grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+      gap: 10px;
     }
 
     .gl {
       background: var(--tarjeta);
+      color: var(--texto);
       border: 1.5px solid var(--borde);
-      border-radius: 10px;
-      padding: 10px 6px;
+      border-radius: 12px;
+      padding: 14px 6px;
       text-align: center;
+      cursor: pointer;
+      font: inherit;
+      transition: border-color .12s ease, background .12s ease;
+    }
+
+    .gl:hover {
+      border-color: var(--texto);
+      background: var(--fondo);
+    }
+
+    .gl:active {
+      background: var(--amarillo);
     }
 
     .gl svg {
@@ -387,23 +682,31 @@ export default `
 
     .lienzo {
       flex: 1;
-      display: flex;
-      flex-wrap: wrap;
-      align-content: flex-start;
-      gap: 14px;
+      display: block;
       min-height: 80px;
+      line-height: 1.85;
+      overflow-y: auto;
+      word-break: break-word;
     }
 
+    /* cada palabra es una caja en línea: al llegar al borde
+       salta abajo. Si una sola palabra es más larga que la
+       caja, se parte, que si no estiraría el panel. */
     .pal {
-      display: flex;
-      gap: 3px;
+      display: inline;
+      margin-right: .5em;
+      overflow-wrap: anywhere;
     }
 
     .lienzo svg {
-      width: 24px;
-      height: 34px;
+      display: inline-block;
+      vertical-align: -.3em;
+      width: 17px;
+      height: 22px;
+      margin-right: 1px;
       color: var(--texto);
     }
+
 
     .lienzo .raw {
       font-family: var(--mono);
@@ -422,51 +725,11 @@ export default `
        TECLADO
        ========================================================= */
 
-    .teclado {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
-      gap: 5px;
-      margin-top: 10px;
-    }
 
-    .tecla {
-      background: var(--fondo);
-      border: 1.5px solid var(--borde);
-      border-radius: 8px;
-      padding: 6px 2px;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 2px;
-    }
 
-    .tecla:hover {
-      border-color: var(--texto);
-    }
 
-    .tecla svg {
-      width: 18px;
-      height: 26px;
-      color: var(--texto);
-    }
 
-    .tecla i {
-      font-style: normal;
-      font-family: var(--mono);
-      font-size: 9px;
-      color: var(--tenue);
-      text-transform: uppercase;
-    }
 
-    .teclaAncha {
-      grid-column: span 2;
-      justify-content: center;
-      font-family: var(--mono);
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: .06em;
-    }
 
     /* =========================================================
        PIE
@@ -486,50 +749,32 @@ export default `
        EVENTOS
        ========================================================= */
 
-    .eventos {
-      display: grid;
-      gap: 12px;
-    }
-
-    .evento {
-      background: var(--tarjeta);
-      border: 2px solid var(--texto);
-      border-radius: 14px;
-      padding: 18px;
-    }
-
-    .evento h3 {
-      font-family: var(--display);
-      font-weight: 800;
-      font-size: 24px;
-      margin: 0 0 8px;
-    }
-
-    .evento p {
-      margin: 6px 0;
-    }
-
-    .evento__fecha {
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--tenue);
-    }
-
-    .evento__categoria {
-      display: inline-block;
-      font-family: var(--mono);
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: .08em;
-      border: 1px solid var(--borde);
-      border-radius: 999px;
-      padding: 5px 9px;
-      color: var(--tenue);
-    }
 
     /* =========================================================
        RESPONSIVE
        ========================================================= */
+
+    /* las dos columnas se apilan antes que el resto,
+       porque cada una necesita su propio ancho */
+    @media (max-width: 1080px) {
+
+      .duo {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .duo__medio {
+        display: none;
+      }
+
+      #ladoTexto .panel {
+        min-height: 0;
+      }
+
+      .meses {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
 
     @media (max-width: 720px) {
 
@@ -553,8 +798,255 @@ export default `
         grid-template-columns: 1fr;
       }
 
+      .meses {
+        grid-template-columns: 1fr;
+      }
+
       section {
         padding: 32px 0;
+      }
+    }
+
+    /* =========================================================
+       UNA SOLA PANTALLA
+
+       Con al menos 1081x700 la página mide exactamente el alto
+       de la ventana y no hay scroll. Cada bloque que puede
+       crecer lleva min-height:0 y su propio overflow, así que
+       escribir un texto largo no mueve nada de sitio.
+
+       Por debajo de ese tamaño no cabe todo sin dejar el texto
+       ilegible, así que se vuelve al desplazamiento normal.
+       ========================================================= */
+
+    @media (min-width: 1081px) and (min-height: 700px) {
+
+      body {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      .top {
+        flex: 0 0 auto;
+      }
+
+      .env {
+        flex: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+      }
+
+      .duo {
+        flex: 1;
+        min-height: 0;
+      }
+
+      .duo__lado {
+        min-height: 0;
+        overflow: hidden;
+      }
+
+      .duo__lado > section {
+        min-height: 0;
+        padding: clamp(10px, 2vh, 20px) 0 clamp(8px, 1.5vh, 16px);
+      }
+
+      /* en pantallas bajas las cabeceras también encogen,
+         si no se comen el sitio de la leyenda y del alfabeto */
+      .duo__lado h2 {
+        font-size: clamp(19px, 3vh, 38px);
+        margin-bottom: clamp(2px, .6vh, 8px);
+      }
+
+      .duo__lado .sub {
+        font-size: clamp(12px, 1.6vh, 16px);
+        line-height: 1.4;
+        margin-bottom: clamp(8px, 1.8vh, 24px);
+      }
+
+      .mesesCaja {
+        padding: clamp(8px, 1.3vh, 14px) 16px clamp(8px, 1.3vh, 16px);
+      }
+
+      .mesesCaja__et {
+        margin-bottom: clamp(3px, .8vh, 10px);
+        font-size: clamp(8px, 1.1vh, 10px);
+      }
+
+      #ladoFechas .trad {
+        flex: 0 0 auto;
+      }
+
+      #ladoFechas .panel {
+        min-height: clamp(148px, 20vh, 200px);
+      }
+
+      .mesesCaja {
+        min-height: 0;
+      }
+
+      /* seis meses en cada columna: filas el doble de altas,
+         así vuelve a caber el rango debajo del nombre */
+      .mesesCaja .meses {
+        min-height: 0;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-rows: repeat(6, minmax(0, 1fr));
+        grid-auto-flow: column;
+        gap: 0 26px;
+        overflow: hidden;
+      }
+
+      .mesesCaja .mes {
+        min-height: 0;
+        padding: 2px;
+        overflow: hidden;
+        grid-template-columns: 30px 1fr auto;
+      }
+
+      .mesesCaja .mes__txt {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1px;
+        overflow: hidden;
+      }
+
+      /* el texto de la leyenda se mide en vh: en una pantalla
+         baja las filas son más cortas y con tamaño fijo el
+         texto no cabía y se salía de su fila */
+      .mesesCaja .mes__nombre {
+        font-size: clamp(12px, 1.55vh, 17px);
+        line-height: 1.2;
+      }
+
+      .mesesCaja .mes__rango,
+      .mesesCaja .mes__dias,
+      .mesesCaja .mes__n {
+        font-size: clamp(10px, 1.25vh, 13px);
+        line-height: 1.2;
+      }
+
+      .mesesCaja .mes__rango {
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      /* derecha: el traductor y el alfabeto se reparten el alto
+         en proporción fija, nunca según el contenido */
+      #ladoTexto > section:first-of-type {
+        flex: 5 1 0;
+      }
+
+      #ladoTexto > section:last-of-type {
+        flex: 5 1 0;
+      }
+
+      #ladoTexto .trad {
+        flex: 1;
+        min-height: 0;
+      }
+
+      #ladoTexto .panel {
+        min-height: 0;
+      }
+
+      #ladoTexto textarea,
+      #ladoTexto .lienzo {
+        min-height: 0;
+        overflow-y: auto;
+      }
+
+      #tecladoCaja {
+        min-height: 0;
+      }
+
+      #ladoTexto .lienzoK {
+        flex: 1;
+        height: auto;
+        min-height: 0;
+        overflow-y: auto;
+      }
+
+      #ladoTexto textarea {
+        flex: 1;
+        height: auto;
+        max-height: none;
+      }
+
+      #salidaT {
+        flex: 1;
+        height: auto;
+      }
+
+      #ladoTexto .lienzo {
+        flex: 1;
+        height: auto;
+        max-height: none;
+      }
+
+      /* 9 columnas fijas = 3 filas exactas para las 27 letras,
+         y las fichas escalan para llenar el alto disponible */
+      #ladoTexto .glifos {
+        min-height: 0;
+        grid-template-columns: repeat(9, minmax(0, 1fr));
+        grid-auto-rows: minmax(0, 1fr);
+        overflow: hidden;
+      }
+
+      #ladoTexto .gl {
+        min-height: 0;
+        padding: 4px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+      }
+
+      #ladoTexto .gl b {
+        font-size: clamp(9px, 1.3vh, 14px);
+        line-height: 1;
+      }
+
+      #ladoTexto .gl svg {
+        width: auto;
+        height: 100%;
+        min-height: 0;
+        max-height: 52px;
+        flex: 1;
+        margin: 0;
+      }
+
+      /* el alfabeto ocupa menos cabecera para dejar sitio */
+      #ladoTexto > section:last-of-type h2 {
+        font-size: clamp(22px, 1.7vw, 28px);
+        margin-bottom: 4px;
+      }
+
+      #ladoTexto > section:last-of-type .sub {
+        margin-bottom: 12px;
+        font-size: 15px;
+      }
+
+      #ladoTexto .leyenda {
+        margin-bottom: 14px;
+        font-size: 14px;
+      }
+
+      .pie {
+        flex: 0 0 auto;
+        padding: 12px 0;
+      }
+    }
+
+    /* pantallas bajas: las dos tarjetas explicativas del
+       alfabeto se llevan unos 90px que la tabla necesita */
+    @media (min-width: 1081px) and (max-height: 830px) {
+
+      #ladoTexto .leyenda {
+        display: none;
       }
     }
 
@@ -599,114 +1091,212 @@ ${BANNER}
   <main class="env">
 
     <!-- ======================================================
-         FECHAS
+         DOS COLUMNAS: FECHAS  |  TEXTO
          ====================================================== -->
 
-    <section>
+    <div class="duo" id="duo">
 
-      <h2>Fechas</h2>
+      <div class="duo__lado" id="ladoFechas">
 
-      <p class="sub">
-        El 10 de septiembre es el 1 de Kirktrump del Año 1.
-        Escribe una fecha y sale la otra.
-        El botón del medio cambia el sentido.
-      </p>
+        <section>
 
+          <h2>Fechas</h2>
 
-      <div class="trad">
-
-        <!-- IZQUIERDA -->
-
-        <div class="panel" id="panelIzq">
-
-          <p class="panel__et" id="etIzq">
-            Calendario gregoriano
+          <p class="sub">
+            El 10 de septiembre es el 1 de Kirktrump del Año 1.
+            Escribe una fecha y sale la otra.
+            El botón del medio cambia el sentido.
           </p>
 
 
-          <div id="entradaG">
+          <div class="trad">
 
-            <span class="et">
-              Fecha
-            </span>
+            <!-- IZQUIERDA -->
 
-            <input
-              type="date"
-              id="inGreg"
-            >
+            <div class="panel" id="panelIzq">
 
-          </div>
+              <p class="panel__et" id="etIzq">
+                Calendario gregoriano
+              </p>
 
 
-          <div id="entradaK" hidden>
+              <div id="entradaG">
 
-            <div class="rejK">
+                <div class="rejK">
 
-              <div>
+                  <div>
 
-                <span class="et">
-                  Día
-                </span>
+                    <span class="et">
+                      Día
+                    </span>
 
-                <input
-                  type="number"
-                  id="inDia"
-                  min="1"
-                  max="31"
-                  value="1"
-                >
+                    <input
+                      type="number"
+                      id="inGDia"
+                      inputmode="numeric"
+                      min="1"
+                      max="31"
+                      value="1"
+                    >
+
+                  </div>
+
+
+                  <div>
+
+                    <span class="et">
+                      Mes
+                    </span>
+
+                    <select id="inGMes"></select>
+
+                  </div>
+
+                </div>
+
+
+                <div class="rejK2">
+
+                  <div>
+
+                    <span class="et">
+                      Año
+                    </span>
+
+                    <input
+                      type="number"
+                      id="inGAnio"
+                      inputmode="numeric"
+                      value="2026"
+                    >
+
+                  </div>
+
+                </div>
 
               </div>
 
 
-              <div>
+              <div id="entradaK" hidden>
 
-                <span class="et">
-                  Mes
-                </span>
+                <div class="rejK">
 
-                <select id="inMes"></select>
+                  <div>
+
+                    <span class="et">
+                      Día
+                    </span>
+
+                    <input
+                      type="number"
+                      id="inDia"
+                      min="1"
+                      max="31"
+                      value="1"
+                    >
+
+                  </div>
+
+
+                  <div>
+
+                    <span class="et">
+                      Mes
+                    </span>
+
+                    <select id="inMes"></select>
+
+                  </div>
+
+                </div>
+
+
+                <div class="rejK2">
+
+                  <div>
+
+                    <span class="et">
+                      Año
+                    </span>
+
+                    <input
+                      type="number"
+                      id="inAnio"
+                      min="1"
+                      value="1"
+                    >
+
+                  </div>
+
+
+                  <div>
+
+                    <span class="et">
+                      Era
+                    </span>
+
+                    <select id="inEra">
+
+                      <option value="d">
+                        d.K.
+                      </option>
+
+                      <option value="a">
+                        a.K.
+                      </option>
+
+                    </select>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <div class="pieP">
+
+                <button class="btn" id="btnHoy">
+                  Hoy
+                </button>
 
               </div>
 
             </div>
 
 
-            <div class="rejK2">
+            <!-- BOTÓN CENTRAL -->
 
-              <div>
+            <div class="medio">
 
-                <span class="et">
-                  Año
-                </span>
+              <button
+                id="btnGirar"
+                title="Cambiar el sentido"
+                aria-label="Cambiar el sentido"
+              >
+                ⇄
+              </button>
 
-                <input
-                  type="number"
-                  id="inAnio"
-                  min="1"
-                  value="1"
-                >
-
-              </div>
+            </div>
 
 
-              <div>
+            <!-- DERECHA -->
 
-                <span class="et">
-                  Era
-                </span>
+            <div class="panel">
 
-                <select id="inEra">
+              <p class="panel__et" id="etDer">
+                Calendario Charlie Kirk
+              </p>
 
-                  <option value="d">
-                    d.K.
-                  </option>
+              <p class="salida" id="salidaF">
+                —
+              </p>
 
-                  <option value="a">
-                    a.K.
-                  </option>
+              <div class="pieP">
 
-                </select>
+                <button class="btn" id="btnCopiaF">
+                  Copiar
+                </button>
 
               </div>
 
@@ -715,232 +1305,209 @@ ${BANNER}
           </div>
 
 
-          <div class="pieP">
+          <!-- LEYENDA DE MESES -->
 
-            <button class="btn" id="btnHoy">
-              Hoy
-            </button>
+          <div class="mesesCaja">
 
-          </div>
+            <p class="mesesCaja__et">
+              Los doce meses
+              <span id="mesesAnio"></span>
+            </p>
 
-        </div>
-
-
-        <!-- BOTÓN CENTRAL -->
-
-        <div class="medio">
-
-          <button
-            id="btnGirar"
-            title="Cambiar el sentido"
-            aria-label="Cambiar el sentido"
-          >
-            ⇄
-          </button>
-
-        </div>
-
-
-        <!-- DERECHA -->
-
-        <div class="panel">
-
-          <p class="panel__et" id="etDer">
-            Calendario Charlie Kirk
-          </p>
-
-          <p class="salida" id="salidaF">
-            —
-          </p>
-
-          <div class="pieP">
-
-            <button class="btn" id="btnCopiaF">
-              Copiar
-            </button>
+            <div class="meses" id="meses"></div>
 
           </div>
 
-        </div>
+        </section>
 
       </div>
 
-    </section>
+
+      <div class="duo__medio"></div>
 
 
-    <!-- EVENTOS -->
-    <section>
-        <h2>Eventos</h2>
+      <div class="duo__lado" id="ladoTexto">
 
-        <p class="sub">
-            Todos los eventos del Kirkversario.
-        </p>
+        <section>
 
-        <div id="eventos" class="eventos">
-            <p class="vacio">Cargando eventos...</p>
-        </div>
-    </section>
+          <h2>
+            Texto
+          </h2>
 
-
-    <!-- ======================================================
-         TEXTO
-         ====================================================== -->
-
-    <section>
-
-      <h2>
-        Texto
-      </h2>
-
-      <p class="sub">
-        Escribe cualquier cosa y se pasa al alfabeto Charlie Kirk.
-        Gira el sentido y aparece un teclado de glifos para hacerlo
-        al revés.
-      </p>
-
-
-      <div class="trad">
-
-        <!-- TEXTO IZQUIERDA -->
-
-        <div class="panel">
-
-          <p class="panel__et" id="etTxtIzq">
-            Español
+          <p class="sub">
+            Escribe cualquier cosa y se pasa al alfabeto Charlie Kirk.
+            Gira el sentido y escribe pulsando las letras de la tabla
+            de aquí abajo.
           </p>
 
 
-          <textarea
-            id="inTexto"
-            placeholder="Escribe aquí…"
-            rows="4"
-          ></textarea>
+          <div class="trad">
+
+            <!-- TEXTO IZQUIERDA -->
+
+            <div class="panel">
+
+              <p class="panel__et" id="etTxtIzq">
+                Español
+              </p>
 
 
-          <div id="tecladoCaja" hidden>
+              <textarea
+                id="inTexto"
+                placeholder="Escribe aquí…"
+                rows="4"
+                maxlength="220"
+              ></textarea>
 
-            <div
-              class="teclado"
-              id="teclado"
-            ></div>
+              <p class="contador" id="contador">
+                0 / 220
+              </p>
+
+
+              <div id="tecladoCaja" hidden>
+
+                <div
+                  class="lienzoK"
+                  id="lienzoK"
+                >
+                  <span class="vacio">
+                    Pulsa las letras de la tabla de abajo
+                    y aparecerán aquí.
+                  </span>
+                </div>
+
+                <div class="pieP">
+
+                  <button class="btn" id="btnEspacio">
+                    Espacio
+                  </button>
+
+                  <button class="btn" id="btnBorrar">
+                    Borrar
+                  </button>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            <!-- BOTÓN -->
+
+            <div class="medio">
+
+              <button
+                id="btnGirarT"
+                title="Cambiar el sentido"
+                aria-label="Cambiar el sentido"
+              >
+                ⇄
+              </button>
+
+            </div>
+
+
+            <!-- RESULTADO -->
+
+            <div class="panel">
+
+              <p class="panel__et" id="etTxtDer">
+                Alfabeto Kirk
+              </p>
+
+
+              <div
+                class="lienzo"
+                id="lienzo"
+              >
+                <span class="vacio">
+                  La traducción aparece aquí.
+                </span>
+              </div>
+
+
+              <p
+                class="salida"
+                id="salidaT"
+                hidden
+              ></p>
+
+
+              <div class="pieP">
+
+                <button
+                  class="btn"
+                  id="btnCopiaT"
+                >
+                  Copiar
+                </button>
+
+              </div>
+
+            </div>
 
           </div>
 
-        </div>
+        </section>
 
 
-        <!-- BOTÓN -->
+        <!-- ==================================================
+             ALFABETO (dentro de la columna de Texto)
+             ================================================== -->
 
-        <div class="medio">
+        <section>
 
-          <button
-            id="btnGirarT"
-            title="Cambiar el sentido"
-            aria-label="Cambiar el sentido"
-          >
-            ⇄
-          </button>
+          <h2>
+            El alfabeto Kirk
+          </h2>
 
-        </div>
-
-
-        <!-- RESULTADO -->
-
-        <div class="panel">
-
-          <p class="panel__et" id="etTxtDer">
-            Alfabeto Kirk
+          <p class="sub">
+            Veintisiete letras con una lógica detrás,
+            para que se pueda aprender en un rato.
           </p>
+
+
+          <div class="leyenda">
+
+            <div>
+
+              <b>
+                No se parecen al abecedario
+              </b>
+
+              Ninguna letra recuerda a una latina ni a un número.
+              Comprobado contra las 62 letras y cifras en tres tipografías
+              distintas.
+
+            </div>
+
+
+            <div>
+
+              <b>
+                Ni se parecen entre ellas
+              </b>
+
+              Cada una es una figura entera:
+              casa, escalera, nube, trébol, cometa, arcoíris.
+              Nada de troncos con rayitas.
+
+            </div>
+
+          </div>
 
 
           <div
-            class="lienzo"
-            id="lienzo"
-          >
-            <span class="vacio">
-              La traducción aparece aquí.
-            </span>
-          </div>
+            class="glifos"
+            id="glifos"
+          ></div>
 
-
-          <p
-            class="salida"
-            id="salidaT"
-            hidden
-          ></p>
-
-
-          <div class="pieP">
-
-            <button
-              class="btn"
-              id="btnCopiaT"
-              hidden
-            >
-              Copiar
-            </button>
-
-          </div>
-
-        </div>
+        </section>
 
       </div>
 
-    </section>
-
-
-    <!-- ======================================================
-         ALFABETO
-         ====================================================== -->
-
-    <section>
-
-      <h2>
-        El alfabeto Kirk
-      </h2>
-
-      <p class="sub">
-        Veintisiete letras con una lógica detrás,
-        para que se pueda aprender en un rato.
-      </p>
-
-
-      <div class="leyenda">
-
-        <div>
-
-          <b>
-            No se parecen al abecedario
-          </b>
-
-          Ninguna letra recuerda a una latina ni a un número.
-          Comprobado contra las 62 letras y cifras en tres tipografías
-          distintas.
-
-        </div>
-
-
-        <div>
-
-          <b>
-            Ni se parecen entre ellas
-          </b>
-
-          Cada una es una figura entera:
-          casa, escalera, nube, trébol, cometa, arcoíris.
-          Nada de troncos con rayitas.
-
-        </div>
-
-      </div>
-
-
-      <div
-        class="glifos"
-        id="glifos"
-      ></div>
-
-    </section>
+    </div>
 
 
     <!-- PIE -->
@@ -1369,6 +1936,111 @@ ${BANNER}
       $("inMes").innerHTML = op;
 
 
+      var opG = "";
+
+      MG.forEach(
+        function (m, i) {
+
+          opG +=
+            '<option value="' +
+            (i + 1) +
+            '">' +
+            m +
+            "</option>";
+
+        }
+      );
+
+
+      $("inGMes").innerHTML = opG;
+
+
+      /* ======================================================
+         LEYENDA DE LOS DOCE MESES
+         ====================================================== */
+
+      function pintarLeyendaMeses() {
+
+        var caja = $("meses");
+
+        if (!caja) {
+          return;
+        }
+
+
+        var hoy = kkMs(hoyMs());
+        var anio = hoy.anio;
+        var g = gDe(anio);
+
+
+        $("mesesAnio").textContent =
+          nAnio(anio);
+
+
+        var h = "";
+
+
+        MESES.forEach(
+          function (m, i) {
+
+            var dias = dm(i, g);
+
+            var ini = new Date(
+              msKK(anio, i + 1, 1)
+            );
+
+            var fin = new Date(
+              msKK(anio, i + 1, dias)
+            );
+
+
+            var rango =
+              ini.getUTCDate() +
+              " " +
+              MGC[ini.getUTCMonth()] +
+              " – " +
+              fin.getUTCDate() +
+              " " +
+              MGC[fin.getUTCMonth()];
+
+
+            h +=
+              '<div class="mes' +
+              (i + 1 === hoy.mes ? " mes--hoy" : "") +
+              '">' +
+
+              '<span class="mes__n">' +
+              (i + 1 < 10 ? "0" : "") +
+              (i + 1) +
+              "</span>" +
+
+              '<span class="mes__txt">' +
+
+              '<span class="mes__nombre">' +
+              m.n +
+              "</span>" +
+
+              '<span class="mes__rango">' +
+              rango +
+              "</span>" +
+
+              "</span>" +
+
+              '<span class="mes__dias">' +
+              dias +
+              " días</span>" +
+
+              "</div>";
+
+          }
+        );
+
+
+        caja.innerHTML = h;
+
+      }
+
+
       /* ======================================================
          TRADUCIR FECHA
          ====================================================== */
@@ -1377,11 +2049,35 @@ ${BANNER}
 
         if (dir === "g2k") {
 
-          var v =
-            $("inGreg").value;
+          var gd =
+            parseInt(
+              $("inGDia").value,
+              10
+            );
 
 
-          if (!v) {
+          var gm =
+            parseInt(
+              $("inGMes").value,
+              10
+            );
+
+
+          var ga =
+            parseInt(
+              $("inGAnio").value,
+              10
+            );
+
+
+          /* mientras se está escribiendo el año
+             puede quedar vacío o a medias */
+          if (
+            !gd ||
+            !gm ||
+            isNaN(ga) ||
+            String($("inGAnio").value).trim() === ""
+          ) {
 
             $("salidaF").textContent = "—";
             return;
@@ -1389,15 +2085,31 @@ ${BANNER}
           }
 
 
-          var p =
-            v.split("-").map(Number);
+          var mxG =
+            [
+              31,
+              bis(ga) ? 29 : 28,
+              31, 30, 31, 30,
+              31, 31, 30, 31, 30, 31
+            ][gm - 1];
+
+
+          if (gd > mxG) {
+
+            gd = mxG;
+            $("inGDia").value = mxG;
+
+          }
+
+
+          $("inGDia").max = mxG;
 
 
           var k =
             aKK(
-              p[0],
-              p[1],
-              p[2]
+              ga,
+              gm,
+              gd
             );
 
 
@@ -1537,10 +2249,19 @@ ${BANNER}
 
         var h = hoyMs();
         var k = kkMs(h);
+        var f = new Date(h);
 
 
-        $("inGreg").value =
-          iso(h);
+        $("inGDia").value =
+          f.getUTCDate();
+
+
+        $("inGMes").value =
+          f.getUTCMonth() + 1;
+
+
+        $("inGAnio").value =
+          f.getUTCFullYear();
 
 
         $("inDia").value =
@@ -1581,7 +2302,9 @@ ${BANNER}
 
 
       [
-        "inGreg",
+        "inGDia",
+        "inGMes",
+        "inGAnio",
         "inDia",
         "inMes",
         "inAnio",
@@ -1783,12 +2506,14 @@ ${BANNER}
           function (l) {
 
             h +=
-              '<div class="gl">' +
+              '<button type="button" class="gl" data-l="' +
+              l +
+              '">' +
               svg(l) +
               "<b>" +
               l +
               "</b>" +
-              "</div>";
+              "</button>";
 
           }
         );
@@ -1807,6 +2532,117 @@ ${BANNER}
       var buffer = "";
 
 
+      var TOPE = 220;
+
+
+      /* ======================================================
+         EL TOPE SE MIDE, NO SE ADIVINA
+
+         Cuánto cabe depende del tamaño de la ventana: en una
+         pantalla grande entran unos 200 caracteres y en una
+         pequeña bastantes menos. Se calcula a partir del hueco
+         real y se vuelve a calcular al redimensionar.
+         ====================================================== */
+
+      function calcularTope() {
+
+        var caja =
+          dirT === "es2k"
+            ? $("lienzo")
+            : $("lienzoK");
+
+
+        if (!caja || !caja.clientHeight) {
+          return;
+        }
+
+
+        var fs =
+          parseFloat(
+            getComputedStyle(caja).fontSize
+          ) || 17;
+
+
+        var lineas =
+          Math.max(
+            1,
+            Math.floor(caja.clientHeight / (fs * 1.85))
+          );
+
+
+        var porLinea =
+          Math.max(
+            4,
+            Math.floor(caja.clientWidth / 18)
+          );
+
+
+        /* suelo de 80: por debajo el traductor no serviría de
+           nada. Si en esa pantalla no cabe, el propio lienzo
+           se desplaza por dentro y la rejilla no se mueve. */
+        TOPE =
+          Math.max(
+            80,
+            Math.floor(lineas * porLinea * 0.92)
+          );
+
+
+        $("inTexto").maxLength = TOPE;
+
+
+        if ($("inTexto").value.length > TOPE) {
+
+          $("inTexto").value =
+            $("inTexto").value.slice(0, TOPE);
+
+        }
+
+
+        if (buffer.length > TOPE) {
+
+          buffer = buffer.slice(0, TOPE);
+
+        }
+
+
+        pintarTexto();
+
+      }
+
+
+      var relojTope;
+
+      window.addEventListener(
+        "resize",
+        function () {
+
+          clearTimeout(relojTope);
+
+          relojTope =
+            setTimeout(calcularTope, 150);
+
+        }
+      );
+
+
+      function actualizarContador(n) {
+
+        var c = $("contador");
+
+        if (!c) {
+          return;
+        }
+
+        c.textContent = n + " / " + TOPE;
+
+        c.className =
+          n >= TOPE
+            ? "contador contador--tope"
+            : "contador";
+
+      }
+
+
       function pintarTexto() {
 
         if (dirT === "es2k") {
@@ -1817,7 +2653,12 @@ ${BANNER}
             );
 
 
+          actualizarContador($("inTexto").value.length);
+
+
           if (!t.trim()) {
+
+            $("lienzo").className = "lienzo";
 
             $("lienzo").innerHTML =
               '<span class="vacio">' +
@@ -1829,16 +2670,27 @@ ${BANNER}
           }
 
 
+          $("lienzo").className = "lienzo";
+
+
           var h = "";
 
 
           t
-            .split(/(\s+)/)
+            .split(/(\\s+)/)
             .forEach(
               function (p) {
 
+                /* los saltos de línea que escriba la persona
+                   se respetan en la traducción */
                 if (!p.trim()) {
+
+                  if (p.indexOf("\\n") !== -1) {
+                    h += "<br>";
+                  }
+
                   return;
+
                 }
 
 
@@ -1889,6 +2741,83 @@ ${BANNER}
           $("salidaT").textContent =
             buffer || "—";
 
+
+          var lk = $("lienzoK");
+
+          actualizarContador(buffer.length);
+
+
+          if (lk) {
+
+            if (!buffer) {
+
+              lk.className = "lienzoK";
+
+              lk.innerHTML =
+                '<span class="vacio">' +
+                "Pulsa las letras de la tabla de abajo " +
+                "y aparecerán aquí." +
+                "</span>";
+
+            }
+
+            else {
+
+              lk.className = "lienzoK";
+
+              var hk = "";
+
+              buffer
+                .split(/(\\s+)/)
+                .forEach(
+                  function (p) {
+
+                    if (!p.trim()) {
+
+                      if (p.indexOf("\\n") !== -1) {
+                        hk += "<br>";
+                      }
+
+                      return;
+
+                    }
+
+
+                    hk +=
+                      '<span class="pal">';
+
+
+                    p
+                      .split("")
+                      .forEach(
+                        function (c) {
+
+                          var s = svg(c);
+
+                          hk += s
+                            ? s
+                            : '<span class="raw">' +
+                              c
+                                .replace(/&/g, "&amp;")
+                                .replace(/</g, "&lt;") +
+                              "</span>";
+
+                        }
+                      );
+
+
+                    hk += "</span>";
+
+                  }
+                );
+
+
+              lk.innerHTML = hk;
+
+            }
+
+          }
+
         }
 
       }
@@ -1926,8 +2855,8 @@ ${BANNER}
           es;
 
 
-        $("btnCopiaT").hidden =
-          es;
+        /* copiar sirve en los dos sentidos */
+        $("btnCopiaT").hidden = false;
 
 
         $("etTxtIzq").textContent =
@@ -1951,46 +2880,42 @@ ${BANNER}
          TECLADO
          ====================================================== */
 
-      function pintarTeclado() {
+      /* ======================================================
+         LA TABLA DEL ALFABETO ES EL TECLADO
 
-        var h = "";
+         Antes había un teclado propio dentro del panel, pero
+         solo cabían 7 de las 29 teclas y repetía la tabla de
+         abajo. Ahora se pulsa directamente sobre la tabla,
+         que se ve entera.
+         ====================================================== */
 
+      function escribirLetra(l) {
 
-        ORDEN.forEach(
-          function (l) {
+        if (dirT === "k2es") {
 
-            h +=
-              '<button class="tecla" data-l="' +
-              l +
-              '">' +
-              svg(l) +
-              "<i>" +
-              l +
-              "</i>" +
-              "</button>";
-
+          if (buffer.length >= TOPE) {
+            return;
           }
-        );
+
+          buffer += l;
+
+        }
+
+        else {
+
+          var caja = $("inTexto");
+
+          caja.value += l;
+
+        }
 
 
-        h +=
-          '<button class="tecla teclaAncha" data-l=" ">' +
-          "espacio" +
-          "</button>";
-
-
-        h +=
-          '<button class="tecla teclaAncha" data-l="__del">' +
-          "borrar" +
-          "</button>";
-
-
-        $("teclado").innerHTML = h;
+        pintarTexto();
 
       }
 
 
-      $("teclado")
+      $("glifos")
         .addEventListener(
           "click",
           function (e) {
@@ -2006,24 +2931,33 @@ ${BANNER}
             }
 
 
-            var l =
-              b.dataset.l;
+            escribirLetra(b.dataset.l);
+
+          }
+        );
 
 
-            if (l === "__del") {
+      $("btnEspacio")
+        .addEventListener(
+          "click",
+          function () {
 
-              buffer =
-                buffer.slice(0, -1);
-
+            if (buffer.length < TOPE) {
+              buffer += " ";
             }
 
-            else {
+            pintarTexto();
 
-              buffer += l;
+          }
+        );
 
-            }
 
+      $("btnBorrar")
+        .addEventListener(
+          "click",
+          function () {
 
+            buffer = buffer.slice(0, -1);
             pintarTexto();
 
           }
@@ -2149,7 +3083,9 @@ ${BANNER}
 
             copiar(
               this,
-              buffer
+              dirT === "es2k"
+                ? normaliza($("inTexto").value)
+                : buffer
             );
 
           }
@@ -2189,128 +3125,15 @@ ${BANNER}
           }
         );
 
-    /* ================= EVENTOS ================= */
-
-    function escaparHTML(texto) {
-    return String(texto ?? "")
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
-    }
-
-
-    function mostrarEventos(eventos) {
-
-    var contenedor = $("eventos");
-
-    if (!contenedor) {
-        return;
-    }
-
-    if (!Array.isArray(eventos) || eventos.length === 0) {
-
-        contenedor.innerHTML =
-        '<p class="vacio">No hay eventos todavía.</p>';
-
-        return;
-    }
-
-    var html = "";
-
-    eventos.forEach(function(evento) {
-
-        html += '<article class="evento">';
-
-        html +=
-        '<h3>' +
-        escaparHTML(evento.title) +
-        '</h3>';
-
-        if (evento.description) {
-
-        html +=
-            '<p>' +
-            escaparHTML(evento.description) +
-            '</p>';
-        }
-
-        html +=
-        '<p class="evento__fecha">' +
-        '📅 ' +
-        escaparHTML(evento.date);
-
-        if (evento.time) {
-
-        html +=
-            ' — ' +
-            escaparHTML(evento.time);
-        }
-
-        html += '</p>';
-
-        if (evento.category) {
-
-        html +=
-            '<p class="evento__categoria">' +
-            escaparHTML(evento.category) +
-            '</p>';
-        }
-
-        html += '</article>';
-    });
-
-    contenedor.innerHTML = html;
-    }
-
-
-    async function cargarEventos() {
-
-    var contenedor = $("eventos");
-
-    if (!contenedor) {
-        return;
-    }
-
-    try {
-
-        var respuesta = await fetch("/api/events");
-
-        if (!respuesta.ok) {
-        throw new Error(
-            "HTTP " + respuesta.status
-        );
-        }
-
-        var eventos = await respuesta.json();
-
-        mostrarEventos(eventos);
-
-    } catch (error) {
-
-        console.error(
-        "Error cargando eventos:",
-        error
-        );
-
-        contenedor.innerHTML =
-        '<p class="vacio">' +
-        'No se pudieron cargar los eventos.' +
-        '</p>';
-    }
-    }
-
-
     /*======================================================
     ARRANQUE
     ====================================================== */
 
 
     pintarGlifos();
-    pintarTeclado();
+    pintarLeyendaMeses();
     ponHoy();
-    cargarEventos();
+    calcularTope();
 
     var k = kkMs(hoyMs());
 
@@ -2326,4 +3149,5 @@ ${BANNER}
 
 </body>
 </html>
+
 `;

@@ -59,31 +59,34 @@ export default function calendarioTemplate() {
             background: var(--fondo);
             color: var(--texto);
             font-family: var(--cuerpo);
-            font-size: 16px;
+            font-size: 17px;
             line-height: 1.5;
             -webkit-font-smoothing: antialiased;
         }
 
+        html { height: 100%; }
+
         .env {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 0 18px;
+            max-width: none;
+            margin: 0;
+            padding: 0 32px;
         }
 
         .top {
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
             gap: 12px;
-            padding: 16px 18px;
-            max-width: 900px;
-            margin: 0 auto;
+            padding: 16px 32px;
+            max-width: none;
+            margin: 0;
             border-bottom: 2px solid var(--texto);
         }
 
         .top h1 {
             font-family: var(--display);
             font-weight: 800;
-            font-size: 17px;
+            font-size: 19px;
             text-transform: uppercase;
             letter-spacing: -.02em;
             margin: 0 auto 0 0;
@@ -123,7 +126,7 @@ export default function calendarioTemplate() {
         h2 {
             font-family: var(--display);
             font-weight: 800;
-            font-size: clamp(22px, 3.6vw, 30px);
+            font-size: clamp(24px, 2.4vw, 36px);
             letter-spacing: -.03em;
             margin: 0 0 6px;
         }
@@ -131,8 +134,8 @@ export default function calendarioTemplate() {
         .sub {
             color: var(--tenue);
             margin: 0 0 22px;
-            max-width: 60ch;
-            font-size: 15px;
+            max-width: 70ch;
+            font-size: 16px;
         }
 
         .et {
@@ -160,17 +163,276 @@ export default function calendarioTemplate() {
 
         /* CALENDARIO */
 
+        /* el calendario es el centro de la página: contenedor
+           propio, ancho generoso, siempre centrado */
+        /* =========================================================
+           DOS COLUMNAS: AÑO  |  MES
+           ========================================================= */
+
+        .duo {
+            display: grid;
+            grid-template-columns: 1fr 1px 1.15fr;
+            column-gap: 40px;
+            align-items: stretch;
+        }
+
+        .duo__lado {
+            min-width: 0;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .duo__lado > section {
+            display: flex;
+            flex-direction: column;
+            padding: 34px 0 40px;
+        }
+
+        .duo__lado > section > .anioEnv,
+        .duo__lado > section > .calEnv {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .duo__medio {
+            position: relative;
+        }
+
+        .duo__medio::before {
+            content: "";
+            position: absolute;
+            top: 40px;
+            bottom: 40px;
+            left: 0;
+            width: 1px;
+            background: var(--borde);
+        }
+
+        @media (max-width: 1080px) {
+
+            .duo {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .duo__medio {
+                display: none;
+            }
+        }
+
+        /* =========================================================
+           CALENDARIO ANUAL (columna izquierda)
+           ========================================================= */
+
+        .anioEnv {
+            max-width: 820px;
+        }
+
+        .anio {
+            border: 2px solid var(--texto);
+            border-radius: 16px;
+            overflow: hidden;
+            background: var(--tarjeta);
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .anio__top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            border-bottom: 2px solid var(--texto);
+            background: var(--amarillo);
+            color: #191552;
+            flex: 0 0 auto;
+        }
+
+        .anio__titulo {
+            font-family: var(--display);
+            font-weight: 800;
+            font-size: clamp(20px, 1.8vw, 26px);
+            letter-spacing: -.02em;
+            margin: 0 auto 0 0;
+        }
+
+        .anioGrid {
+            flex: 1;
+            min-height: 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+            padding: 12px;
+        }
+
+        /* cada mini-mes es el calendario de la derecha en pequeño:
+           misma tarjeta, misma cabecera amarilla, misma fila de
+           días de la semana y la misma rejilla con bordes */
+        .mesMini {
+            border: 1.5px solid var(--texto);
+            border-radius: 9px;
+            overflow: hidden;
+            background: var(--tarjeta);
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            transition: box-shadow .15s ease, transform .15s ease;
+        }
+
+        .mesMini:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(9, 7, 40, .14);
+        }
+
+        .mesMini--actual {
+            box-shadow: 0 0 0 2.5px var(--rosa);
+        }
+
+        .mesMini--actual:hover {
+            box-shadow: 0 0 0 2.5px var(--rosa),
+                        0 4px 14px rgba(9, 7, 40, .14);
+        }
+
+        .mesMini__top {
+            flex: 0 0 auto;
+            display: block;
+            width: 100%;
+            text-align: left;
+            background: var(--amarillo);
+            color: #191552;
+            border: 0;
+            border-bottom: 1.5px solid var(--texto);
+            padding: 5px 8px;
+            font-family: var(--display);
+            font-weight: 800;
+            font-size: 11.5px;
+            letter-spacing: -.01em;
+            line-height: 1.15;
+            cursor: pointer;
+        }
+
+        .mesMini__top:hover {
+            background: var(--rosa);
+            color: #FBF7EC;
+        }
+
+        .mesMini__top span {
+            opacity: .55;
+            font-family: var(--mono);
+            font-weight: 400;
+            font-size: 9px;
+            margin-right: 4px;
+        }
+
+        .mesMini__sem {
+            flex: 0 0 auto;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            border-bottom: 1.5px solid var(--texto);
+        }
+
+        .mesMini__sem span {
+            font-family: var(--mono);
+            font-size: 7.5px;
+            text-transform: uppercase;
+            letter-spacing: .04em;
+            color: var(--tenue);
+            text-align: center;
+            padding: 3px 0;
+        }
+
+        .mesMini__dias {
+            flex: 1;
+            min-height: 0;
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            grid-template-rows: repeat(6, minmax(0, 1fr));
+        }
+
+        .mesMini__dia {
+            background: transparent;
+            border: 0;
+            border-right: 1px solid var(--borde);
+            border-bottom: 1px solid var(--borde);
+            padding: 0;
+            font-family: var(--mono);
+            font-size: 8.5px;
+            color: var(--texto);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 0;
+            transition: background .12s ease;
+        }
+
+        .mesMini__dia:nth-child(7n) {
+            border-right: 0;
+        }
+
+        .mesMini__dias .mesMini__dia:nth-last-child(-n+7) {
+            border-bottom: 0;
+        }
+
+        .mesMini__dia:hover {
+            background: rgba(255, 194, 51, .35);
+        }
+
+        .mesMini__dia--finde {
+            color: var(--rosa);
+        }
+
+        .mesMini__dia--fuera {
+            opacity: .3;
+        }
+
+        .mesMini__dia--hoy {
+            background: var(--amarillo);
+            color: #191552;
+            font-weight: 500;
+        }
+
+        .mesMini__dia--hoy:hover {
+            background: var(--amarillo);
+        }
+
+        @media (max-width: 1080px) {
+
+            .anioGrid {
+                grid-template-columns: repeat(3, 1fr);
+                grid-template-rows: repeat(4, minmax(130px, auto));
+            }
+        }
+
+        @media (max-width: 720px) {
+
+            .anioGrid {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(6, minmax(120px, auto));
+            }
+        }
+
+        .calEnv {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
         .calMandos {
             display: grid;
-            grid-template-columns: 1fr 120px auto;
-            gap: 10px;
+            grid-template-columns: 1fr 140px auto;
+            gap: 12px;
             align-items: end;
-            margin: 0 0 18px;
+            margin: 0 0 20px;
         }
 
         .cal {
             border: 2px solid var(--texto);
-            border-radius: 14px;
+            border-radius: 16px;
             overflow: hidden;
             background: var(--tarjeta);
         }
@@ -178,8 +440,8 @@ export default function calendarioTemplate() {
         .cal__top {
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding: 14px 16px;
+            gap: 12px;
+            padding: 18px 22px;
             border-bottom: 2px solid var(--texto);
             background: var(--amarillo);
             color: #191552;
@@ -188,7 +450,7 @@ export default function calendarioTemplate() {
         .cal__mes {
             font-family: var(--display);
             font-weight: 800;
-            font-size: clamp(20px, 3.4vw, 30px);
+            font-size: clamp(24px, 2.4vw, 38px);
             letter-spacing: -.03em;
             margin: 0 auto 0 0;
             line-height: 1.05;
@@ -198,11 +460,11 @@ export default function calendarioTemplate() {
             display: block;
             font-family: var(--mono);
             font-weight: 400;
-            font-size: 11px;
+            font-size: 12.5px;
             letter-spacing: .06em;
             text-transform: uppercase;
             opacity: .65;
-            margin-top: 3px;
+            margin-top: 4px;
         }
 
         .cal__nav {
@@ -210,9 +472,9 @@ export default function calendarioTemplate() {
             border: 1.5px solid #191552;
             color: #191552;
             border-radius: 999px;
-            width: 38px;
-            height: 38px;
-            font-size: 16px;
+            width: 44px;
+            height: 44px;
+            font-size: 18px;
             cursor: pointer;
             line-height: 1;
             flex: 0 0 auto;
@@ -228,10 +490,10 @@ export default function calendarioTemplate() {
             border: 1.5px solid #191552;
             color: var(--amarillo);
             border-radius: 999px;
-            height: 38px;
-            padding: 0 16px;
+            height: 44px;
+            padding: 0 18px;
             font-family: var(--mono);
-            font-size: 11px;
+            font-size: 12px;
             text-transform: uppercase;
             letter-spacing: .07em;
             cursor: pointer;
@@ -251,11 +513,11 @@ export default function calendarioTemplate() {
 
         .sem span {
             font-family: var(--mono);
-            font-size: 10px;
+            font-size: 11.5px;
             text-transform: uppercase;
             letter-spacing: .12em;
             color: var(--tenue);
-            padding: 11px 10px;
+            padding: 14px 10px;
         }
 
         .dias {
@@ -264,10 +526,10 @@ export default function calendarioTemplate() {
         }
 
         .dia {
-            height: 110px;
+            height: 130px;
             border-right: 1px solid var(--borde);
             border-bottom: 1px solid var(--borde);
-            padding: 9px 10px;
+            padding: 11px 13px;
             display: flex;
             flex-direction: column;
             gap: 3px;
@@ -284,14 +546,14 @@ export default function calendarioTemplate() {
         .dia b {
             font-family: var(--display);
             font-weight: 800;
-            font-size: 21px;
+            font-size: 25px;
             line-height: 1;
             letter-spacing: -.02em;
         }
 
         .dia small {
             font-family: var(--mono);
-            font-size: 10.5px;
+            font-size: 12px;
             color: var(--tenue);
             letter-spacing: .01em;
             white-space: nowrap;
@@ -299,18 +561,22 @@ export default function calendarioTemplate() {
 
         .dia__eventos {
             display: flex;
+            flex: 1 1 0;
+            min-height: 0;
+            max-height: 36px;
             flex-wrap: nowrap;
             align-items: flex-end;
             gap: 2px;
+            overflow: hidden;
             transition: gap .2s cubic-bezier(.4, 0, .2, 1);
         }
 
         .dia__evento {
             position: relative;
-            flex: 0 1 8px;
+            flex: 0 1 10px;
             min-width: 0;
-            height: 30px;
-            border-radius: 3px;
+            height: 100%;
+            border-radius: 4px;
             background: var(--rosa);
             box-shadow: inset 0 0 0 1px var(--texto);
             overflow: hidden;
@@ -326,13 +592,13 @@ export default function calendarioTemplate() {
             left: 0;
             top: 0;
             bottom: 0;
-            width: 200px;
+            width: 220px;
             display: flex;
             align-items: center;
-            padding: 0 11px;
+            padding: 0 13px;
             font-family: var(--display);
             font-weight: 700;
-            font-size: 10px;
+            font-size: 11.5px;
             line-height: 1;
             white-space: nowrap;
         }
@@ -382,12 +648,23 @@ export default function calendarioTemplate() {
             color: #191552;
         }
 
+        /* posición absoluta: así "HOY" no le quita alto al resto
+           de la celda, que es lo que la desbordaba cuando el día
+           de hoy tenía muchos eventos */
+        .dia--hoy {
+            position: relative;
+        }
+
         .dia__marca {
+            position: absolute;
+            right: 10px;
+            top: 10px;
             font-family: var(--mono);
             font-size: 9px;
             text-transform: uppercase;
             letter-spacing: .1em;
             color: #191552;
+            opacity: .55;
         }
 
         .calPie {
@@ -448,6 +725,202 @@ export default function calendarioTemplate() {
             }
         }
 
+        /* =========================================================
+           UNA SOLA PANTALLA
+
+           Con al menos 1081x760 la página mide exactamente el alto
+           de la ventana y no hace falta la rueda del ratón. El
+           calendario se estira para llenar el hueco vertical que
+           quede. Por debajo de ese tamaño no cabe sin dejar las
+           casillas ilegibles, así que vuelve el scroll normal.
+           ========================================================= */
+
+        @media (min-width: 1081px) and (min-height: 760px) {
+
+            html, body {
+                height: 100%;
+                overflow: hidden;
+            }
+
+            body {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .top {
+                flex: 0 0 auto;
+            }
+
+            .env {
+                flex: 1;
+                min-height: 0;
+                display: flex;
+                flex-direction: column;
+            }
+
+            section {
+                flex: 1;
+                min-height: 0;
+                padding: clamp(6px, 1.4vh, 40px) 0;
+                display: flex;
+                flex-direction: column;
+            }
+
+            h2 {
+                flex: 0 0 auto;
+                font-size: clamp(20px, 2.4vh, 36px);
+                margin-bottom: clamp(1px, .4vh, 6px);
+            }
+
+            .sub {
+                flex: 0 0 auto;
+                font-size: clamp(12px, 1.5vh, 16px);
+                margin-bottom: clamp(6px, 1.2vh, 22px);
+            }
+
+            .calEnv {
+                flex: 1;
+                min-height: 0;
+                display: flex;
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .calMandos {
+                flex: 0 0 auto;
+                margin-bottom: clamp(6px, 1.2vh, 20px);
+            }
+
+            .calMandos .et {
+                margin-bottom: 2px;
+            }
+
+            .calMandos select,
+            .calMandos input,
+            .calMandos .btn {
+                min-height: clamp(30px, 4.6vh, 44px);
+                padding-top: 0;
+                padding-bottom: 0;
+            }
+
+            .cal {
+                flex: 1;
+                min-height: 0;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .cal__top {
+                flex: 0 0 auto;
+                padding: clamp(6px, 1.2vh, 22px) clamp(10px, 1.6vh, 22px);
+            }
+
+            .sem {
+                flex: 0 0 auto;
+            }
+
+            .sem span {
+                padding: clamp(4px, .8vh, 14px) 10px;
+            }
+
+            .dias {
+                flex: 1;
+                min-height: 0;
+                grid-template-rows: repeat(6, minmax(0, 1fr));
+            }
+
+            .dia {
+                height: auto;
+                min-height: 0;
+                padding: clamp(5px, 1vh, 13px) clamp(6px, 1.2vh, 13px);
+                gap: clamp(1px, .4vh, 3px);
+                overflow: hidden;
+            }
+
+            .dia b {
+                font-size: clamp(16px, 2.6vh, 26px);
+            }
+
+            .dia small {
+                font-size: clamp(9px, 1.15vh, 12.5px);
+            }
+
+            .dia__eventos {
+                max-height: clamp(16px, 3.4vh, 38px);
+            }
+
+            .dia__ev-txt {
+                font-size: clamp(9px, 1.1vh, 12px);
+            }
+
+            .dia__marca {
+                font-size: clamp(8px, 1vh, 9.5px);
+            }
+
+            .calPie {
+                flex: 0 0 auto;
+                margin-top: clamp(6px, 1vh, 16px);
+            }
+
+            .pie {
+                flex: 0 0 auto;
+                padding: clamp(4px, .8vh, 22px) 0;
+                font-size: 10px;
+            }
+
+            /* la cadena que reparte el alto hasta el panel anual */
+            .duo {
+                flex: 1;
+                min-height: 0;
+            }
+
+            .anioEnv {
+                max-width: none;
+            }
+
+            .anio__top {
+                padding: clamp(6px, 1.2vh, 16px) clamp(10px, 1.6vh, 20px);
+            }
+
+            .anio__titulo {
+                font-size: clamp(16px, 2vh, 26px);
+            }
+
+            .anioGrid {
+                gap: clamp(4px, .8vh, 10px);
+                padding: clamp(5px, .9vh, 12px);
+            }
+
+            .mesMini__top {
+                padding: clamp(2px, .5vh, 5px) clamp(4px, .6vw, 8px);
+                font-size: clamp(8px, 1.15vh, 12px);
+            }
+
+            .mesMini__top span {
+                font-size: clamp(6px, .85vh, 9px);
+            }
+
+            .mesMini__sem span {
+                padding: clamp(1px, .3vh, 3px) 0;
+                font-size: clamp(5.5px, .78vh, 8px);
+            }
+
+            .mesMini__dia {
+                font-size: clamp(6px, .92vh, 9px);
+            }
+        }
+
+        /* muy poca altura: la intro y el pie de fecha ya no caben
+           sin apretar la rejilla, así que se ocultan */
+        @media (min-width: 1081px) and (min-height: 760px) and (max-height: 860px) {
+
+            .sub,
+            .calPie {
+                display: none;
+            }
+        }
+
+
         @media (prefers-reduced-motion: reduce) {
             * {
                 transition: none !important;
@@ -465,6 +938,15 @@ export default function calendarioTemplate() {
         body.pantalla .pie { display: none; }
         body.pantalla main.env { max-width: none; padding: 0; }
         body.pantalla section { padding: 0; border-top: 0; }
+        body.pantalla .calEnv { max-width: none; }
+        /* pantalla completa es solo el mes: la columna del año
+           y la línea divisoria se apartan */
+        body.pantalla #ladoAnual,
+        body.pantalla .duo__medio { display: none; }
+        body.pantalla .duo {
+            display: block;
+            height: 100%;
+        }
         body.pantalla .cal {
             border: 0;
             border-radius: 0;
@@ -650,115 +1132,191 @@ ${BANNER}
 
 <main class="env">
 
-    <section>
+    <div class="duo" id="duo">
 
-        <h2>El calendario</h2>
+        <div class="duo__lado" id="ladoAnual">
 
-        <p class="sub">
-            Doce meses en rejilla. Cada casilla lleva el día del calendario
-            Kirk arriba y su equivalente de siempre debajo.
-            Los días en gris son del mes de al lado.
-        </p>
+            <section>
 
-        <div class="calMandos">
+                <h2>El año</h2>
 
-            <div>
-                <span class="et">Mes</span>
-                <select id="selMes"></select>
-            </div>
+                <p class="sub">
+                    Los doce meses de un vistazo. Pulsa un mes o un día
+                    para saltar a él en el calendario de la derecha.
+                </p>
 
-            <div>
-                <span class="et">AÑO</span>
-                <input
-                    type="number"
-                    id="inAnio"
-                    value="1"
-                    step="1"
-                >
-            </div>
+                <div class="anioEnv">
 
-            <div>
-                <button class="btn" id="btnIr" type="button">
-                    Ir
-                </button>
-            </div>
+                <div class="anio">
 
-        </div>
+                    <div class="anio__top">
 
-        <div class="cal">
+                        <button
+                            class="cal__nav"
+                            id="anioAnt"
+                            type="button"
+                            aria-label="Año anterior"
+                        >
+                            &lsaquo;
+                        </button>
 
-            <div class="cal__top">
+                        <h3 class="anio__titulo" id="anioTitulo">
+                            —
+                        </h3>
 
-                <button
-                    class="cal__nav"
-                    id="navAnt"
-                    type="button"
-                    aria-label="Mes anterior"
-                >
-                    &lsaquo;
-                </button>
+                        <button
+                            class="cal__hoy"
+                            id="anioHoy"
+                            type="button"
+                            hidden
+                        >
+                            Volver a hoy
+                        </button>
 
-                <button
-                    class="cal__nav"
-                    id="btnPantalla"
-                    type="button"
-                    aria-label="Pantalla completa"
-                    title="Pantalla completa"
-                >
-                    &#x26F6;
-                </button>
+                        <button
+                            class="cal__nav"
+                            id="anioSig"
+                            type="button"
+                            aria-label="Año siguiente"
+                        >
+                            &rsaquo;
+                        </button>
 
-                <h3 class="cal__mes" id="calTitulo">
-                    â€”
-                    <small id="calSub">â€”</small>
-                </h3>
+                    </div>
 
-                <button
-                    class="cal__hoy"
-                    id="calHoy"
-                    type="button"
-                    hidden
-                >
-                    Volver a hoy
-                </button>
+                    <div class="anioGrid" id="anioGrid"></div>
 
-                <button
-                    class="cal__nav"
-                    id="navSig"
-                    type="button"
-                    aria-label="Mes siguiente"
-                >
-                    &rsaquo;
-                </button>
+                </div>
 
-            </div>
+                </div>
 
-            <div class="sem" id="calSem"></div>
-
-            <div class="dias" id="calDias"></div>
+            </section>
 
         </div>
 
-        <div class="calPie">
 
-            <div>
-                <span class="et">Hoy</span>
-                <b id="pieHoy">â€”</b>
-            </div>
+        <div class="duo__medio"></div>
 
-            <div>
-                <span class="et">Equivale a</span>
-                <b id="pieGreg">â€”</b>
-            </div>
 
-            <div>
-                <span class="et">día del año</span>
-                <b id="pieDia">â€”</b>
-            </div>
+        <div class="duo__lado" id="ladoMensual">
+
+            <section>
+
+                <h2>El calendario</h2>
+
+                <p class="sub">
+                    Doce meses en rejilla. Cada casilla lleva el día del calendario
+                    Kirk arriba y su equivalente de siempre debajo.
+                    Los días en gris son del mes de al lado.
+                </p>
+
+                <div class="calEnv">
+
+                <div class="calMandos">
+
+                    <div>
+                        <span class="et">Mes</span>
+                        <select id="selMes"></select>
+                    </div>
+
+                    <div>
+                        <span class="et">AÑO</span>
+                        <input
+                            type="number"
+                            id="inAnio"
+                            value="1"
+                            step="1"
+                        >
+                    </div>
+
+                    <div>
+                        <button class="btn" id="btnIr" type="button">
+                            Ir
+                        </button>
+                    </div>
+
+                </div>
+
+                <div class="cal">
+
+                    <div class="cal__top">
+
+                        <button
+                            class="cal__nav"
+                            id="navAnt"
+                            type="button"
+                            aria-label="Mes anterior"
+                        >
+                            &lsaquo;
+                        </button>
+
+                        <button
+                            class="cal__nav"
+                            id="btnPantalla"
+                            type="button"
+                            aria-label="Pantalla completa"
+                            title="Pantalla completa"
+                        >
+                            &#x26F6;
+                        </button>
+
+                        <h3 class="cal__mes" id="calTitulo">
+                            —
+                            <small id="calSub">—</small>
+                        </h3>
+
+                        <button
+                            class="cal__hoy"
+                            id="calHoy"
+                            type="button"
+                            hidden
+                        >
+                            Volver a hoy
+                        </button>
+
+                        <button
+                            class="cal__nav"
+                            id="navSig"
+                            type="button"
+                            aria-label="Mes siguiente"
+                        >
+                            &rsaquo;
+                        </button>
+
+                    </div>
+
+                    <div class="sem" id="calSem"></div>
+
+                    <div class="dias" id="calDias"></div>
+
+                </div>
+
+                <div class="calPie">
+
+                    <div>
+                        <span class="et">Hoy</span>
+                        <b id="pieHoy">—</b>
+                    </div>
+
+                    <div>
+                        <span class="et">Equivale a</span>
+                        <b id="pieGreg">—</b>
+                    </div>
+
+                    <div>
+                        <span class="et">día del año</span>
+                        <b id="pieDia">—</b>
+                    </div>
+
+                </div>
+
+                </div>
+
+            </section>
 
         </div>
 
-    </section>
+    </div>
 
 </main>
 
@@ -1008,6 +1566,7 @@ ${BANNER}
 
     var vistaAnio;
     var vistaMes;
+    var anioActual;
     var eventos = [];
     var MAX_MARCAS = 13;
 
@@ -1265,6 +1824,11 @@ ${BANNER}
             kh.diaAnio +
             " de " +
             kh.largo;
+
+        /* el año siempre refleja el mes que se está viendo:
+           así quedan las dos columnas conectadas de verdad */
+        anioActual = vistaAnio;
+        pintarAnio();
     }
 
     /*
@@ -1343,6 +1907,176 @@ ${BANNER}
     };
 
     /*
+     * CALENDARIO ANUAL (columna izquierda)
+     *
+     * Rejilla de 42 casillas por mes (6 filas fijas), así todos
+     * los meses miden lo mismo aunque tengan 4, 5 o 6 semanas
+     * reales. Cada mes y cada día son botones que saltan al
+     * calendario mensual de la derecha.
+     */
+    var SEM_MINI = ["L", "M", "X", "J", "V", "S", "D"];
+
+    function pintarAnio() {
+
+        var hoy = hoyMs();
+
+        $("anioTitulo").textContent =
+            nAnio(anioActual);
+
+        $("anioHoy").hidden =
+            anioActual === kkMs(hoy).anio;
+
+        var cabecera =
+            '<div class="mesMini__sem">' +
+            SEM_MINI.map(function (d) {
+                return "<span>" + d + "</span>";
+            }).join("") +
+            "</div>";
+
+        var html = "";
+
+        for (var m = 0; m < 12; m++) {
+
+            var primero = msKK(
+                anioActual,
+                m + 1,
+                1
+            );
+
+            /* mismo arranque que el calendario grande: se
+               retrocede al lunes de la primera semana */
+            var arranque =
+                primero -
+                lun(primero) * MS;
+
+            var esMesActual =
+                anioActual === vistaAnio &&
+                (m + 1) === vistaMes;
+
+            html +=
+                '<div class="mesMini' +
+                (esMesActual ? " mesMini--actual" : "") +
+                '">' +
+
+                '<button type="button" class="mesMini__top" data-mes="' +
+                (m + 1) +
+                '"><span>' +
+                (m + 1) +
+                "</span>" +
+                MESES[m].n +
+                "</button>" +
+
+                cabecera +
+
+                '<div class="mesMini__dias">';
+
+            for (var c = 0; c < 42; c++) {
+
+                var ms =
+                    arranque +
+                    c * MS;
+
+                var k = kkMs(ms);
+
+                var fuera =
+                    k.mes !== (m + 1) ||
+                    k.anio !== anioActual;
+
+                html +=
+                    '<button type="button" class="mesMini__dia' +
+                    (c % 7 >= 5 ? " mesMini__dia--finde" : "") +
+                    (fuera ? " mesMini__dia--fuera" : "") +
+                    (ms === hoy ? " mesMini__dia--hoy" : "") +
+                    '" data-ms="' +
+                    ms +
+                    '">' +
+                    k.dia +
+                    "</button>";
+            }
+
+            html += "</div></div>";
+        }
+
+        $("anioGrid").innerHTML = html;
+    }
+
+    function saltarMes(mes) {
+
+        vistaAnio = anioActual;
+        vistaMes = mes;
+
+        pintar();
+    }
+
+    /* salta al día exacto, aunque sea de un mes vecino:
+       la fecha en ms ya lleva toda la información */
+    function saltarDia(ms) {
+
+        var k = kkMs(ms);
+
+        vistaAnio = k.anio;
+        vistaMes = k.mes;
+
+        pintar();
+
+        var celda = document.querySelector(
+            '.dia[data-ms="' + ms + '"]'
+        );
+
+        if (celda) {
+            abrirDia(celda);
+        }
+    }
+
+    $("anioGrid").addEventListener("click", function (e) {
+
+        var diaBtn = e.target.closest(".mesMini__dia");
+
+        if (diaBtn) {
+
+            saltarDia(
+                parseInt(diaBtn.dataset.ms, 10)
+            );
+
+            return;
+        }
+
+        var mesBtn = e.target.closest(".mesMini__top");
+
+        if (mesBtn) {
+            saltarMes(parseInt(mesBtn.dataset.mes, 10));
+        }
+    });
+
+    function moverAnio(n) {
+
+        var a = anioActual + n;
+
+        if (a === 0) {
+            a = n > 0 ? 1 : -1;
+        }
+
+        anioActual = a;
+
+        pintarAnio();
+    }
+
+    $("anioAnt").onclick = function () {
+        moverAnio(-1);
+    };
+
+    $("anioSig").onclick = function () {
+        moverAnio(1);
+    };
+
+    $("anioHoy").onclick = function () {
+
+        anioActual = kkMs(hoyMs()).anio;
+
+        pintarAnio();
+    };
+
+    /*
      * Teclado
      */
     document.addEventListener(
@@ -1381,11 +2115,16 @@ ${BANNER}
 
         var b = $("btnPantalla");
 
-        b.textContent = on ? "X" : "[ ]";
-
+        /* el icono del HTML (&#x26F6;) se queda siempre igual;
+           solo cambia el texto accesible, no lo que se ve */
         b.title = on
             ? "Salir de pantalla completa"
             : "Pantalla completa";
+
+        b.setAttribute(
+            "aria-label",
+            b.title
+        );
     }
 
     $("btnPantalla").onclick = function () {
@@ -1436,7 +2175,7 @@ ${BANNER}
 
             cuerpo =
                 '<p class="ficha__vacio">' +
-                "No hay eventos este d\u00eda." +
+                "No hay eventos este d\\u00eda." +
                 "</p>";
 
         } else {
@@ -1557,16 +2296,16 @@ ${BANNER}
 
             "<small>" +
             sem(ms) +
-            " \u00b7 " +
+            " \\u00b7 " +
             tG(ms) +
-            " \u00b7 " +
+            " \\u00b7 " +
             nAnio(k.anio) +
             "</small>" +
 
             "</h3>" +
 
             '<button class="ficha__x" type="button" aria-label="Cerrar">' +
-            "\u2715" +
+            "\\u2715" +
             "</button>" +
 
             "</div>" +
