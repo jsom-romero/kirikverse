@@ -2491,6 +2491,25 @@ ${BANNER}
         }
     });
 
+    /*
+     * Tema noche/papel
+     */
+    $("btnTema").onclick = function () {
+
+        var n =
+            document.documentElement.dataset.tema ===
+            "noche"
+                ? "papel"
+                : "noche";
+
+        document.documentElement.dataset.tema =
+            n;
+
+        this.textContent =
+            n === "noche"
+                ? "Papel"
+                : "Noche";
+    };
 
     /*
      * ARRANQUE
